@@ -8,6 +8,7 @@ TEST_CASE("an arity function object is called with all provided arguments")
 {
     constexpr auto minus = composer::arity_function<std::minus<>, 2>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
+    REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("an arity function is not callable with too many arguments")
@@ -28,6 +29,7 @@ TEST_CASE("an arity function is callable with fewer arguments than the stated "
     constexpr auto decrement = composer::make_arity_function<2>(
         [](int a, int b = 1) { return a - b; });
     STATIC_REQUIRE(decrement(5) == 4);
+    REQUIRE(decrement(5) == 4);
 }
 
 TEST_CASE(

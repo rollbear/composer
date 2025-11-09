@@ -6,12 +6,14 @@ TEST_CASE("a right curried function is called with all provided arguments")
 {
     constexpr auto minus = composer::right_curry<std::minus<>, 2>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
+    REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("a right curried function is not callable with too many arguments")
 {
     constexpr auto minus = composer::right_curry<std::minus<>, 2>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
+    REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
 }
 
 TEST_CASE("a right curried function called with fewer arguments than required, "
@@ -20,6 +22,7 @@ TEST_CASE("a right curried function called with fewer arguments than required, "
     constexpr auto minus = composer::right_curry<std::minus<>, 2>{};
     constexpr auto minus2 = minus(2);
     STATIC_REQUIRE(minus2(5) == 3);
+    REQUIRE(minus2(5) == 3);
 }
 
 TEST_CASE("a right curried function can be called with fewer than arity "
@@ -29,6 +32,7 @@ TEST_CASE("a right curried function can be called with fewer than arity "
         = composer::make_arity_function<2, composer::right_curry>(
             [](int a, int b = 1) { return a - b; });
     STATIC_REQUIRE(dec(3) == 2);
+    REQUIRE(dec(3) == 2);
 }
 
 namespace {

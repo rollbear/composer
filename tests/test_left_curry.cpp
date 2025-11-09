@@ -6,6 +6,7 @@ TEST_CASE("a left curried function is called with all provided arguments")
 {
     constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
+    REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("a left curried function is not callable with too many arguments")
@@ -20,6 +21,7 @@ TEST_CASE("a left curried function called with fewer arguments that required, "
     constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
     constexpr auto f5minus = minus(5);
     STATIC_REQUIRE(f5minus(2) == 3);
+    REQUIRE(f5minus(2) == 3);
 }
 
 TEST_CASE("a left curried function can be called with fewer than arity "
@@ -28,6 +30,7 @@ TEST_CASE("a left curried function can be called with fewer than arity "
     constexpr auto dec = composer::make_arity_function<2, composer::left_curry>(
         [](int a, int b = 1) { return a - b; });
     STATIC_REQUIRE(dec(3) == 2);
+    REQUIRE(dec(3) == 2);
 }
 
 namespace {
