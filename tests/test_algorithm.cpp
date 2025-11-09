@@ -646,3 +646,41 @@ SCENARIO("count_if is right curried")
         REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
     }
 }
+
+SCENARIO("find is right curried")
+{
+    SECTION("calling find with a range, a value and a projection calls "
+            "ranges::find if directly")
+    {
+        STATIC_REQUIRE(composer::find(values, 2, &numname::num)->name == "two");
+        REQUIRE(composer::find(values, 4, &numname::num)->name == "four");
+    }
+    SECTION("calling find with an iterator pair, a value and a projection "
+            "calls ranges::find if directly")
+    {
+        STATIC_REQUIRE(
+            composer::find(
+                std::begin(values), std::end(values), 2, &numname::num)
+                ->name
+            == "two");
+        REQUIRE(composer::find(
+                    std::begin(values), std::end(values), 4, &numname::num)
+                    ->name
+                == "four");
+    }
+    SECTION("calling find with a value and a projection returns a callable for "
+            "a range")
+    {
+        constexpr auto num_is_2 = composer::find(2, &numname::num);
+        STATIC_REQUIRE(num_is_2(values)->name == "two");
+        REQUIRE(num_is_2(values)->name == "two");
+    }
+    SECTION("calling find with a value and a projection returns a callable for "
+            "an iterator pair")
+    {
+        constexpr auto num_is_2 = composer::find(2, &numname::num);
+        STATIC_REQUIRE(num_is_2(std::begin(values), std::end(values))->name
+                       == "two");
+        REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
+    }
+}

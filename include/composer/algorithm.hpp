@@ -49,6 +49,11 @@ inline constexpr auto count_if = make_arity_function<4, right_curry>(
         return std::ranges::count_if(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto find = make_arity_function<4, right_curry>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::find(std::forward<Ts>(ts)...)) {
+        return std::ranges::find(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

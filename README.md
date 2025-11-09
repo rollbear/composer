@@ -322,3 +322,6 @@ Right curried version of [`std::ranges::count`](https://en.cppreference.com/w/cp
 
 Right curried version of [`std::ranges::count_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
 
+### `composer::find`
+
+Right curried version of [`std::ranges::find`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
