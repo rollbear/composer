@@ -296,3 +296,9 @@ Composable function object for [`std::ranges::distance`](https://www.cppreferenc
 
 ### `composer::all_of`
 
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
+### `composer::any_of`
+
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
