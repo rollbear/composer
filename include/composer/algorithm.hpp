@@ -25,6 +25,12 @@ inline constexpr auto none_of = make_arity_function<4, right_curry>(
         return std::ranges::none_of(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto for_each = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::for_each(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::for_each(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

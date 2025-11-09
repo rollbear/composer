@@ -341,3 +341,60 @@ SCENARIO("none_of is right curried")
         REQUIRE_FALSE(any_gt4(std::begin(values), std::end(values)));
     }
 }
+
+SCENARIO("for_each is right curried")
+{
+    static constexpr auto append_to_string
+        = [](auto& s) { return [&s](int x) { s += std::to_string(x); }; };
+    SECTION("calling for_each with range, function and projection calls "
+            "ranges::for_each directly")
+    {
+        std::string result;
+        composer::for_each(values, append_to_string(result), &numname::num);
+        REQUIRE(result == "12345");
+    }
+    SECTION("calling for_each with iterator pair, function and projection "
+            "calls ranges::for_each directly")
+    {
+        std::string result;
+        composer::for_each(std::begin(values),
+                           std::end(values),
+                           append_to_string(result),
+                           &numname::num);
+        REQUIRE(result == "12345");
+    }
+    SECTION("calling for_each with range and composed function calls "
+            "ranges::for_each directly")
+    {
+        std::string result;
+        composer::for_each(
+            values, composer::mem_fn(&numname::num) | append_to_string(result));
+        REQUIRE(result == "12345");
+    }
+    SECTION("calling for_each with iterator pair and composed function calls "
+            "ranges::for_each directly")
+    {
+        std::string result;
+        composer::for_each(
+            values, composer::mem_fn(&numname::num) | append_to_string(result));
+        REQUIRE(result == "12345");
+    }
+    SECTION("calling for_each with composed function returns object which "
+            "calls ranges::for_each on range")
+    {
+        std::string result;
+        auto append_ints_from = composer::for_each(
+            composer::mem_fn(&numname::num) | append_to_string(result));
+        append_ints_from(values);
+        REQUIRE(result == "12345");
+    }
+    SECTION("calling for_each with composed function returns object which "
+            "calls ranges::for_each on iterator pair")
+    {
+        std::string result;
+        auto append_ints_from = composer::for_each(
+            composer::mem_fn(&numname::num) | append_to_string(result));
+        append_ints_from(std::begin(values), std::end(values));
+        REQUIRE(result == "12345");
+    }
+}

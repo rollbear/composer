@@ -306,3 +306,7 @@ Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algor
 
 Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
 
+### `composer::for_each`
+
+Right curried version of [`std::ranges::for_each`](https://en.cppreference.com/w/cpp/algorithm/ranges/for_each.html)
+

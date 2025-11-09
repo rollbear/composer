@@ -139,7 +139,7 @@ struct [[nodiscard]] arity_function {
         return std::forward_like<Self>(self.f)(unwrap(std::forward<Ts>(ts))...);
     }
 
-    template <typename Self, arity_function_type RH>
+    template <typename Self, typename RH>
     [[nodiscard]] constexpr auto operator|(this Self&& self, RH&& rh)
         -> internal::rebind_function_t<
             std::remove_cvref_t<Self>,
