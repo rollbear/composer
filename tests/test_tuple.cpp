@@ -10,11 +10,13 @@ TEST_CASE("apply_to", "[tuple]")
     {
         STATIC_REQUIRE(composer::apply_to(composer::minus, std::tuple(5, 2))
                        == 3);
+        REQUIRE(composer::apply_to(composer::minus, std::tuple(5, 2)) == 3);
     }
     SECTION("called with a tuple, it binds it to the right")
     {
         constexpr auto apply = composer::apply_to(std::tuple(5, 2));
         STATIC_REQUIRE(apply(composer::minus) == 3);
+        REQUIRE(apply(composer::minus) == 3);
     }
 }
 
@@ -25,11 +27,13 @@ TEST_CASE("apply_using", "[tuple]")
     {
         STATIC_REQUIRE(composer::apply_using(composer::minus, std::tuple(5, 2))
                        == 3);
+        REQUIRE(composer::apply_using(composer::minus, std::tuple(5, 2)) == 3);
     }
     SECTION("called with a tuple, it binds it to the right")
     {
         constexpr auto apply = composer::apply_using(composer::minus);
         STATIC_REQUIRE(apply(std::tuple(5, 2)) == 3);
+        REQUIRE(apply(std::tuple(5, 2)) == 3);
     }
 }
 
@@ -40,11 +44,15 @@ TEST_CASE("get", "[tuple]")
         constexpr std::tuple tup(5, 2);
         STATIC_REQUIRE(composer::get<0>(tup) == 5);
         STATIC_REQUIRE(composer::get<1>(tup) == 2);
+        REQUIRE(composer::get<0>(tup) == 5);
+        REQUIRE(composer::get<1>(tup) == 2);
     }
     SECTION("piped from a tuple, it returns the Ith member")
     {
         constexpr std::tuple tup(5, 2);
         STATIC_REQUIRE((tup | composer::get<0>) == 5);
         STATIC_REQUIRE((tup | composer::get<1>) == 2);
+        REQUIRE((tup | composer::get<0>) == 5);
+        REQUIRE((tup | composer::get<1>) == 2);
     }
 }
