@@ -398,3 +398,49 @@ SCENARIO("for_each is right curried")
         REQUIRE(result == "12345");
     }
 }
+
+SCENARIO("for_each_n is right curried")
+{
+    static constexpr auto append_to_string
+        = [](auto& s) { return [&s](int x) { s += std::to_string(x); }; };
+    SECTION("calling for_each_n with iterator, count, function and projection "
+            "calls "
+            "ranges::for_each_n directly")
+    {
+        std::string result;
+        composer::for_each_n(
+            values + 1, 3, append_to_string(result), &numname::num);
+        REQUIRE(result == "234");
+    }
+    SECTION(
+        "calling for_each_n with iterator, count and composed function calls "
+        "ranges::for_each_n directly")
+    {
+        std::string result;
+        composer::for_each_n(values + 1,
+                             3,
+                             composer::mem_fn(&numname::num)
+                                 | append_to_string(result));
+        REQUIRE(result == "234");
+    }
+    SECTION("calling for_each_n with composed function returns object which "
+            "calls ranges::for_each_n on iterator and count")
+    {
+        std::string result;
+        auto append_ints_from = composer::for_each_n(
+            composer::mem_fn(&numname::num) | append_to_string(result));
+        append_ints_from(values + 1, 3);
+        REQUIRE(result == "234");
+    }
+    SECTION("calling for_each_n with composed function returns object which "
+            "calls ranges::for_each_n when called with count and then with "
+            "iterator")
+    {
+        std::string result;
+        auto append_ints_from = composer::for_each_n(
+            composer::mem_fn(&numname::num) | append_to_string(result));
+        auto append_3_ints_from = append_ints_from(3);
+        append_3_ints_from(values + 1);
+        REQUIRE(result == "234");
+    }
+}

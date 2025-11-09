@@ -310,3 +310,7 @@ Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algor
 
 Right curried version of [`std::ranges::for_each`](https://en.cppreference.com/w/cpp/algorithm/ranges/for_each.html)
 
+### `composer::for_each_n`
+
+Right curried version of [`std::ranges::for_each_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/for_each_n.html)
+
