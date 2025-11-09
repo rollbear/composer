@@ -291,3 +291,8 @@ Composable function object for [`std::ranges::ssize`](https://www.cppreference.c
 Composable function object for [`std::ranges::distance`](https://www.cppreference.com/w/cpp/iterator/ranges/distance.html)
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
+
+## `<composer/algorithm.hpp>'
+
+### `composer::all_of`
+
