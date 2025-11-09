@@ -1,5 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
 #include <composer/functional.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("less is right curried")
 {
@@ -213,13 +214,13 @@ TEST_CASE("a piped expression from a pointer to member to an arity function "
 
 struct Bool {
     bool b;
-    constexpr friend bool operator&&(bool lh, Bool rh) {
-        return lh && rh.b;
-    }
+
+    constexpr friend bool operator&&(bool lh, Bool rh) { return lh && rh.b; }
+
     bool operator&&(bool) const = delete;
-    constexpr friend bool operator||(bool lh, Bool rh) {
-        return lh || rh.b;
-    }
+
+    constexpr friend bool operator||(bool lh, Bool rh) { return lh || rh.b; }
+
     bool operator||(bool) const = delete;
 };
 
@@ -234,8 +235,8 @@ TEST_CASE("logical_and is right curried")
     }
     SECTION("called with one argument binds the right hand side")
     {
-        static constexpr auto and_false = composer::logical_and(Bool{false});
-        static constexpr auto and_true = composer::logical_and(Bool{true});
+        static constexpr auto and_false = composer::logical_and(Bool{ false });
+        static constexpr auto and_true = composer::logical_and(Bool{ true });
 
         STATIC_REQUIRE_FALSE(and_false(false));
         STATIC_REQUIRE_FALSE(and_false(true));
@@ -255,8 +256,8 @@ TEST_CASE("logical_or is right curried")
     }
     SECTION("called with one argument binds the right hand side")
     {
-        static constexpr auto or_false = composer::logical_or(Bool{false});
-        static constexpr auto or_true = composer::logical_or(Bool{true});
+        static constexpr auto or_false = composer::logical_or(Bool{ false });
+        static constexpr auto or_true = composer::logical_or(Bool{ true });
 
         STATIC_REQUIRE_FALSE(or_false(false));
         STATIC_REQUIRE(or_false(true));
@@ -267,30 +268,27 @@ TEST_CASE("logical_or is right curried")
 
 TEST_CASE("logical not inverts a bool expression")
 {
-    STATIC_REQUIRE(composer::equal_to(1,2) | composer::logical_not);
-    STATIC_REQUIRE_FALSE(composer::equal_to(2,2) | composer::logical_not);
+    STATIC_REQUIRE(composer::equal_to(1, 2) | composer::logical_not);
+    STATIC_REQUIRE_FALSE(composer::equal_to(2, 2) | composer::logical_not);
 }
 
 template <std::integral T>
-struct Bits
-{
+struct Bits {
     T value;
-    constexpr friend T operator&(T t, Bits b)
-    {
-        return t & b.value;
-    }
+
+    constexpr friend T operator&(T t, Bits b) { return t & b.value; }
+
     T operator&(T) const = delete;
-    constexpr friend T operator|(T t, Bits b)
-    {
-        return t | b.value;
-    }
+
+    constexpr friend T operator|(T t, Bits b) { return t | b.value; }
+
     T operator|(T) const = delete;
-    constexpr friend T operator^(T t, Bits b)
-    {
-        return t^b.value;
-    }
+
+    constexpr friend T operator^(T t, Bits b) { return t ^ b.value; }
+
     T operator^(T) const = delete;
 };
+
 TEST_CASE("bit_and is right curried")
 {
     SECTION("when called with two args returns arg1 & arg2")
@@ -341,5 +339,6 @@ TEST_CASE("bit_xor is right curried")
 
 TEST_CASE("bit_not flips all bits")
 {
-    STATIC_REQUIRE((composer::bit_xor(0xffffU, 0x00ff00ffU) | composer::bit_not) == 0xff0000ffU);
+    STATIC_REQUIRE((composer::bit_xor(0xffffU, 0x00ff00ffU) | composer::bit_not)
+                   == 0xff0000ffU);
 }

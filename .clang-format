@@ -8,7 +8,7 @@ LineEnding: LF
 SortIncludes: CaseSensitive
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: <columnist/.*\.hpp>
+  - Regex: <composer/.*\.hpp>
     Priority: 1
   - Regex: \".*\"
     Priority: 2

@@ -1,5 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
 #include <composer/left_curry.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("a left curried function is called with all provided arguments")
 {
