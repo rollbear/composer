@@ -302,3 +302,7 @@ Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algor
 
 Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
 
+### `composer::none_of`
+
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
