@@ -444,3 +444,85 @@ SCENARIO("for_each_n is right curried")
         REQUIRE(result == "234");
     }
 }
+
+SCENARIO("count is right curried")
+{
+    SECTION("calling count with range, value and projection calls "
+            "ranges::count directly")
+    {
+        STATIC_REQUIRE(
+            composer::count(values, 3, composer::mem_fn(&numname::num)) == 1);
+        STATIC_REQUIRE(
+            composer::count(values, 6, composer::mem_fn(&numname::num)) == 0);
+        REQUIRE(composer::count(values, 3, composer::mem_fn(&numname::num))
+                == 1);
+        REQUIRE(composer::count(values, 6, composer::mem_fn(&numname::num))
+                == 0);
+    }
+    SECTION("calling count with iterator_pair, value and projection calls "
+            "ranges::count directly")
+    {
+        STATIC_REQUIRE(composer::count(std::begin(values),
+                                       std::end(values),
+                                       3,
+                                       composer::mem_fn(&numname::num))
+                       == 1);
+        STATIC_REQUIRE(composer::count(std::begin(values),
+                                       std::end(values),
+                                       6,
+                                       composer::mem_fn(&numname::num))
+                       == 0);
+        REQUIRE(composer::count(std::begin(values),
+                                std::end(values),
+                                3,
+                                composer::mem_fn(&numname::num))
+                == 1);
+        REQUIRE(composer::count(std::begin(values),
+                                std::end(values),
+                                6,
+                                composer::mem_fn(&numname::num))
+                == 0);
+    }
+    SECTION(
+        "calling count wtih value and projection returns callable with range")
+    {
+        constexpr auto num_3s = composer::count(3, &numname::num);
+        constexpr auto num_6s = composer::count(6, &numname::num);
+        STATIC_REQUIRE(num_3s(values) == 1);
+        STATIC_REQUIRE(num_6s(values) == 0);
+        REQUIRE(num_3s(values) == 1);
+        REQUIRE(num_6s(values) == 0);
+    }
+    SECTION("calling count wtih value and projection returns callable with "
+            "iterator pair")
+    {
+        constexpr auto num_3s = composer::count(3, &numname::num);
+        constexpr auto num_6s = composer::count(6, &numname::num);
+        STATIC_REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        STATIC_REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+        REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+    }
+    SECTION(
+        "calling count with projection, returns callable for number and range")
+    {
+        constexpr auto num_ints = composer::count(&numname::num);
+        constexpr auto num_3s = num_ints(3);
+        constexpr auto num_6s = num_ints(6);
+        STATIC_REQUIRE(num_3s(values) == 1);
+        STATIC_REQUIRE(num_6s(values) == 0);
+        REQUIRE(num_3s(values) == 1);
+        REQUIRE(num_6s(values) == 0);
+    }
+    SECTION("calling count with projection, returns callable for number and "
+            "iterator pair")
+    {
+        constexpr auto num_ints = composer::count(&numname::num);
+        constexpr auto num_3s = num_ints(3);
+        constexpr auto num_6s = num_ints(6);
+        STATIC_REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        STATIC_REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+        REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+    }
+}
