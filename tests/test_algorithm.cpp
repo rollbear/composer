@@ -526,3 +526,123 @@ SCENARIO("count is right curried")
         REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
     }
 }
+
+SCENARIO("count_if is right curried")
+{
+    SECTION("calling count_if with range, predicate and projection calls "
+            "ranges::count_if directly")
+    {
+        STATIC_REQUIRE(composer::count_if(values,
+                                          composer::greater(3),
+                                          composer::mem_fn(&numname::num))
+                       == 2);
+        STATIC_REQUIRE(composer::count_if(values,
+                                          composer::equal_to(0),
+                                          composer::mem_fn(&numname::num))
+                       == 0);
+        REQUIRE(composer::count_if(values,
+                                   composer::greater(3),
+                                   composer::mem_fn(&numname::num))
+                == 2);
+        REQUIRE(composer::count_if(values,
+                                   composer::greater(5),
+                                   composer::mem_fn(&numname::num))
+                == 0);
+    }
+    SECTION(
+        "calling count_if with iterator_pair, predicate and projection calls "
+        "ranges::count_if directly")
+    {
+        STATIC_REQUIRE(composer::count_if(std::begin(values),
+                                          std::end(values),
+                                          composer::greater(3),
+                                          composer::mem_fn(&numname::num))
+                       == 2);
+        STATIC_REQUIRE(composer::count_if(std::begin(values),
+                                          std::end(values),
+                                          composer::greater(5),
+                                          composer::mem_fn(&numname::num))
+                       == 0);
+        REQUIRE(composer::count_if(std::begin(values),
+                                   std::end(values),
+                                   composer::greater(3),
+                                   composer::mem_fn(&numname::num))
+                == 2);
+        REQUIRE(composer::count_if(std::begin(values),
+                                   std::end(values),
+                                   composer::greater(5),
+                                   composer::mem_fn(&numname::num))
+                == 0);
+    }
+    SECTION("calling count_if wtih predicate and projection returns callable "
+            "with range")
+    {
+        constexpr auto num_3s
+            = composer::count_if(composer::equal_to(3), &numname::num);
+        constexpr auto num_6s
+            = composer::count_if(composer::equal_to(6), &numname::num);
+        STATIC_REQUIRE(num_3s(values) == 1);
+        STATIC_REQUIRE(num_6s(values) == 0);
+        REQUIRE(num_3s(values) == 1);
+        REQUIRE(num_6s(values) == 0);
+    }
+    SECTION(
+        "calling count_if wtih predicate and projection returns callable with "
+        "iterator pair")
+    {
+        constexpr auto num_3s
+            = composer::count_if(composer::equal_to(3), &numname::num);
+        constexpr auto num_6s
+            = composer::count_if(composer::equal_to(6), &numname::num);
+        STATIC_REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        STATIC_REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+        REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+    }
+    SECTION("calling count_if with projection, returns callable for predicate "
+            "and range")
+    {
+        constexpr auto num_ints = composer::count_if(&numname::num);
+        constexpr auto num_3s = num_ints(composer::equal_to(3));
+        constexpr auto num_6s = num_ints(composer::equal_to(6));
+        STATIC_REQUIRE(num_3s(values) == 1);
+        STATIC_REQUIRE(num_6s(values) == 0);
+        REQUIRE(num_3s(values) == 1);
+        REQUIRE(num_6s(values) == 0);
+    }
+    SECTION("calling count_if with projection, returns callable for number and "
+            "iterator pair")
+    {
+        constexpr auto num_ints = composer::count_if(&numname::num);
+        constexpr auto num_3s = num_ints(composer::equal_to(3));
+        constexpr auto num_6s = num_ints(composer::equal_to(6));
+        STATIC_REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        STATIC_REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+        REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+    }
+    SECTION(
+        "calling count_if with composed predicate returns callable for range")
+    {
+        constexpr auto num_3s
+            = composer::count_if(&numname::num | composer::equal_to(3));
+        constexpr auto num_6s
+            = composer::count_if(&numname::num | composer::equal_to(6));
+        STATIC_REQUIRE(num_3s(values) == 1);
+        STATIC_REQUIRE(num_6s(values) == 0);
+        REQUIRE(num_3s(values) == 1);
+        REQUIRE(num_6s(values) == 0);
+    }
+    SECTION("calling count_if with composed predicate returns callable for "
+            "iterator pair")
+    {
+        constexpr auto num_3s
+            = composer::count_if(&numname::num | composer::equal_to(3));
+        constexpr auto num_6s
+            = composer::count_if(&numname::num | composer::equal_to(6));
+        STATIC_REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        STATIC_REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+        REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
+        REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
+    }
+}

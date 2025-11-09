@@ -318,3 +318,7 @@ Right curried version of [`std::ranges::for_each_n`](https://en.cppreference.com
 
 Right curried version of [`std::ranges::count`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
 
+### `composer::count_if`
+
+Right curried version of [`std::ranges::count_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
+
