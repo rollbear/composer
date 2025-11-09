@@ -72,7 +72,7 @@ jobs:
           find . -name "test*.gcno" | xargs rm
 
       - name: "upload coverage"
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           name: "Linux ${{matrix.config.cxx}} ${{matrix.config.stdlib}}"
           fail_ci_if_error: false
