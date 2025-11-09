@@ -684,3 +684,99 @@ SCENARIO("find is right curried")
         REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
     }
 }
+
+SCENARIO("find_if is right curried")
+{
+    SECTION("calling find_if with a range, a predicate and a projection calls "
+            "ranges::find_if if directly")
+    {
+        STATIC_REQUIRE(
+            composer::find_if(values, composer::equal_to(2), &numname::num)
+                ->name
+            == "two");
+        REQUIRE(composer::find_if(values, composer::equal_to(4), &numname::num)
+                    ->name
+                == "four");
+    }
+    SECTION(
+        "calling find_if with an iterator pair, a predicate and a projection "
+        "calls ranges::find_if if directly")
+    {
+        STATIC_REQUIRE(composer::find_if(std::begin(values),
+                                         std::end(values),
+                                         composer::equal_to(2),
+                                         &numname::num)
+                           ->name
+                       == "two");
+        REQUIRE(composer::find_if(std::begin(values),
+                                  std::end(values),
+                                  composer::equal_to(4),
+                                  &numname::num)
+                    ->name
+                == "four");
+    }
+    SECTION("calling find_if with a range, and a composed predicate calls "
+            "ranges::find_if if directly")
+    {
+        STATIC_REQUIRE(
+            composer::find_if(values, &numname::num | composer::equal_to(2))
+                ->name
+            == "two");
+        REQUIRE(composer::find_if(values,
+                                  composer::mem_fn(&numname::num)
+                                      | composer::equal_to(4))
+                    ->name
+                == "four");
+    }
+    SECTION("calling find_if with an iterator pair, and a composed predicate "
+            "calls ranges::find_if if directly")
+    {
+        STATIC_REQUIRE(composer::find_if(std::begin(values),
+                                         std::end(values),
+                                         &numname::num | composer::equal_to(2))
+                           ->name
+                       == "two");
+        REQUIRE(composer::find_if(std::begin(values),
+                                  std::end(values),
+                                  composer::mem_fn(&numname::num)
+                                      | composer::equal_to(4))
+                    ->name
+                == "four");
+    }
+    SECTION("calling find_if with a predicate and a projection returns a "
+            "callable for "
+            "a range")
+    {
+        constexpr auto num_is_2
+            = composer::find_if(composer::equal_to(2), &numname::num);
+        STATIC_REQUIRE(num_is_2(values)->name == "two");
+        REQUIRE(num_is_2(values)->name == "two");
+    }
+    SECTION("calling find_if with a predicate and a projection returns a "
+            "callable for "
+            "an iterator pair")
+    {
+        constexpr auto num_is_2
+            = composer::find_if(composer::equal_to(2), &numname::num);
+        STATIC_REQUIRE(num_is_2(std::begin(values), std::end(values))->name
+                       == "two");
+        REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
+    }
+    SECTION("calling find_if with a composed predicatereturns a callable for "
+            "a range")
+    {
+        constexpr auto num_is_2
+            = composer::find_if(&numname::num | composer::equal_to(2));
+        STATIC_REQUIRE(num_is_2(values)->name == "two");
+        REQUIRE(num_is_2(values)->name == "two");
+    }
+    SECTION("calling find_if with a composed predicate returns a callable for "
+            "an iterator pair")
+    {
+        constexpr auto num_is_2 = composer::find_if(
+            composer::mem_fn(&numname::num) | composer::equal_to(2));
+        STATIC_REQUIRE(num_is_2(std::begin(values), std::end(values))->name
+                       == "two");
+        REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
+    }
+}
