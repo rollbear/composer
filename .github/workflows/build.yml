@@ -113,4 +113,4 @@ jobs:
       - name: "test"
         shell: bash
         run: |
-          ./build/test/test_composer.exe -s
+          ./build/tests/test_composer.exe -s

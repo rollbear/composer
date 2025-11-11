@@ -2,6 +2,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <memory>
+
 TEST_CASE("a right curried function is called with all provided arguments")
 {
     constexpr auto minus = composer::right_curry<std::minus<>, 2>{};
