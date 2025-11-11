@@ -1,7 +1,17 @@
 set(CMAKE_CXX_STANDARD_REQUIRED yes)
 set(CMAKE_CXX_EXTENSIONS no)
 
-find_package(Catch2 3 REQUIRED)
+find_package(Catch2 3 QUIET)
+if (NOT Catch2_FOUND)
+    Include(FetchContent)
+    FetchContent_Declare(
+            Catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_PROGRESS TRUE
+            GIT_SHALLOW TRUE
+            GIT_TAG v3.11.0)
+    FetchContent_MakeAvailable(Catch2) # find_package equivalent
+endif()
 
 add_executable(
         test_composer

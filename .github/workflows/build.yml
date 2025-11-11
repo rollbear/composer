@@ -78,3 +78,39 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
+
+  build_windows:
+    runs-on: windows-latest
+    name: "Windows MSVC"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure MSVC console (Windows)
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: "setup"
+        shell: bash
+        run: |
+          cmake \
+            -S . \
+            -B build \
+            -D unittest=yes \
+            -D CMAKE_CXX_COMPILER=cl \
+            -D CMAKE_C_COMPILER=cl \
+            -D CMAKE_CXX_STANDARD=23 \
+            -D CMAKE_CXX_STANDARD_REQUIRED=yes \
+            -D CMAKE_CXX_EXTENSIONS=no \
+            -D CMAKE_CXX_FLAGS="'/permissive- /EHsc /W4 /WX'" \
+            -D CMAKE_BUILD_TYPE=Debug \
+            -D CMAKE_VERBOSE_MAKEFILE=yes \
+            -G Ninja
+
+      - name: "build"
+        shell: bash
+        run: |
+          cmake --build build --target test_composer
+
+      - name: "test"
+        shell: bash
+        run: |
+          ./build/tests/test_composer.exe -s

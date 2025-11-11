@@ -3,6 +3,8 @@
 
 #include "right_curry.hpp"
 
+#include <functional>
+
 namespace composer {
 
 inline constexpr auto mem_fn = make_arity_function<1>(
