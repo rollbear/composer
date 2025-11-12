@@ -882,3 +882,46 @@ SCENARIO("find_if_not is right curried")
         REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
     }
 }
+
+SCENARIO("find_last")
+{
+    SECTION("calling find_last with a range, a value and a projection calls "
+            "ranges::find_last directly")
+    {
+        constexpr auto tail = composer::find_last(values, 3, &numname::num);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last with an iterator pair, a value and a projection "
+            "calls ranges::find_last directly")
+    {
+        constexpr auto tail = composer::find_last(
+            std::begin(values), std::end(values), 3, &numname::num);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last with a value and a projection returns a "
+            "callable that takes a range")
+    {
+        constexpr auto last_num_3 = composer::find_last(3, &numname::num);
+        constexpr auto tail = last_num_3(values);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last with a value and a projection returns a "
+            "callable that takes an iterator pair")
+    {
+        constexpr auto last_num_3 = composer::find_last(3, &numname::num);
+        constexpr auto tail = last_num_3(std::begin(values), std::end(values));
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+}

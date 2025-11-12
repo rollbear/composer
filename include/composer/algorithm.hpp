@@ -67,6 +67,11 @@ inline constexpr auto find_if_not = make_arity_function<4, right_curry>(
         return std::ranges::find_if_not(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto find_last = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::find_last(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::find_last(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
