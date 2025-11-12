@@ -1024,3 +1024,102 @@ SCENARIO("find_last_if")
         REQUIRE(std::end(tail) == std::end(values));
     }
 }
+
+SCENARIO("find_last_if_not")
+{
+    SECTION("calling find_last_if_not with a range, a predicate and a "
+            "projection calls "
+            "ranges::find_last_if_not directly")
+    {
+        constexpr auto tail = composer::find_last_if_not(
+            values, composer::not_equal_to(3), &numname::num);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last_if_not with an iterator pair, a predicate and a "
+            "projection "
+            "calls ranges::find_last_if_not directly")
+    {
+        constexpr auto tail
+            = composer::find_last_if_not(std::begin(values),
+                                         std::end(values),
+                                         composer::not_equal_to(3),
+                                         &numname::num);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION(
+        "calling find_last_if_not with a range and a composed predicate calls "
+        "ranges::find_last_if_not directly")
+    {
+        constexpr auto tail = composer::find_last_if_not(
+            values, &numname::num | composer::not_equal_to(3));
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last_if_not with an iterator pair and a composed "
+            "predicate "
+            "calls ranges::find_last_if_not directly")
+    {
+        constexpr auto tail = composer::find_last_if_not(
+            std::begin(values),
+            std::end(values),
+            &numname::num | composer::not_equal_to(3));
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION(
+        "calling find_last_if_not with a predicate and a projection returns a "
+        "callable that takes a range")
+    {
+        constexpr auto last_num_3 = composer::find_last_if_not(
+            composer::not_equal_to(3), &numname::num);
+        constexpr auto tail = last_num_3(values);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION(
+        "calling find_last_if_not with a predicate and a projection returns a "
+        "callable that takes an iterator pair")
+    {
+        constexpr auto last_num_3 = composer::find_last_if_not(
+            composer::not_equal_to(3), &numname::num);
+        constexpr auto tail = last_num_3(std::begin(values), std::end(values));
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last_if_not with a composed predicate returns a "
+            "callable that takes a range")
+    {
+        constexpr auto last_num_3 = composer::find_last_if_not(
+            &numname::num | composer::not_equal_to(3));
+        constexpr auto tail = last_num_3(values);
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("calling find_last_if_not with a composed predicate returns a "
+            "callable that takes an iterator pair")
+    {
+        constexpr auto last_num_3 = composer::find_last_if_not(
+            &numname::num | composer::not_equal_to(3));
+        constexpr auto tail = last_num_3(std::begin(values), std::end(values));
+        STATIC_REQUIRE(std::begin(tail)->num == 3);
+        STATIC_REQUIRE(std::end(tail) == std::end(values));
+        REQUIRE(std::begin(tail)->num == 3);
+        REQUIRE(std::end(tail) == std::end(values));
+    }
+}
