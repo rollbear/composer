@@ -3,14 +3,16 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>
+
 namespace {
 struct numname {
     int num;
     std::string_view name;
 };
 
-constexpr numname values[]{
-    { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" }, { 5, "five" }
+constexpr std::array<numname, 5> values = {
+    { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" }, { 5, "five" } }
 };
 
 } // namespace
@@ -408,8 +410,10 @@ SCENARIO("for_each_n is right curried")
             "ranges::for_each_n directly")
     {
         std::string result;
-        composer::for_each_n(
-            values + 1, 3, append_to_string(result), &numname::num);
+        composer::for_each_n(std::next(values.begin()),
+                             3,
+                             append_to_string(result),
+                             &numname::num);
         REQUIRE(result == "234");
     }
     SECTION(
@@ -417,7 +421,7 @@ SCENARIO("for_each_n is right curried")
         "ranges::for_each_n directly")
     {
         std::string result;
-        composer::for_each_n(values + 1,
+        composer::for_each_n(std::next(values.begin()),
                              3,
                              composer::mem_fn(&numname::num)
                                  | append_to_string(result));
@@ -429,7 +433,7 @@ SCENARIO("for_each_n is right curried")
         std::string result;
         auto append_ints_from = composer::for_each_n(
             composer::mem_fn(&numname::num) | append_to_string(result));
-        append_ints_from(values + 1, 3);
+        append_ints_from(std::next(values.begin()), 3);
         REQUIRE(result == "234");
     }
     SECTION("calling for_each_n with composed function returns object which "
@@ -440,7 +444,7 @@ SCENARIO("for_each_n is right curried")
         auto append_ints_from = composer::for_each_n(
             composer::mem_fn(&numname::num) | append_to_string(result));
         auto append_3_ints_from = append_ints_from(3);
-        append_3_ints_from(values + 1);
+        append_3_ints_from(std::next(values.begin()));
         REQUIRE(result == "234");
     }
 }
