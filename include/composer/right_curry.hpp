@@ -38,7 +38,7 @@ struct back_binder {
 } // namespace internal
 
 template <typename F, std::size_t N>
-struct right_curry : arity_function<F, N> {
+struct [[nodiscard]] right_curry : arity_function<F, N> {
     using arity_function<F, N>::operator();
 
     template <typename Self, typename... Ts>
