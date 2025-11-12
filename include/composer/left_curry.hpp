@@ -39,7 +39,7 @@ struct front_binder {
 } // namespace internal
 
 template <typename F, std::size_t N>
-struct left_curry : arity_function<F, N> {
+struct [[nodiscard]] left_curry : arity_function<F, N> {
     using arity_function<F, N>::operator();
 
     template <typename Self, typename... Ts>

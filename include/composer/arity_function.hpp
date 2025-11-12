@@ -19,13 +19,13 @@ struct reference_wrapper {
 };
 
 template <typename T>
-constexpr reference_wrapper<T> ref(T& t)
+[[nodiscard]] constexpr reference_wrapper<T> ref(T& t)
 {
     return { t };
 }
 
 template <typename T>
-constexpr reference_wrapper<const T> cref(T& t)
+[[nodiscard]] constexpr reference_wrapper<const T> cref(T& t)
 {
     return { t };
 }
@@ -37,14 +37,14 @@ template <typename T>
 inline constexpr bool is_reference_wrapper<reference_wrapper<T>> = true;
 
 template <typename T>
-constexpr auto& unwrap(T&& t)
+[[nodiscard]] constexpr auto& unwrap(T&& t)
     requires is_reference_wrapper<std::remove_cvref_t<T>>
 {
     return t.ref;
 }
 
 template <typename T>
-constexpr T unwrap(T&& t)
+[[nodiscard]] constexpr T unwrap(T&& t)
 {
     return std::forward<T>(t);
 }
@@ -57,7 +57,7 @@ struct composition {
     RH rh;
 
     template <typename Self, typename... Ts>
-    constexpr auto operator()(this Self&& self, Ts&&... ts)
+    [[nodiscard]] constexpr auto operator()(this Self&& self, Ts&&... ts)
         -> decltype(std::forward_like<Self>(self.rh)(
             std::forward_like<Self>(self.lh)(std::forward<Ts>(ts)...)))
     {
@@ -83,7 +83,7 @@ using rebind_function_t = typename rebind_function<C, F, N>::type;
 } // namespace internal
 
 template <typename F, std::size_t N>
-struct arity_function {
+struct [[nodiscard]] arity_function {
     static constexpr auto arity = N;
     [[no_unique_address]] F f;
 
@@ -96,7 +96,7 @@ struct arity_function {
     }
 
     template <typename Self, arity_function_type RH>
-    constexpr auto operator|(this Self&& self, RH&& rh)
+    [[nodiscard]] constexpr auto operator|(this Self&& self, RH&& rh)
         -> internal::rebind_function_t<
             std::remove_cvref_t<Self>,
             internal::composition<F, std::remove_cvref_t<RH>>,
@@ -109,12 +109,12 @@ struct arity_function {
 template <std::size_t N,
           template <typename, std::size_t> class AF = arity_function>
 inline constexpr auto make_arity_function
-    = []<typename F>(F&& f) -> AF<std::remove_cvref_t<F>, N> {
+    = []<typename F> [[nodiscard]] (F&& f) -> AF<std::remove_cvref_t<F>, N> {
     return { std::forward<F>(f) };
 };
 
 template <typename IN, arity_function_type F>
-inline constexpr auto operator|(IN&& in, F&& f)
+[[nodiscard]] inline constexpr auto operator|(IN&& in, F&& f)
     -> decltype(std::forward<F>(f)(std::forward<IN>(in)))
     requires(!arity_function_v<std::remove_cvref_t<IN>>)
 {
