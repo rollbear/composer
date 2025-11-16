@@ -91,6 +91,11 @@ inline constexpr auto find_end = make_arity_function<7, right_curry>(
         return std::ranges::find_end(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto find_first_of = make_arity_function<7, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::find_first_of(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::find_first_of(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

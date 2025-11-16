@@ -349,3 +349,7 @@ Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/
 ### `composer::find_end`
 
 Right curried version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
+
+### `composer::find_first_of`
+
+Right curried version o$ [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)

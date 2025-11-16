@@ -1,6 +1,8 @@
 #include <composer/algorithm.hpp>
 #include <composer/functional.hpp>
 
+#include "composer/tuple.hpp"
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
@@ -1184,5 +1186,61 @@ SCENARIO("find_end is right curried")
         REQUIRE((haystack | find_end_neg_needle).begin()
                 == haystack.begin() + 4);
         REQUIRE((haystack | find_end_neg_needle).end() == haystack.begin() + 6);
+    }
+}
+
+SCENARIO("find_first_of is right curried")
+{
+    SECTION("calling find_first_of with two ranges calls ranges::find_first_of "
+            "directly")
+    {
+        static constexpr std::array intvalues = { 1, 2, 3, 4, 5, 6 };
+        STATIC_REQUIRE(composer::find_first_of(intvalues, std::array{ 4, 5, 6 })
+                       == intvalues.begin() + 3);
+        REQUIRE(composer::find_first_of(intvalues, std::array{ 4, 5, 6 })
+                == intvalues.begin() + 3);
+    }
+    SECTION("calling find_first_of with two ranges and a predicate calls "
+            "ranges::find_first_of directly")
+    {
+        static constexpr std::array needles = { 5, 6, 4 };
+        STATIC_REQUIRE(composer::find_first_of(
+                           values,
+                           needles,
+                           [](const auto& a, auto b) { return a.num == b; })
+                       == values.begin() + 3);
+        REQUIRE(composer::find_first_of(
+                    values,
+                    needles,
+                    [](const auto& a, auto b) { return a.num == b; })
+                == values.begin() + 3);
+    }
+    SECTION("calling find_first_of with a predicate returns a callable for two "
+            "ranges")
+    {
+        constexpr auto find_first_by_num = composer::find_first_of(
+            [](auto& a, auto b) { return a.num == b; });
+        static constexpr std::array needles = { 5, 6, 4 };
+        STATIC_REQUIRE((find_first_by_num(values, needles)
+                        | composer::dereference
+                        | composer::mem_fn(&numname::name))
+                       == "four");
+        REQUIRE((find_first_by_num(values, needles) | composer::dereference
+                 | composer::mem_fn(&numname::name))
+                == "four");
+    }
+    SECTION("calling find_first_of with a predicate and then with a range, "
+            "returns a callable with a range")
+    {
+        using composer::operator|;
+        constexpr auto find_first_by_num = composer::find_first_of(
+            [](auto& a, auto b) { return a.num == b; });
+        static constexpr std::array needles = { 5, 6, 4 };
+        STATIC_REQUIRE((values | find_first_by_num(needles)
+                        | composer::dereference | &numname::name)
+                       == "four");
+        REQUIRE((values | find_first_by_num(needles) | composer::dereference
+                 | &numname::name)
+                == "four");
     }
 }
