@@ -1123,3 +1123,66 @@ SCENARIO("find_last_if_not")
         REQUIRE(std::end(tail) == std::end(values));
     }
 }
+
+SCENARIO("find_end is right curried")
+{
+    SECTION("calling find_end with two ranges calls ranges::find_end directly")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needle = { 1, 2 };
+        STATIC_REQUIRE(composer::find_end(haystack, needle).begin()
+                       == haystack.begin() + 4);
+        STATIC_REQUIRE(composer::find_end(haystack, needle).end()
+                       == haystack.begin() + 6);
+        REQUIRE(composer::find_end(haystack, needle).begin()
+                == haystack.begin() + 4);
+        REQUIRE(composer::find_end(haystack, needle).end()
+                == haystack.begin() + 6);
+    }
+    SECTION("calling find_end with a needle range returns a callable for a "
+            "haystack")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needle = { 1, 2 };
+        constexpr auto find_end_12 = composer::find_end(needle);
+
+        STATIC_REQUIRE(find_end_12(haystack).begin() == haystack.begin() + 4);
+        STATIC_REQUIRE(find_end_12(haystack).end() == haystack.begin() + 6);
+        REQUIRE(find_end_12(haystack).begin() == haystack.begin() + 4);
+        REQUIRE(find_end_12(haystack).end() == haystack.begin() + 6);
+    }
+    SECTION(
+        "callning find_end with a predicate returns a callable for two ranges")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needle = { -1, -2 };
+        constexpr auto find_end_neg
+            = composer::find_end([](auto a, auto b) { return a == -b; });
+        STATIC_REQUIRE(find_end_neg(haystack, needle).begin()
+                       == haystack.begin() + 4);
+        STATIC_REQUIRE(find_end_neg(haystack, needle).end()
+                       == haystack.begin() + 6);
+        REQUIRE(find_end_neg(haystack, needle).begin() == haystack.begin() + 4);
+        REQUIRE(find_end_neg(haystack, needle).end() == haystack.begin() + 6);
+    }
+    SECTION("callning find_end with a needle range and a predicate returns a "
+            "callable for a haystack range")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needle = { -1, -2 };
+        constexpr auto find_end_neg_needle = composer::find_end(
+            needle, [](auto a, auto b) { return a == -b; });
+        STATIC_REQUIRE(find_end_neg_needle(haystack).begin()
+                       == haystack.begin() + 4);
+        STATIC_REQUIRE((haystack | find_end_neg_needle).begin()
+                       == haystack.begin() + 4);
+        STATIC_REQUIRE(find_end_neg_needle(haystack).end()
+                       == haystack.begin() + 6);
+        STATIC_REQUIRE((haystack | find_end_neg_needle).end()
+                       == haystack.begin() + 6);
+        REQUIRE(find_end_neg_needle(haystack).begin() == haystack.begin() + 4);
+        REQUIRE((haystack | find_end_neg_needle).begin()
+                == haystack.begin() + 4);
+        REQUIRE((haystack | find_end_neg_needle).end() == haystack.begin() + 6);
+    }
+}

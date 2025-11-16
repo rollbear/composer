@@ -345,3 +345,7 @@ Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/
 ### `composer::find_last_if_not`
 
 Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+
+### `composer::find_end`
+
+Right curried version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
