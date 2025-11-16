@@ -54,5 +54,12 @@ inline constexpr auto operator|(R(C::* p), F&& f)
     return mem_fn(p) | std::forward<F>(f);
 }
 
+template <typename IN, typename C, typename R>
+[[nodiscard]] inline constexpr auto operator|(IN&& in, R(C::* p))
+    -> decltype(mem_fn(p)(std::forward<IN>(in)))
+{
+    return mem_fn(p)(std::forward<IN>(in));
+}
+
 } // namespace composer
 #endif // COMPOSER_FUNCTIONAL_HPP

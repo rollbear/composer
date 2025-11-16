@@ -404,3 +404,40 @@ TEST_CASE("bit_not flips all bits")
     REQUIRE((composer::bit_xor(0xffffU, 0x00ff00ffU) | composer::bit_not)
             == 0xff0000ffU);
 }
+
+TEST_CASE("pipe to pointer-to-member")
+{
+    using composer::operator|;
+
+    struct S {
+        int x;
+        int y;
+
+        constexpr int get_y() const { return y; }
+    };
+
+    SECTION("pipe forwards the correct member")
+    {
+        S s{ 5, 3 };
+        REQUIRE((s | &S::x) == 5);
+        REQUIRE((s | &S::y) == 3);
+        REQUIRE((s | &S::get_y) == 3);
+    }
+    SECTION("pipe projects result using the correct cv-ref")
+    {
+        S s{ 5, 3 };
+        STATIC_REQUIRE(std::is_same_v<decltype(s | &S::x), int&>);
+        STATIC_REQUIRE(
+            std::is_same_v<decltype(std::as_const(s) | &S::x), const int&>);
+        STATIC_REQUIRE(std::is_same_v<decltype(std::move(s) | &S::x), int&&>);
+        STATIC_REQUIRE(
+            std::is_same_v<decltype(std::move(std::as_const(s)) | &S::x),
+                           const int&&>);
+    }
+    SECTION("pipe is constexpr")
+    {
+        static constexpr S s{ 5, 3 };
+        STATIC_REQUIRE((s | &S::x) == 5);
+        STATIC_REQUIRE((s | &S::get_y) == 3);
+    }
+}
