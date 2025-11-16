@@ -20,6 +20,7 @@ add_executable(
         test_left_curry.cpp
         test_functional.cpp
         test_tuple.cpp
+        test_transform_args.cpp
 )
 
 target_link_libraries(test_composer composer::composer Catch2::Catch2WithMain)
