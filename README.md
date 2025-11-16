@@ -132,6 +132,10 @@ Synonymous with `composer::mem_fn(<pointer_to_member>) | function`, i.e.
 returns a composable function that calls the right hand side with the result of
 picking the member via the pointer-to-member.
 
+### `operator|(V&& v, T C::*p)`
+
+Synonymous with `mem_fn(&C::p)(std::forward<V>(v)`. Only appliccable if the
+pointer to member is appliccable.
 
 ### `composer::equal_to(a, b)`
 
