@@ -221,6 +221,24 @@ Right curried version of [`std::bit_xor<>`](https://en.cppreference.com/w/cpp/ut
 
 Composable version of [`std::bit_not<>](https://en.cppreference.com/w/cpp/utility/functional/bit_not_void.html)
 
+## `composer/transform_args.hpp>`
+
+### `composer::transform_args(transformation, arity_function)`
+
+Creates a new version of the arity function that passes all args via the
+transformation function. The returned function is of the same kind as the
+arity function passed in, so e.g. calling transform_args on a right curried
+function returns a right curried function.
+
+Example:
+```c++
+inline constexpr auto less_ptr = composer::transform_args(composer::dereference,
+                                                          composer::less);
+std::array<int*, N> values = ...
+std::ranges::sort(values, less_ptr);
+```
+
+
 
 ## `<composer/tuple.hpp>`
 
