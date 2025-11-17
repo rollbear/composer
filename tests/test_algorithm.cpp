@@ -1286,6 +1286,69 @@ SCENARIO("adjacent_find is right curried")
     }
 }
 
+SCENARIO("search is right curried")
+{
+    SECTION("search called with 2 ranges calls ranges::search immediately")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 5 };
+        static constexpr std::array needle = { 3, 4 };
+        STATIC_REQUIRE(composer::search(haystack, needle).begin()
+                       == haystack.begin() + 2);
+        STATIC_REQUIRE(composer::search(haystack, needle).end()
+                       == haystack.begin() + 4);
+        REQUIRE(composer::search(haystack, needle).begin()
+                == haystack.begin() + 2);
+        REQUIRE(composer::search(haystack, needle).end()
+                == haystack.begin() + 4);
+    }
+    SECTION("search called with a needle range returns a callable for a "
+            "haystack range")
+    {
+        static constexpr std::array haystack = { 1, 2, 3, 4, 5 };
+        static constexpr std::array needle = { 3, 4 };
+        STATIC_REQUIRE((haystack | composer::search(needle)).begin()
+                       == haystack.begin() + 2);
+        STATIC_REQUIRE((haystack | composer::search(needle)).end()
+                       == haystack.begin() + 4);
+        REQUIRE((haystack | composer::search(needle)).begin()
+                == haystack.begin() + 2);
+        REQUIRE((haystack | composer::search(needle)).end()
+                == haystack.begin() + 4);
+    }
+    SECTION("search called with a predicate and a projection returns a "
+            "callable for two ranges")
+    {
+        constexpr auto search_in_numname
+            = composer::search(composer::equal_to, &numname::num);
+
+        static constexpr std::array needle = { 3, 4 };
+        STATIC_REQUIRE(search_in_numname(values, needle).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE(search_in_numname(values, needle).end()
+                       == values.begin() + 4);
+        REQUIRE(search_in_numname(values, needle).begin()
+                == values.begin() + 2);
+        REQUIRE(search_in_numname(values, needle).end() == values.begin() + 4);
+    }
+    SECTION("search called with a predicate and a projection returns a "
+            "callable, when called with a range is callable witha ranges")
+    {
+        constexpr auto search_in_numname
+            = composer::search(composer::equal_to, &numname::num);
+
+        static constexpr std::array needle = { 3, 4 };
+
+        STATIC_REQUIRE((values | search_in_numname(needle)).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE((values | search_in_numname(needle)).end()
+                       == values.begin() + 4);
+        REQUIRE((values | search_in_numname(needle)).begin()
+                == values.begin() + 2);
+        REQUIRE((values | search_in_numname(needle)).end()
+                == values.begin() + 4);
+    }
+}
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 SCENARIO("starts_with is right curried")

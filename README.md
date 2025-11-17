@@ -358,6 +358,10 @@ Right curried version of [`std::ranges::find_first_of](https://en.cppreference.c
 
 Right curried version of [`std::ranges::adjacent_find`](https://www.cppreference.com/w/cpp/algorithm/ranges/adjacent_find.html)
 
+### `composer::search`
+
+Right curried version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
+
 ### `composer::starts_with`
 
 Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
