@@ -1349,6 +1349,55 @@ SCENARIO("search is right curried")
     }
 }
 
+SCENARIO("search_n is right curried")
+{
+    static constexpr std::array ints = { 1, 2, 2, -3, -4, 2, 2, 2, 5, 6 };
+
+    SECTION("search_n called with a range, a count and a value calls "
+            "ranges::search_n immediately")
+    {
+        STATIC_REQUIRE(composer::search_n(ints, 3, 2).begin()
+                       == ints.begin() + 5);
+        STATIC_REQUIRE(composer::search_n(ints, 3, 2).end()
+                       == ints.begin() + 8);
+        REQUIRE(composer::search_n(ints, 3, 2).begin() == ints.begin() + 5);
+        REQUIRE(composer::search_n(ints, 3, 2).end() == ints.begin() + 8);
+    }
+    SECTION("search_n called with a value, a predicate and a projection "
+            "returns a callable with a range and a count")
+    {
+        constexpr auto gt2_numname_range
+            = composer::search_n(2, composer::greater, &numname::num);
+        STATIC_REQUIRE(gt2_numname_range(values, 2).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE(gt2_numname_range(values, 2).end()
+                       == values.begin() + 4);
+        REQUIRE(gt2_numname_range(values, 2).begin() == values.begin() + 2);
+        REQUIRE(gt2_numname_range(values, 2).end() == values.begin() + 4);
+    }
+    SECTION("search_n called with a value, a predicate and a projection, "
+            "called with a count is callable with a range")
+    {
+        constexpr auto gt2_numname_range
+            = composer::search_n(2, composer::greater, &numname::num);
+        STATIC_REQUIRE((values | gt2_numname_range(2)).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE((values | gt2_numname_range(2)).end()
+                       == values.begin() + 4);
+        REQUIRE((values | gt2_numname_range(2)).begin() == values.begin() + 2);
+        REQUIRE((values | gt2_numname_range(2)).end() == values.begin() + 4);
+    }
+    SECTION("search_n called with a value, called with a count is callable "
+            "with a range")
+    {
+        constexpr auto search_2s = composer::search_n(2);
+        STATIC_REQUIRE((ints | search_2s(3)).begin() == ints.begin() + 5);
+        STATIC_REQUIRE((ints | search_2s(3)).end() == ints.begin() + 8);
+        REQUIRE((ints | search_2s(3)).begin() == ints.begin() + 5);
+        REQUIRE((ints | search_2s(3)).end() == ints.begin() + 8);
+    }
+}
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 SCENARIO("starts_with is right curried")
@@ -1356,7 +1405,7 @@ SCENARIO("starts_with is right curried")
     SECTION("starts_with called with two ranges calls ranges::starts_with "
             "immediately")
     {
-        static constexpr int ints[] = { 1, 2, 3, 4, 5 };
+        static constexpr std::array ints = { 1, 2, 3, 4, 5 };
         STATIC_REQUIRE(composer::starts_with(ints, std::array{ 1, 2, 3 }));
         STATIC_REQUIRE_FALSE(
             composer::starts_with(ints, std::array{ 1, 2, 4 }));
@@ -1422,7 +1471,7 @@ SCENARIO("ends_with is right curried")
     SECTION("ends_with called with two ranges calls ranges::ends_with "
             "immediately")
     {
-        static constexpr int ints[] = { 1, 2, 3, 4, 5 };
+        static constexpr std::array ints = { 1, 2, 3, 4, 5 };
         STATIC_REQUIRE(composer::ends_with(ints, std::array{ 3, 4, 5 }));
         STATIC_REQUIRE_FALSE(composer::ends_with(ints, std::array{ 3, 4, 6 }));
         REQUIRE(composer::ends_with(ints, std::array{ 3, 4, 5 }));

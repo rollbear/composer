@@ -362,6 +362,10 @@ Right curried version of [`std::ranges::adjacent_find`](https://www.cppreference
 
 Right curried version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
 
+### `composer::search_n`
+
+Right curried version of [`std::ranges::search_n`](https://www.cppreference.com/w/cpp/algorithm/ranges/search_n.html)
+
 ### `composer::starts_with`
 
 Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)

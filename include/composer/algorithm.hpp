@@ -109,6 +109,12 @@ inline constexpr auto search = make_arity_function<7, right_curry>(
         return std::ranges::search(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto search_n = make_arity_function<6, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::search_n(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::search_n(std::forward<Ts>(ts)...);
+    });
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 inline constexpr auto starts_with = make_arity_function<7, right_curry>(
