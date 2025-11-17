@@ -4,6 +4,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
+#include <cmath>
 
 namespace {
 struct numname {
@@ -1240,6 +1241,48 @@ SCENARIO("find_first_of is right curried")
         REQUIRE((values | find_first_by_num(needles) | composer::dereference
                  | &numname::name)
                 == "four");
+    }
+}
+
+SCENARIO("adjacent_find is right curried")
+{
+    static constexpr std::array numbers = { 1, 2, -2, 3, 3, 4, 5 };
+    SECTION("adjacent_find called with a range calls ranges::adjacent_find "
+            "immediately")
+    {
+        STATIC_REQUIRE(composer::adjacent_find(numbers) == numbers.begin() + 3);
+        REQUIRE(composer::adjacent_find(numbers) == numbers.begin() + 3);
+    }
+    SECTION("adjacent_find called with a range and a predicate calls "
+            "ranges::adjacent_find immediately")
+    {
+        STATIC_REQUIRE(composer::adjacent_find(
+                           numbers, [](auto a, auto b) { return -a == b; })
+                       == numbers.begin() + 1);
+        REQUIRE(composer::adjacent_find(numbers,
+                                        [](auto a, auto b) { return -a == b; })
+                == numbers.begin() + 1);
+    }
+    SECTION("adjacent_find called with a range, a predicate and a projection "
+            "calls ranges::adjacent_find immediately")
+    {
+        STATIC_REQUIRE(
+            composer::adjacent_find(numbers,
+                                    composer::equal_to,
+                                    [](auto a) { return a > 0 ? a : -a; })
+            == numbers.begin() + 1);
+        REQUIRE(composer::adjacent_find(numbers,
+                                        composer::equal_to,
+                                        [](auto a) { return a > 0 ? a : -a; })
+                == numbers.begin() + 1);
+    }
+    SECTION(
+        "adjacent_find called with a predicate returns a callable for a range")
+    {
+        constexpr auto abs_adjacent
+            = composer::adjacent_find(composer::equal_to);
+        STATIC_REQUIRE((numbers | abs_adjacent) == numbers.begin() + 3);
+        REQUIRE((numbers | abs_adjacent) == numbers.begin() + 3);
     }
 }
 

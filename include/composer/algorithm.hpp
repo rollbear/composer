@@ -97,6 +97,12 @@ inline constexpr auto find_first_of = make_arity_function<7, right_curry>(
         return std::ranges::find_first_of(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto adjacent_find = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::adjacent_find(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::adjacent_find(std::forward<Ts>(ts)...);
+    });
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 inline constexpr auto starts_with = make_arity_function<7, right_curry>(
