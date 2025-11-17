@@ -120,6 +120,13 @@ inline constexpr auto contains = make_arity_function<4, right_curry>(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::contains(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto contains_subrange = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::contains_subrange(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::contains_subrange(std::forward<Ts>(ts)...);
+    });
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 inline constexpr auto starts_with = make_arity_function<7, right_curry>(

@@ -1427,6 +1427,33 @@ SCENARIO("contains is right curried")
     }
 }
 
+SCENARIO("contains_subrange is right curried")
+{
+    SECTION("calling contains_subrange with two ranges, a predicate and a "
+            "projection calls ranges::contains_subrange immediately")
+    {
+        STATIC_REQUIRE(composer::contains_subrange(
+            values, std::array{ 2, 3, 4 }, composer::equal_to, &numname::num));
+        STATIC_REQUIRE_FALSE(composer::contains_subrange(
+            values, std::array{ 2, 3, 5 }, composer::equal_to, &numname::num));
+        REQUIRE(composer::contains_subrange(
+            values, std::array{ 2, 3, 4 }, composer::equal_to, &numname::num));
+        REQUIRE_FALSE(composer::contains_subrange(
+            values, std::array{ 2, 3, 5 }, composer::equal_to, &numname::num));
+    }
+    SECTION("calling contains_subrange with a predicate and a projection "
+            "returns a callable for two ranges")
+    {
+        constexpr auto contains_subrange_num
+            = composer::contains_subrange(composer::equal_to, &numname::num);
+        STATIC_REQUIRE(values | contains_subrange_num(std::array{ 2, 3, 4 }));
+        STATIC_REQUIRE_FALSE(values
+                             | contains_subrange_num(std::array{ 2, 3, 5 }));
+        REQUIRE(values | contains_subrange_num(std::array{ 2, 3, 4 }));
+        REQUIRE_FALSE(values | contains_subrange_num(std::array{ 2, 3, 5 }));
+    }
+}
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 SCENARIO("starts_with is right curried")

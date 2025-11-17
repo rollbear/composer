@@ -370,6 +370,10 @@ Right curried version of [`std::ranges::search_n`](https://www.cppreference.com/
 
 Right curried version of [`std::ranges::contains`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
 
+### `composer::contains_subrange`
+
+Right curried version of [`std::ranges::contains_subrange`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
+
 ### `composer::starts_with`
 
 Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
