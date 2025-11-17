@@ -358,3 +358,10 @@ Right curried version of [`std::ranges::find_first_of](https://en.cppreference.c
 
 Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
 
+**NOTE!** Not available in gcc-15 and lower
+
+### `composer::ends_with`
+
+Right curried version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
+
+**NOTE!** Not available in gcc-15 and lower

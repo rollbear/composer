@@ -1243,6 +1243,8 @@ SCENARIO("find_first_of is right curried")
     }
 }
 
+#if defined(__cpp_lib_ranges_starts_ends_with)
+
 SCENARIO("starts_with is right curried")
 {
     SECTION("starts_with called with two ranges calls ranges::starts_with "
@@ -1308,3 +1310,70 @@ SCENARIO("starts_with is right curried")
         REQUIRE_FALSE(values | starts_with_num(std::array{ 1, 2, 4 }));
     }
 }
+
+SCENARIO("ends_with is right curried")
+{
+    SECTION("ends_with called with two ranges calls ranges::ends_with "
+            "immediately")
+    {
+        static constexpr int ints[] = { 1, 2, 3, 4, 5 };
+        STATIC_REQUIRE(composer::ends_with(ints, std::array{ 3, 4, 5 }));
+        STATIC_REQUIRE_FALSE(composer::ends_with(ints, std::array{ 3, 4, 6 }));
+        REQUIRE(composer::ends_with(ints, std::array{ 3, 4, 5 }));
+        REQUIRE_FALSE(composer::ends_with(ints, std::array{ 3, 4, 6 }));
+    }
+    SECTION("ends_with called with two ranges and a composed predicate calls "
+            "ranges::ends_with immediately")
+    {
+        STATIC_REQUIRE(composer::ends_with(
+            values, std::array{ 3, 4, 5 }, [](auto& a, auto b) {
+                return a.num == b;
+            }));
+        STATIC_REQUIRE_FALSE(composer::ends_with(
+            values, std::array{ 3, 4, 6 }, [](auto& a, auto b) {
+                return a.num == b;
+            }));
+        REQUIRE(composer::ends_with(
+            values, std::array{ 3, 4, 5 }, [](auto& a, auto b) {
+                return a.num == b;
+            }));
+        REQUIRE_FALSE(composer::ends_with(
+            values, std::array{ 3, 4, 6 }, [](auto& a, auto b) {
+                return a.num == b;
+            }));
+    }
+    SECTION("ends_with called with two ranges, a predicate and a projection "
+            "calls ranges::ends_with immediately")
+    {
+        STATIC_REQUIRE(composer::ends_with(
+            values, std::array{ 3, 4, 5 }, composer::equal_to, &numname::num));
+        STATIC_REQUIRE_FALSE(composer::ends_with(
+            values, std::array{ 3, 4, 6 }, composer::equal_to, &numname::num));
+        REQUIRE(composer::ends_with(
+            values, std::array{ 3, 4, 5 }, composer::equal_to, &numname::num));
+        REQUIRE_FALSE(composer::ends_with(
+            values, std::array{ 3, 4, 6 }, composer::equal_to, &numname::num));
+    }
+    SECTION("ends_with called with a predicate and a projection returns a "
+            "callable for two ranges")
+    {
+        constexpr auto ends_with_num
+            = composer::ends_with(composer::equal_to, &numname::num);
+        STATIC_REQUIRE(ends_with_num(values, std::array{ 3, 4, 5 }));
+        STATIC_REQUIRE_FALSE(ends_with_num(values, std::array{ 3, 4, 6 }));
+        REQUIRE(ends_with_num(values, std::array{ 3, 4, 5 }));
+        REQUIRE_FALSE(ends_with_num(values, std::array{ 3, 4, 6 }));
+    }
+    SECTION("ends_with called with a precidace and a projection, called with "
+            "a needle range is pipeaaple from a range")
+    {
+        constexpr auto ends_with_num
+            = composer::ends_with(composer::equal_to, &numname::num);
+        STATIC_REQUIRE(values | ends_with_num(std::array{ 3, 4, 5 }));
+        STATIC_REQUIRE_FALSE(values | ends_with_num(std::array{ 3, 4, 6 }));
+        REQUIRE(values | ends_with_num(std::array{ 3, 4, 5 }));
+        REQUIRE_FALSE(values | ends_with_num(std::array{ 3, 4, 6 }));
+    }
+}
+
+#endif // __cpp_lib_starts_ends_with

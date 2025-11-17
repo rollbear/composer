@@ -97,12 +97,21 @@ inline constexpr auto find_first_of = make_arity_function<7, right_curry>(
         return std::ranges::find_first_of(std::forward<Ts>(ts)...);
     });
 
+#if defined(__cpp_lib_ranges_starts_ends_with)
+
 inline constexpr auto starts_with = make_arity_function<7, right_curry>(
     []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::starts_with(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::starts_with(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto ends_with = make_arity_function<7, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::ends_with(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::ends_with(std::forward<Ts>(ts)...);
+    });
+
+#endif
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
