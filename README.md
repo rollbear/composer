@@ -352,4 +352,9 @@ Right curried version of [`std::ranges::find_end`](https://en.cppreference.com/w
 
 ### `composer::find_first_of`
 
-Right curried version o$ [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
+Right curried version of [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
+
+### `composer::starts_with`
+
+Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
+
