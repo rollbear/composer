@@ -1398,6 +1398,35 @@ SCENARIO("search_n is right curried")
     }
 }
 
+SCENARIO("contains is right curried")
+{
+    SECTION("contains called with a range, a value and a projection calls "
+            "ranges::contains immediately")
+    {
+        STATIC_REQUIRE(composer::contains(values, 3, &numname::num));
+        STATIC_REQUIRE_FALSE(composer::contains(values, 0, &numname::num));
+        REQUIRE(composer::contains(values, 3, &numname::num));
+        REQUIRE_FALSE(composer::contains(values, 0, &numname::num));
+    }
+    SECTION("contains called with a values returns a callable with a range")
+    {
+        static constexpr std::array ints = { 1, 2, 3, 4, 5 };
+        STATIC_REQUIRE(ints | composer::contains(3));
+        STATIC_REQUIRE_FALSE(ints | composer::contains(0));
+        REQUIRE(ints | composer::contains(3));
+        REQUIRE_FALSE(ints | composer::contains(0));
+    }
+    SECTION("contains called with a projection returns a callable with a value "
+            "and a range")
+    {
+        constexpr auto contains_num = composer::contains(&numname::num);
+        STATIC_REQUIRE(values | contains_num(3));
+        STATIC_REQUIRE_FALSE(values | contains_num(0));
+        REQUIRE(values | contains_num(3));
+        REQUIRE_FALSE(values | contains_num(0));
+    }
+}
+
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
 SCENARIO("starts_with is right curried")
