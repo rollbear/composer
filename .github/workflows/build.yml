@@ -25,6 +25,7 @@ jobs:
       matrix:
         config:
           - { cxx: clang++-21, stdlib: libc++, container: "clang:21" }
+          - { cxx: clang++-21, container: "clang:21" }
           - { cxx: g++-15, container: "gcc:15" }
 
     name: "Linux ${{matrix.config.cxx}} ${{matrix.config.stdlib}}"
