@@ -1,34 +1,35 @@
-#include <composer/left_curry.hpp>
+#include <composer/front_binding.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("a left curried function is called with all provided arguments")
+TEST_CASE("a front bound function is called with all provided arguments")
 {
-    constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
     REQUIRE(minus(5, 2) == 3);
 }
 
-TEST_CASE("a left curried function is not callable with too many arguments")
+TEST_CASE("a front bound function is not callable with too many arguments")
 {
-    constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
 }
 
-TEST_CASE("a left curried function called with fewer arguments that required, "
+TEST_CASE("a front bound function called with fewer arguments that required, "
           "returns a callable that binds themthe beginning")
 {
-    constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     constexpr auto f5minus = minus(5);
     STATIC_REQUIRE(f5minus(2) == 3);
     REQUIRE(f5minus(2) == 3);
 }
 
-TEST_CASE("a left curried function can be called with fewer than arity "
+TEST_CASE("a front bound function can be called with fewer than arity "
           "arguments if the underlying function allows it")
 {
-    constexpr auto dec = composer::make_arity_function<2, composer::left_curry>(
-        [](int a, int b = 1) { return a - b; });
+    constexpr auto dec
+        = composer::make_arity_function<2, composer::front_binding>(
+            [](int a, int b = 1) { return a - b; });
     STATIC_REQUIRE(dec(3) == 2);
     REQUIRE(dec(3) == 2);
 }
@@ -60,13 +61,13 @@ struct check {
 };
 } // namespace
 
-TEST_CASE("a left curried function and its bound args are called with the same "
+TEST_CASE("a front bound function and its bound args are called with the same "
           "qualifiers as the function object")
 {
     SECTION("coll on const l-value reference is called as and with const "
             "l-value reference")
     {
-        auto f = composer::make_arity_function<2, composer::left_curry>(
+        auto f = composer::make_arity_function<2, composer::front_binding>(
             check<const int&>{});
         auto fb = f(3);
         std::as_const(fb)(0);
@@ -74,7 +75,7 @@ TEST_CASE("a left curried function and its bound args are called with the same "
     SECTION("coll on non-const l-value reference is called as and with "
             "non-l-value reference")
     {
-        auto f = composer::make_arity_function<2, composer::left_curry>(
+        auto f = composer::make_arity_function<2, composer::front_binding>(
             check<int&>{});
         auto fb = f(3);
         fb(0);
@@ -82,7 +83,7 @@ TEST_CASE("a left curried function and its bound args are called with the same "
     SECTION("coll on const r-value reference is called as and with const "
             "r-value reference")
     {
-        auto f = composer::make_arity_function<2, composer::left_curry>(
+        auto f = composer::make_arity_function<2, composer::front_binding>(
             check<const int&&>{});
         auto fb = f(3);
         std::move(std::as_const(fb))(0);
@@ -90,29 +91,29 @@ TEST_CASE("a left curried function and its bound args are called with the same "
     SECTION("coll on non-const r-value reference is called as and with "
             "non-const r-value reference")
     {
-        auto f = composer::make_arity_function<2, composer::left_curry>(
+        auto f = composer::make_arity_function<2, composer::front_binding>(
             check<int&&>{});
         auto fb = f(3);
         std::move(fb)(0);
     }
 }
 
-TEST_CASE("a piped expression is a left curried function that calls the right "
+TEST_CASE("a piped expression is a front bound function that calls the right "
           "hand function with the result of the left hand function")
 {
     auto to_string = composer::make_arity_function<1>(
         [](auto t) { return std::to_string(t); });
-    constexpr auto minus = composer::left_curry<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     auto sub_from_2_to_str = sub_to_str(2);
     REQUIRE(sub_from_2_to_str(5) == "-3");
 }
 
-TEST_CASE("a captured value is copied into the left_curry function object",
-          "[left_curry]")
+TEST_CASE("a captured value is copied into the front_binding function object",
+          "[front_binding]")
 {
     auto p = std::make_shared<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](auto x, auto y) { return *x + *y; });
     {
         auto captured_one = func(p);
@@ -122,11 +123,12 @@ TEST_CASE("a captured value is copied into the left_curry function object",
     REQUIRE(p.use_count() == 1);
 }
 
-TEST_CASE("a captured value can be moved into the left_curry function object",
-          "[left_curry]")
+TEST_CASE(
+    "a captured value can be moved into the front_binding function object",
+    "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](const auto& x, const auto& y) { return *x + *y; });
 
     auto captured_one = func(std::move(p));
@@ -134,12 +136,13 @@ TEST_CASE("a captured value can be moved into the left_curry function object",
     REQUIRE(captured_one(std::make_unique<int>(2)) == 5);
 }
 
-TEST_CASE("a captured value is moved to the left_curry function if called on "
-          "an rvalue",
-          "[left_curry]")
+TEST_CASE(
+    "a captured value is moved to the front_binding function if called on "
+    "an rvalue",
+    "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](auto x, auto y) { return *x + *y; });
 
     auto captured_one = func(std::move(p));
@@ -148,11 +151,11 @@ TEST_CASE("a captured value is moved to the left_curry function if called on "
 }
 
 TEST_CASE("a move only type can be reference wrapped in the capture of a "
-          "left_curry function object",
-          "[left_curry]")
+          "front_binding function object",
+          "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
@@ -160,11 +163,11 @@ TEST_CASE("a move only type can be reference wrapped in the capture of a "
 }
 
 TEST_CASE("a reference wrapped capture is passed as lvalue reference even on "
-          "an rvalue left_curry function object",
-          "[left_curry]")
+          "an rvalue front_binding function object",
+          "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
@@ -172,21 +175,21 @@ TEST_CASE("a reference wrapped capture is passed as lvalue reference even on "
 }
 
 TEST_CASE("a non-const reference wrapped capture is passed as non-const lvalue "
-          "reference even on a const left_curry function object",
-          "[left_curry]")
+          "reference even on a const front_binding function object",
+          "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_arity_function<2, composer::left_curry>(
+    auto func = composer::make_arity_function<2, composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
     REQUIRE(std::as_const(captured_one)(std::make_unique<int>(2)) == 5);
 }
 
-TEST_CASE("left_curry bound arrays are copied")
+TEST_CASE("front_binding bound arrays are copied")
 {
     static constexpr auto f
-        = composer::make_arity_function<2, composer::left_curry>(
+        = composer::make_arity_function<2, composer::front_binding>(
             [](auto& p, int) -> auto& { return p; });
     char array[] = "foo";
     SECTION("non-const function object forwards copy as non-const array")

@@ -16,8 +16,8 @@ endif()
 add_executable(
         test_composer
         test_arity_function.cpp
-        test_right_curry.cpp
-        test_left_curry.cpp
+        test_back_binding.cpp
+        test_front_binding.cpp
         test_functional.cpp
         test_tuple.cpp
         test_transform_args.cpp
