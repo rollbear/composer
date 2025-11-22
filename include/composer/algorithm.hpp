@@ -155,6 +155,12 @@ inline constexpr auto partition_point = make_arity_function<4, right_curry>(
         return std::ranges::partition_point(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto is_sorted = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_sorted(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::is_sorted(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

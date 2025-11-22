@@ -1,6 +1,7 @@
 #include <composer/algorithm.hpp>
 #include <composer/functional.hpp>
 #include <composer/ranges.hpp>
+#include <composer/transform_args.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -1679,5 +1680,40 @@ SCENARIO("partition_point is right curried")
                        == values.begin() + 2);
         REQUIRE((values | pp_by_name(composer::size | composer::less(4)))
                 == values.begin() + 2);
+    }
+}
+
+SCENARIO("is_sorted is right curried")
+{
+    constexpr auto by_num = composer::transform_args(&numname::num);
+    constexpr auto by_name = composer::transform_args(&numname::name);
+    SECTION("is_sorted called with a range, a predicate and a projection calls "
+            "ranges::is_sorted immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_sorted(values, composer::less, &numname::num));
+        STATIC_REQUIRE_FALSE(
+            composer::is_sorted(values, composer::less, &numname::name));
+        REQUIRE(composer::is_sorted(values, composer::less, &numname::num));
+        REQUIRE_FALSE(
+            composer::is_sorted(values, composer::less, &numname::name));
+    }
+    SECTION("is_sorted called with a range and a composed predicate calls "
+            "ranges::is_sorted immediately")
+    {
+        STATIC_REQUIRE(composer::is_sorted(values, by_num(composer::less)));
+        STATIC_REQUIRE_FALSE(
+            composer::is_sorted(values, by_name(composer::less)));
+        REQUIRE(composer::is_sorted(values, by_num(composer::less)));
+        REQUIRE_FALSE(composer::is_sorted(values, by_name(composer::less)));
+    }
+    SECTION(
+        "is_sorted called with a composed predicate is pipeable from a range")
+    {
+        STATIC_REQUIRE(values | composer::is_sorted(by_num(composer::less)));
+        STATIC_REQUIRE_FALSE(values
+                             | composer::is_sorted(by_name(composer::less)));
+        REQUIRE(values | composer::is_sorted(by_num(composer::less)));
+        REQUIRE_FALSE(values | composer::is_sorted(by_name(composer::less)));
     }
 }

@@ -392,4 +392,8 @@ Right curried version of [`std::ranges::is_partitioned`](https://en.cppreference
 
 ### `composer::partition_point`
 
-Right curried version o$ [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
+Right curried version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
+
+### `composer::is_sorted`
+
+Right curried version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
