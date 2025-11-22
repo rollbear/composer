@@ -270,3 +270,19 @@ Right curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utilit
 ### `composer::apply_using`
 
 Lelt curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utility/apply.html)
+
+## `<composer/ranges.hpp>`
+
+### `composer::size`
+
+Composable function object for [`std::ranges::size`]()
+
+### `composer::ssize`
+
+Composable function object for [`std::ranges::ssize`]()
+
+### `composer::distance`
+
+Composable function object for [`std::ranges::distance`]()
+
+`composable::distance` is callable either with a range, or with an iterator/sentinel pair.
