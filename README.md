@@ -245,6 +245,11 @@ transformation function. The returned function is of the same kind as the
 arity function passed in, so e.g. calling transform_args on a right curried
 function returns a right curried function.
 
+`transform_args` is [left curried](#left_curry)
+
+The `transformation` can be either a unary function or a
+[pointer-to-member](https://isocpp.org/wiki/faq/pointers-to-members).
+
 Example:
 ```c++
 inline constexpr auto less_ptr = composer::transform_args(composer::dereference,
