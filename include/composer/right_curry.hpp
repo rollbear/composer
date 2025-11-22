@@ -45,7 +45,7 @@ struct [[nodiscard]] right_curry : arity_function<F, N> {
     constexpr auto operator()(this Self&& self, Ts&&... ts)
         -> right_curry<decltype(internal::back_binder{
                            std::forward<Self>(self),
-                           std::tuple<std::remove_reference_t<Ts>...>(
+                           std::tuple<internal::arg_binder_t<Ts>...>(
                                std::forward<Ts>(ts)...) }),
                        N - sizeof...(Ts)>
         requires(sizeof...(Ts) < N) && (!requires {

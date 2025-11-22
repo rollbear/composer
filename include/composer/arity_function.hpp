@@ -1,6 +1,7 @@
 #ifndef COMPOSER_ARITY_FUNCTION_HPP
 #define COMPOSER_ARITY_FUNCTION_HPP
 
+#include <type_traits>
 #include <utility>
 
 namespace composer {
@@ -50,7 +51,50 @@ template <typename T>
 }
 
 namespace internal {
+template <typename T, std::size_t N>
+struct buffer {
+    constexpr buffer(T (&p)[N])
+    {
+        for (std::size_t i = 0; i != N; ++i) {
+            data_[i] = p[i];
+        }
+    }
 
+    std::remove_const_t<T> data_[N];
+};
+
+template <typename T>
+struct arg_binder {
+    using type = std::remove_reference_t<T>;
+};
+
+template <typename T, std::size_t N>
+struct arg_binder<T (&)[N]> {
+    using type = buffer<T, N>;
+};
+
+template <typename T>
+using arg_binder_t = typename arg_binder<T>::type;
+
+} // namespace internal
+
+template <typename T, std::size_t N>
+constexpr auto unwrap(internal::buffer<T, N>& t) -> T (&)[N]
+{
+    return t.data_;
+}
+
+template <typename T, std::size_t N>
+constexpr auto unwrap(const internal::buffer<T, N>& t) -> const T (&)[N]
+{
+    return t.data_;
+}
+
+template <typename T, std::size_t N>
+constexpr auto unwrap(const internal::buffer<T, N>&& t) -> const T (&)[N]
+    = delete;
+
+namespace internal {
 template <typename LH, typename RH>
 struct composition {
     LH lh;

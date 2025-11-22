@@ -182,3 +182,69 @@ TEST_CASE("a non-const reference wrapped capture is passed as non-const lvalue "
     REQUIRE(p);
     REQUIRE(std::as_const(captured_one)(std::make_unique<int>(2)) == 5);
 }
+
+TEST_CASE("left_curry bound arrays are copied")
+{
+    static constexpr auto f
+        = composer::make_arity_function<2, composer::left_curry>(
+            [](auto& p, int) -> auto& { return p; });
+    char array[] = "foo";
+    SECTION("non-const function object forwards copy as non-const array")
+    {
+        auto bound_func = f(array);
+        auto& bound_array = bound_func(0);
+        STATIC_REQUIRE(std::is_same_v<decltype(bound_array), char (&)[4]>);
+        REQUIRE(+bound_array != +array);
+        REQUIRE(bound_array == std::string_view("foo"));
+    }
+    SECTION("const function object forwards copy as const array")
+    {
+        const auto bound_func = f(array);
+        auto& bound_array = bound_func(0);
+        STATIC_REQUIRE(
+            std::is_same_v<decltype(bound_array), const char (&)[4]>);
+        REQUIRE(+bound_array != +array);
+        REQUIRE(bound_array == std::string_view("foo"));
+    }
+    SECTION("an rvalue of a function object with a bound array is not callable")
+    {
+        // This restriction may be removed in the future, but it's safer to
+        // have something unnecessarily constrained that can be relaxed, than
+        // to have something relaxed that you regret but can't change because
+        // people depend on it.
+
+        auto bound_func = f(array);
+        STATIC_REQUIRE(
+            !std::is_invocable_v<decltype(std::move(bound_func)), int>);
+        STATIC_REQUIRE(
+            !std::is_invocable_v<decltype(std::move(std::as_const(bound_func))),
+                                 int>);
+    }
+    SECTION("bound objects are constexpr")
+    {
+        static constexpr char str[] = "foo";
+        static constexpr auto bound_func = f(str);
+        constexpr auto& bound_array = bound_func(0);
+        STATIC_REQUIRE(
+            std::is_same_v<decltype(bound_array), const char (&)[4]>);
+        STATIC_REQUIRE(+bound_array != +array);
+        STATIC_REQUIRE(bound_array == std::string_view("foo"));
+    }
+    SECTION("array passed via ref() is bound as references")
+    {
+        auto bound_func = f(composer::ref(array));
+        auto& bound_array = bound_func(0);
+        STATIC_REQUIRE(std::is_same_v<decltype(bound_array), char (&)[4]>);
+        REQUIRE(+bound_array == +array);
+        REQUIRE(bound_array == std::string_view("foo"));
+    }
+    SECTION("array passed via cref() is bound as const references")
+    {
+        auto bound_func = f(composer::cref(array));
+        auto& bound_array = bound_func(0);
+        STATIC_REQUIRE(
+            std::is_same_v<decltype(bound_array), const char (&)[4]>);
+        REQUIRE(+bound_array == +array);
+        REQUIRE(bound_array == std::string_view("foo"));
+    }
+}
