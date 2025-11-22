@@ -2,18 +2,18 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("less is right curried")
+TEST_CASE("less_than is right curried")
 {
     SECTION("when called with 2 args, the result is arg1 < arg2")
     {
-        STATIC_REQUIRE_FALSE(composer::less(2, 2));
-        STATIC_REQUIRE(composer::less(1, 2));
-        REQUIRE_FALSE(composer::less(2, 2));
-        REQUIRE(composer::less(1, 2));
+        STATIC_REQUIRE_FALSE(composer::less_than(2, 2));
+        STATIC_REQUIRE(composer::less_than(1, 2));
+        REQUIRE_FALSE(composer::less_than(2, 2));
+        REQUIRE(composer::less_than(1, 2));
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto lt2 = composer::less(2);
+        constexpr auto lt2 = composer::less_than(2);
         STATIC_REQUIRE_FALSE(lt2(2));
         STATIC_REQUIRE(lt2(1));
         REQUIRE_FALSE(lt2(2));
@@ -21,18 +21,18 @@ TEST_CASE("less is right curried")
     }
 }
 
-TEST_CASE("less_equal is right curried")
+TEST_CASE("less_or_equal_to is right curried")
 {
     SECTION("when called with 2 args, the result is arg1 <= arg2")
     {
-        STATIC_REQUIRE_FALSE(composer::less_equal(3, 2));
-        STATIC_REQUIRE(composer::less_equal(2, 2));
-        REQUIRE_FALSE(composer::less_equal(3, 2));
-        REQUIRE(composer::less_equal(2, 2));
+        STATIC_REQUIRE_FALSE(composer::less_or_equal_to(3, 2));
+        STATIC_REQUIRE(composer::less_or_equal_to(2, 2));
+        REQUIRE_FALSE(composer::less_or_equal_to(3, 2));
+        REQUIRE(composer::less_or_equal_to(2, 2));
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto le2 = composer::less_equal(2);
+        constexpr auto le2 = composer::less_or_equal_to(2);
         STATIC_REQUIRE_FALSE(le2(3));
         STATIC_REQUIRE(le2(2));
         REQUIRE_FALSE(le2(3));
@@ -40,18 +40,18 @@ TEST_CASE("less_equal is right curried")
     }
 }
 
-TEST_CASE("greater is right curried")
+TEST_CASE("greater_than is right curried")
 {
     SECTION("when called with 2 args, the result is arg1 > arg2")
     {
-        STATIC_REQUIRE_FALSE(composer::greater(2, 2));
-        STATIC_REQUIRE(composer::greater(3, 2));
-        REQUIRE_FALSE(composer::greater(2, 2));
-        REQUIRE(composer::greater(3, 2));
+        STATIC_REQUIRE_FALSE(composer::greater_than(2, 2));
+        STATIC_REQUIRE(composer::greater_than(3, 2));
+        REQUIRE_FALSE(composer::greater_than(2, 2));
+        REQUIRE(composer::greater_than(3, 2));
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto gt2 = composer::greater(2);
+        constexpr auto gt2 = composer::greater_than(2);
         STATIC_REQUIRE_FALSE(gt2(2));
         STATIC_REQUIRE(gt2(3));
         REQUIRE_FALSE(gt2(2));
@@ -59,18 +59,18 @@ TEST_CASE("greater is right curried")
     }
 }
 
-TEST_CASE("greater_equal is right curried")
+TEST_CASE("greater_or_equal_to is right curried")
 {
     SECTION("when called with 2 args, the result is arg1 >= arg2")
     {
-        STATIC_REQUIRE_FALSE(composer::greater_equal(1, 2));
-        STATIC_REQUIRE(composer::greater_equal(2, 2));
-        REQUIRE_FALSE(composer::greater_equal(1, 2));
-        REQUIRE(composer::greater_equal(2, 2));
+        STATIC_REQUIRE_FALSE(composer::greater_or_equal_to(1, 2));
+        STATIC_REQUIRE(composer::greater_or_equal_to(2, 2));
+        REQUIRE_FALSE(composer::greater_or_equal_to(1, 2));
+        REQUIRE(composer::greater_or_equal_to(2, 2));
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto ge2 = composer::greater_equal(2);
+        constexpr auto ge2 = composer::greater_or_equal_to(2);
         STATIC_REQUIRE_FALSE(ge2(1));
         STATIC_REQUIRE(ge2(2));
         REQUIRE_FALSE(ge2(1));

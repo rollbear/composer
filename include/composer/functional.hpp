@@ -16,10 +16,11 @@ inline constexpr auto mem_fn = make_arity_function<1>(
 inline constexpr auto equal_to = right_curry<std::ranges::equal_to, 2>{};
 inline constexpr auto not_equal_to
     = right_curry<std::ranges::not_equal_to, 2>{};
-inline constexpr auto less = right_curry<std::ranges::less, 2>{};
-inline constexpr auto less_equal = right_curry<std::ranges::less_equal, 2>{};
-inline constexpr auto greater = right_curry<std::ranges::greater, 2>{};
-inline constexpr auto greater_equal
+inline constexpr auto less_than = right_curry<std::ranges::less, 2>{};
+inline constexpr auto less_or_equal_to
+    = right_curry<std::ranges::less_equal, 2>{};
+inline constexpr auto greater_than = right_curry<std::ranges::greater, 2>{};
+inline constexpr auto greater_or_equal_to
     = right_curry<std::ranges::greater_equal, 2>{};
 inline constexpr auto compare_three_way
     = right_curry<std::compare_three_way, 2>{};

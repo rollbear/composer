@@ -33,8 +33,8 @@ int main()
     };
     constexpr auto by_name = composer::transform_args(&numname::name);
     constexpr auto by_num = composer::transform_args(&numname::num);
-    assert(! composer::is_sorted(values, by_name(composer::less)));
-    assert(composer::is_sorted(values, by_num(composer::less)));
+    assert(! composer::is_sorted(values, by_name(composer::less_than)));
+    assert(composer::is_sorted(values, by_num(composer::less_than)));
     
     constexpr auto it = values | composer::find_if(&numname::name | composer::equal_to("three"));
     return it->num; // returns 3
@@ -163,19 +163,19 @@ Right curried version of [`std::ranges::equal_to`](https://en.cppreference.com/w
 
 Right curried version of [`std::ranges::not_equal_to`](https://en.cppreference.com/w/cpp/utility/functional/ranges/not_equal_to).
 
-### `composer::less(a, b)`
+### `composer::less_than(a, b)`
 
 Right curried version of [`std::ranges::less`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less).
 
-### `composer::less_equal(a, b)`
+### `composer::less_or_equal_to(a, b)`
 
 Right curried version of [`std::ranges::less_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less_equal).
 
-### `composer::greater(a, b)`
+### `composer::greater_than(a, b)`
 
 Right curried version of [`std::ranges::greater`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater).
 
-### `composer::greater_equal(a, b)`
+### `composer::greater_or_equal_to(a, b)`
 
 Right curried version of [`std::ranges::greater_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater_equal).
 
@@ -260,7 +260,7 @@ The `transformation` can be either a unary function or a
 Example:
 ```c++
 inline constexpr auto less_ptr = composer::transform_args(composer::dereference,
-                                                          composer::less);
+                                                          composer::less_than);
 std::array<int*, N> values = ...
 std::ranges::sort(values, less_ptr);
 ```

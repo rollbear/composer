@@ -26,69 +26,73 @@ SCENARIO("all_of is right curried")
             "ranges::all_of directly")
     {
         STATIC_REQUIRE(
-            composer::all_of(values, composer::greater(0), &numname::num));
-        REQUIRE(composer::all_of(values, composer::greater(0), &numname::num));
+            composer::all_of(values, composer::greater_than(0), &numname::num));
+        REQUIRE(
+            composer::all_of(values, composer::greater_than(0), &numname::num));
         STATIC_REQUIRE_FALSE(
-            composer::all_of(values, composer::greater(1), &numname::num));
+            composer::all_of(values, composer::greater_than(1), &numname::num));
         REQUIRE_FALSE(
-            composer::all_of(values, composer::greater(1), &numname::num));
+            composer::all_of(values, composer::greater_than(1), &numname::num));
     }
     SECTION("when called with iterator pair, predicate and projection, it "
             "calls ranges::all_of directly")
     {
         STATIC_REQUIRE(composer::all_of(std::begin(values),
                                         std::end(values),
-                                        composer::greater(0),
+                                        composer::greater_than(0),
                                         &numname::num));
         REQUIRE(composer::all_of(std::begin(values),
                                  std::end(values),
-                                 composer::greater(0),
+                                 composer::greater_than(0),
                                  &numname::num));
         STATIC_REQUIRE_FALSE(composer::all_of(std::begin(values),
                                               std::end(values),
-                                              composer::greater(1),
+                                              composer::greater_than(1),
                                               &numname::num));
         REQUIRE_FALSE(composer::all_of(std::begin(values),
                                        std::end(values),
-                                       composer::greater(1),
+                                       composer::greater_than(1),
                                        &numname::num));
     }
     SECTION("when called with range and composed predicate, it calls "
             "ranges::all_of directly")
     {
-        STATIC_REQUIRE(
-            composer::all_of(values, &numname::num | composer::greater(0)));
-        REQUIRE(composer::all_of(values, &numname::num | composer::greater(0)));
-        STATIC_REQUIRE_FALSE(
-            composer::all_of(values, &numname::num | composer::greater(1)));
-        REQUIRE_FALSE(
-            composer::all_of(values, &numname::num | composer::greater(1)));
+        STATIC_REQUIRE(composer::all_of(
+            values, &numname::num | composer::greater_than(0)));
+        REQUIRE(composer::all_of(values,
+                                 &numname::num | composer::greater_than(0)));
+        STATIC_REQUIRE_FALSE(composer::all_of(
+            values, &numname::num | composer::greater_than(1)));
+        REQUIRE_FALSE(composer::all_of(
+            values, &numname::num | composer::greater_than(1)));
     }
     SECTION("when called with iterator pair and composed predicate, it calls "
             "ranges::all_of directly")
     {
-        STATIC_REQUIRE(composer::all_of(std::begin(values),
-                                        std::end(values),
-                                        &numname::num | composer::greater(0)));
+        STATIC_REQUIRE(
+            composer::all_of(std::begin(values),
+                             std::end(values),
+                             &numname::num | composer::greater_than(0)));
         REQUIRE(composer::all_of(std::begin(values),
                                  std::end(values),
-                                 &numname::num | composer::greater(0)));
+                                 &numname::num | composer::greater_than(0)));
         STATIC_REQUIRE_FALSE(
             composer::all_of(std::begin(values),
                              std::end(values),
-                             &numname::num | composer::greater(1)));
-        REQUIRE_FALSE(composer::all_of(std::begin(values),
-                                       std::end(values),
-                                       &numname::num | composer::greater(1)));
+                             &numname::num | composer::greater_than(1)));
+        REQUIRE_FALSE(
+            composer::all_of(std::begin(values),
+                             std::end(values),
+                             &numname::num | composer::greater_than(1)));
     }
     SECTION("the result of all_of(projection) is callable with range and "
             "predicate for call to ranges::all_of")
     {
         constexpr auto all_nums = composer::all_of(&numname::num);
-        STATIC_REQUIRE(all_nums(values, composer::greater(0)));
-        REQUIRE(all_nums(values, composer::greater(0)));
-        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater(1)));
-        REQUIRE_FALSE(all_nums(values, composer::greater(1)));
+        STATIC_REQUIRE(all_nums(values, composer::greater_than(0)));
+        REQUIRE(all_nums(values, composer::greater_than(0)));
+        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater_than(1)));
+        REQUIRE_FALSE(all_nums(values, composer::greater_than(1)));
     }
     SECTION(
         "the result of all_of(projection) is callable with iterator pair and "
@@ -96,21 +100,21 @@ SCENARIO("all_of is right curried")
     {
         constexpr auto all_nums = composer::all_of(&numname::num);
         STATIC_REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(0)));
+            std::begin(values), std::end(values), composer::greater_than(0)));
         REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(0)));
+            std::begin(values), std::end(values), composer::greater_than(0)));
         STATIC_REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(1)));
+            std::begin(values), std::end(values), composer::greater_than(1)));
         REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(1)));
+            std::begin(values), std::end(values), composer::greater_than(1)));
     }
     SECTION("the result of all_of(composed predicate) is callable with range "
             "for call to ranges::all_of")
     {
         constexpr auto all_pos_ints
-            = composer::all_of(&numname::num | composer::greater(0));
+            = composer::all_of(&numname::num | composer::greater_than(0));
         constexpr auto all_small_ints
-            = composer::all_of(&numname::num | composer::less(5));
+            = composer::all_of(&numname::num | composer::less_than(5));
         STATIC_REQUIRE(all_pos_ints(values));
         REQUIRE(all_pos_ints(values));
         STATIC_REQUIRE_FALSE(all_small_ints(values));
@@ -120,7 +124,7 @@ SCENARIO("all_of is right curried")
             "iterator pair for call to ranges::all_of")
     {
         constexpr auto all_pos_ints
-            = composer::all_of(&numname::num | composer::greater(0));
+            = composer::all_of(&numname::num | composer::greater_than(0));
         STATIC_REQUIRE(all_pos_ints(std::begin(values), std::end(values)));
         REQUIRE(all_pos_ints(std::begin(values), std::end(values)));
     }
@@ -132,69 +136,73 @@ SCENARIO("any_of is right curried")
             "ranges::any_of directly")
     {
         STATIC_REQUIRE(
-            composer::any_of(values, composer::greater(4), &numname::num));
-        REQUIRE(composer::any_of(values, composer::greater(4), &numname::num));
+            composer::any_of(values, composer::greater_than(4), &numname::num));
+        REQUIRE(
+            composer::any_of(values, composer::greater_than(4), &numname::num));
         STATIC_REQUIRE_FALSE(
-            composer::any_of(values, composer::greater(5), &numname::num));
+            composer::any_of(values, composer::greater_than(5), &numname::num));
         REQUIRE_FALSE(
-            composer::any_of(values, composer::greater(5), &numname::num));
+            composer::any_of(values, composer::greater_than(5), &numname::num));
     }
     SECTION("when called with iterator pair, predicate and projection, it "
             "calls ranges::any_of directly")
     {
         STATIC_REQUIRE(composer::any_of(std::begin(values),
                                         std::end(values),
-                                        composer::greater(4),
+                                        composer::greater_than(4),
                                         &numname::num));
         REQUIRE(composer::any_of(std::begin(values),
                                  std::end(values),
-                                 composer::greater(4),
+                                 composer::greater_than(4),
                                  &numname::num));
         STATIC_REQUIRE_FALSE(composer::any_of(std::begin(values),
                                               std::end(values),
-                                              composer::greater(5),
+                                              composer::greater_than(5),
                                               &numname::num));
         REQUIRE_FALSE(composer::any_of(std::begin(values),
                                        std::end(values),
-                                       composer::greater(5),
+                                       composer::greater_than(5),
                                        &numname::num));
     }
     SECTION("when called with range and composed predicate, it calls "
             "ranges::any_of directly")
     {
-        STATIC_REQUIRE(
-            composer::any_of(values, &numname::num | composer::greater(4)));
-        REQUIRE(composer::any_of(values, &numname::num | composer::greater(4)));
-        STATIC_REQUIRE_FALSE(
-            composer::any_of(values, &numname::num | composer::greater(5)));
-        REQUIRE_FALSE(
-            composer::any_of(values, &numname::num | composer::greater(5)));
+        STATIC_REQUIRE(composer::any_of(
+            values, &numname::num | composer::greater_than(4)));
+        REQUIRE(composer::any_of(values,
+                                 &numname::num | composer::greater_than(4)));
+        STATIC_REQUIRE_FALSE(composer::any_of(
+            values, &numname::num | composer::greater_than(5)));
+        REQUIRE_FALSE(composer::any_of(
+            values, &numname::num | composer::greater_than(5)));
     }
     SECTION("when called with iterator pair and composed predicate, it calls "
             "ranges::any_of directly")
     {
-        STATIC_REQUIRE(composer::any_of(std::begin(values),
-                                        std::end(values),
-                                        &numname::num | composer::greater(4)));
+        STATIC_REQUIRE(
+            composer::any_of(std::begin(values),
+                             std::end(values),
+                             &numname::num | composer::greater_than(4)));
         REQUIRE(composer::any_of(std::begin(values),
                                  std::end(values),
-                                 &numname::num | composer::greater(4)));
+                                 &numname::num | composer::greater_than(4)));
         STATIC_REQUIRE_FALSE(
             composer::any_of(std::begin(values),
                              std::end(values),
-                             &numname::num | composer::greater(5)));
-        REQUIRE_FALSE(composer::any_of(std::begin(values),
-                                       std::end(values),
-                                       &numname::num | composer::greater(5)));
+                             &numname::num | composer::greater_than(5)));
+        REQUIRE_FALSE(
+            composer::any_of(std::begin(values),
+                             std::end(values),
+                             &numname::num | composer::greater_than(5)));
     }
     SECTION("the result of any_of(projection) is callable with range and "
             "predicate for call to ranges::any_of")
     {
         constexpr auto all_nums = composer::any_of(&numname::num);
-        STATIC_REQUIRE(all_nums(values, composer::greater(4)));
-        REQUIRE(all_nums(values, composer::greater(4)));
-        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater(5)));
-        REQUIRE_FALSE(all_nums(values, composer::greater(5)));
+        STATIC_REQUIRE(all_nums(values, composer::greater_than(4)));
+        REQUIRE(all_nums(values, composer::greater_than(4)));
+        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater_than(5)));
+        REQUIRE_FALSE(all_nums(values, composer::greater_than(5)));
     }
     SECTION(
         "the result of any_of(projection) is callable with iterator pair and "
@@ -202,21 +210,21 @@ SCENARIO("any_of is right curried")
     {
         constexpr auto all_nums = composer::any_of(&numname::num);
         STATIC_REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(4)));
+            std::begin(values), std::end(values), composer::greater_than(4)));
         REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(4)));
+            std::begin(values), std::end(values), composer::greater_than(4)));
         STATIC_REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(5)));
+            std::begin(values), std::end(values), composer::greater_than(5)));
         REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(5)));
+            std::begin(values), std::end(values), composer::greater_than(5)));
     }
     SECTION("the result of any_of(composed predicate) is callable with range "
             "for call to ranges::any_of")
     {
         constexpr auto any_gt4
-            = composer::any_of(&numname::num | composer::greater(4));
+            = composer::any_of(&numname::num | composer::greater_than(4));
         constexpr auto any_gt5
-            = composer::any_of(&numname::num | composer::greater(5));
+            = composer::any_of(&numname::num | composer::greater_than(5));
         STATIC_REQUIRE(any_gt4(values));
         REQUIRE(any_gt4(values));
         STATIC_REQUIRE_FALSE(any_gt5(values));
@@ -226,9 +234,9 @@ SCENARIO("any_of is right curried")
             "iterator pair for call to ranges::any_of")
     {
         constexpr auto any_gt4
-            = composer::any_of(&numname::num | composer::greater(4));
+            = composer::any_of(&numname::num | composer::greater_than(4));
         constexpr auto any_gt5
-            = composer::any_of(&numname::num | composer::greater(5));
+            = composer::any_of(&numname::num | composer::greater_than(5));
         STATIC_REQUIRE(any_gt4(std::begin(values), std::end(values)));
         REQUIRE(any_gt4(std::begin(values), std::end(values)));
         STATIC_REQUIRE_FALSE(any_gt5(std::begin(values), std::end(values)));
@@ -241,71 +249,74 @@ SCENARIO("none_of is right curried")
     SECTION("when called with range, predicate and projection, it calls "
             "ranges::none_of directly")
     {
-        STATIC_REQUIRE(
-            composer::none_of(values, composer::greater(5), &numname::num));
-        REQUIRE(composer::none_of(values, composer::greater(5), &numname::num));
-        STATIC_REQUIRE_FALSE(
-            composer::none_of(values, composer::greater(4), &numname::num));
-        REQUIRE_FALSE(
-            composer::none_of(values, composer::greater(4), &numname::num));
+        STATIC_REQUIRE(composer::none_of(
+            values, composer::greater_than(5), &numname::num));
+        REQUIRE(composer::none_of(
+            values, composer::greater_than(5), &numname::num));
+        STATIC_REQUIRE_FALSE(composer::none_of(
+            values, composer::greater_than(4), &numname::num));
+        REQUIRE_FALSE(composer::none_of(
+            values, composer::greater_than(4), &numname::num));
     }
     SECTION("when called with iterator pair, predicate and projection, it "
             "calls ranges::none_of directly")
     {
         STATIC_REQUIRE(composer::none_of(std::begin(values),
                                          std::end(values),
-                                         composer::greater(5),
+                                         composer::greater_than(5),
                                          &numname::num));
         REQUIRE(composer::none_of(std::begin(values),
                                   std::end(values),
-                                  composer::greater(5),
+                                  composer::greater_than(5),
                                   &numname::num));
         STATIC_REQUIRE_FALSE(composer::none_of(std::begin(values),
                                                std::end(values),
-                                               composer::greater(4),
+                                               composer::greater_than(4),
                                                &numname::num));
         REQUIRE_FALSE(composer::none_of(std::begin(values),
                                         std::end(values),
-                                        composer::greater(4),
+                                        composer::greater_than(4),
                                         &numname::num));
     }
     SECTION("when called with range and composed predicate, it calls "
             "ranges::none_of directly")
     {
-        STATIC_REQUIRE(
-            composer::none_of(values, &numname::num | composer::greater(5)));
-        REQUIRE(
-            composer::none_of(values, &numname::num | composer::greater(5)));
-        STATIC_REQUIRE_FALSE(
-            composer::none_of(values, &numname::num | composer::greater(4)));
-        REQUIRE_FALSE(
-            composer::none_of(values, &numname::num | composer::greater(4)));
+        STATIC_REQUIRE(composer::none_of(
+            values, &numname::num | composer::greater_than(5)));
+        REQUIRE(composer::none_of(values,
+                                  &numname::num | composer::greater_than(5)));
+        STATIC_REQUIRE_FALSE(composer::none_of(
+            values, &numname::num | composer::greater_than(4)));
+        REQUIRE_FALSE(composer::none_of(
+            values, &numname::num | composer::greater_than(4)));
     }
     SECTION("when called with iterator pair and composed predicate, it calls "
             "ranges::none_of directly")
     {
-        STATIC_REQUIRE(composer::none_of(std::begin(values),
-                                         std::end(values),
-                                         &numname::num | composer::greater(5)));
+        STATIC_REQUIRE(
+            composer::none_of(std::begin(values),
+                              std::end(values),
+                              &numname::num | composer::greater_than(5)));
         REQUIRE(composer::none_of(std::begin(values),
                                   std::end(values),
-                                  &numname::num | composer::greater(5)));
+                                  &numname::num | composer::greater_than(5)));
         STATIC_REQUIRE_FALSE(
             composer::none_of(std::begin(values),
                               std::end(values),
-                              &numname::num | composer::greater(4)));
-        REQUIRE_FALSE(composer::none_of(std::begin(values),
-                                        std::end(values),
-                                        &numname::num | composer::greater(4)));
+                              &numname::num | composer::greater_than(4)));
+        REQUIRE_FALSE(
+            composer::none_of(std::begin(values),
+                              std::end(values),
+                              &numname::num | composer::greater_than(4)));
     }
     SECTION("the result of none_of(projection) is callable with range and "
             "predicate for call to ranges::none_of")
     {
         constexpr auto all_nums = composer::none_of(&numname::num);
-        STATIC_REQUIRE(all_nums(values, composer::greater(5)));
-        REQUIRE(all_nums(values, composer::greater(5)));
-        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater(4)));
-        REQUIRE_FALSE(all_nums(values, composer::greater(4)));
+        STATIC_REQUIRE(all_nums(values, composer::greater_than(5)));
+        REQUIRE(all_nums(values, composer::greater_than(5)));
+        STATIC_REQUIRE_FALSE(all_nums(values, composer::greater_than(4)));
+        REQUIRE_FALSE(all_nums(values, composer::greater_than(4)));
     }
     SECTION(
         "the result of none_of(projection) is callable with iterator pair and "
@@ -313,21 +324,21 @@ SCENARIO("none_of is right curried")
     {
         constexpr auto all_nums = composer::none_of(&numname::num);
         STATIC_REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(5)));
+            std::begin(values), std::end(values), composer::greater_than(5)));
         REQUIRE(all_nums(
-            std::begin(values), std::end(values), composer::greater(5)));
+            std::begin(values), std::end(values), composer::greater_than(5)));
         STATIC_REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(4)));
+            std::begin(values), std::end(values), composer::greater_than(4)));
         REQUIRE_FALSE(all_nums(
-            std::begin(values), std::end(values), composer::greater(4)));
+            std::begin(values), std::end(values), composer::greater_than(4)));
     }
     SECTION("the result of none_of(composed predicate) is callable with range "
             "for call to ranges::none_of")
     {
         constexpr auto any_gt5
-            = composer::none_of(&numname::num | composer::greater(5));
+            = composer::none_of(&numname::num | composer::greater_than(5));
         constexpr auto any_gt4
-            = composer::none_of(&numname::num | composer::greater(4));
+            = composer::none_of(&numname::num | composer::greater_than(4));
         STATIC_REQUIRE(any_gt5(values));
         REQUIRE(any_gt5(values));
         STATIC_REQUIRE_FALSE(any_gt4(values));
@@ -337,9 +348,9 @@ SCENARIO("none_of is right curried")
             "iterator pair for call to ranges::none_of")
     {
         constexpr auto any_gt5
-            = composer::none_of(&numname::num | composer::greater(5));
+            = composer::none_of(&numname::num | composer::greater_than(5));
         constexpr auto any_gt4
-            = composer::none_of(&numname::num | composer::greater(4));
+            = composer::none_of(&numname::num | composer::greater_than(4));
         STATIC_REQUIRE(any_gt5(std::begin(values), std::end(values)));
         REQUIRE(any_gt5(std::begin(values), std::end(values)));
         STATIC_REQUIRE_FALSE(any_gt4(std::begin(values), std::end(values)));
@@ -540,7 +551,7 @@ SCENARIO("count_if is right curried")
             "ranges::count_if directly")
     {
         STATIC_REQUIRE(composer::count_if(values,
-                                          composer::greater(3),
+                                          composer::greater_than(3),
                                           composer::mem_fn(&numname::num))
                        == 2);
         STATIC_REQUIRE(composer::count_if(values,
@@ -548,11 +559,11 @@ SCENARIO("count_if is right curried")
                                           composer::mem_fn(&numname::num))
                        == 0);
         REQUIRE(composer::count_if(values,
-                                   composer::greater(3),
+                                   composer::greater_than(3),
                                    composer::mem_fn(&numname::num))
                 == 2);
         REQUIRE(composer::count_if(values,
-                                   composer::greater(5),
+                                   composer::greater_than(5),
                                    composer::mem_fn(&numname::num))
                 == 0);
     }
@@ -562,22 +573,22 @@ SCENARIO("count_if is right curried")
     {
         STATIC_REQUIRE(composer::count_if(std::begin(values),
                                           std::end(values),
-                                          composer::greater(3),
+                                          composer::greater_than(3),
                                           composer::mem_fn(&numname::num))
                        == 2);
         STATIC_REQUIRE(composer::count_if(std::begin(values),
                                           std::end(values),
-                                          composer::greater(5),
+                                          composer::greater_than(5),
                                           composer::mem_fn(&numname::num))
                        == 0);
         REQUIRE(composer::count_if(std::begin(values),
                                    std::end(values),
-                                   composer::greater(3),
+                                   composer::greater_than(3),
                                    composer::mem_fn(&numname::num))
                 == 2);
         REQUIRE(composer::count_if(std::begin(values),
                                    std::end(values),
-                                   composer::greater(5),
+                                   composer::greater_than(5),
                                    composer::mem_fn(&numname::num))
                 == 0);
     }
@@ -1369,7 +1380,7 @@ SCENARIO("search_n is right curried")
             "returns a callable with a range and a count")
     {
         constexpr auto gt2_numname_range
-            = composer::search_n(2, composer::greater, &numname::num);
+            = composer::search_n(2, composer::greater_than, &numname::num);
         STATIC_REQUIRE(gt2_numname_range(values, 2).begin()
                        == values.begin() + 2);
         STATIC_REQUIRE(gt2_numname_range(values, 2).end()
@@ -1381,7 +1392,7 @@ SCENARIO("search_n is right curried")
             "called with a count is callable with a range")
     {
         constexpr auto gt2_numname_range
-            = composer::search_n(2, composer::greater, &numname::num);
+            = composer::search_n(2, composer::greater_than, &numname::num);
         STATIC_REQUIRE((values | gt2_numname_range(2)).begin()
                        == values.begin() + 2);
         STATIC_REQUIRE((values | gt2_numname_range(2)).end()
@@ -1595,40 +1606,41 @@ SCENARIO("is_partitioned is right curried")
     SECTION("is_partitioned called with a range, a predicate and a projection "
             "calls ranges::is_partitioned immediately")
     {
-        STATIC_REQUIRE(
-            composer::is_partitioned(values, composer::less(3), &numname::num));
+        STATIC_REQUIRE(composer::is_partitioned(
+            values, composer::less_than(3), &numname::num));
         STATIC_REQUIRE_FALSE(composer::is_partitioned(
-            values, composer::less("three"), &numname::name));
-        REQUIRE(
-            composer::is_partitioned(values, composer::less(3), &numname::num));
+            values, composer::less_than("three"), &numname::name));
+        REQUIRE(composer::is_partitioned(
+            values, composer::less_than(3), &numname::num));
         REQUIRE_FALSE(composer::is_partitioned(
-            values, composer::less("three"), &numname::name));
+            values, composer::less_than("three"), &numname::name));
     }
     SECTION("is_partitioned called with a range and a composed predicate calls "
             "ranges::is_partitioned immediately")
     {
         STATIC_REQUIRE(composer::is_partitioned(
-            values, &numname::num | composer::less(3)));
+            values, &numname::num | composer::less_than(3)));
         STATIC_REQUIRE_FALSE(composer::is_partitioned(
-            values, &numname::name | composer::less("three")));
-        REQUIRE(composer::is_partitioned(values,
-                                         &numname::num | composer::less(3)));
+            values, &numname::name | composer::less_than("three")));
+        REQUIRE(composer::is_partitioned(
+            values, &numname::num | composer::less_than(3)));
         REQUIRE_FALSE(composer::is_partitioned(
-            values, &numname::name | composer::less("three")));
+            values, &numname::name | composer::less_than("three")));
     }
     SECTION("is_partitioned called with a predicate and a projection can be "
             "piped from a range")
     {
         STATIC_REQUIRE(
             values
-            | composer::is_partitioned(composer::less(3), &numname::num));
+            | composer::is_partitioned(composer::less_than(3), &numname::num));
         STATIC_REQUIRE_FALSE(values
-                             | composer::is_partitioned(composer::less("three"),
-                                                        &numname::name));
-        REQUIRE(values
-                | composer::is_partitioned(composer::less(3), &numname::num));
+                             | composer::is_partitioned(
+                                 composer::less_than("three"), &numname::name));
+        REQUIRE(
+            values
+            | composer::is_partitioned(composer::less_than(3), &numname::num));
         REQUIRE_FALSE(values
-                      | composer::is_partitioned(composer::less("three"),
+                      | composer::is_partitioned(composer::less_than("three"),
                                                  &numname::name));
     }
     SECTION("is_partitioned called with a projection, can be called with a "
@@ -1638,11 +1650,12 @@ SCENARIO("is_partitioned is right curried")
             = composer::is_partitioned(&numname::num);
         constexpr auto is_partitioned_by_name
             = composer::is_partitioned(&numname::name);
-        STATIC_REQUIRE(values | is_partitioned_by_num(composer::less(3)));
-        STATIC_REQUIRE_FALSE(values
-                             | is_partitioned_by_name(composer::less("three")));
-        REQUIRE(values | is_partitioned_by_num(composer::less(3)));
-        REQUIRE_FALSE(values | is_partitioned_by_name(composer::less("three")));
+        STATIC_REQUIRE(values | is_partitioned_by_num(composer::less_than(3)));
+        STATIC_REQUIRE_FALSE(
+            values | is_partitioned_by_name(composer::less_than("three")));
+        REQUIRE(values | is_partitioned_by_num(composer::less_than(3)));
+        REQUIRE_FALSE(values
+                      | is_partitioned_by_name(composer::less_than("three")));
     }
 }
 
@@ -1653,11 +1666,12 @@ SCENARIO("partition_point is right curried")
     {
         STATIC_REQUIRE(
             composer::partition_point(
-                values, composer::size | composer::less(4), &numname::name)
+                values, composer::size | composer::less_than(4), &numname::name)
             == values.begin() + 2);
-        REQUIRE(composer::partition_point(
-                    values, composer::size | composer::less(4), &numname::name)
-                == values.begin() + 2);
+        REQUIRE(
+            composer::partition_point(
+                values, composer::size | composer::less_than(4), &numname::name)
+            == values.begin() + 2);
     }
     SECTION("partition_point called with a composed predicate can be piped "
             "from a range")
@@ -1665,20 +1679,21 @@ SCENARIO("partition_point is right curried")
         STATIC_REQUIRE(
             (values
              | composer::partition_point(&numname::name | composer::size
-                                         | composer::less(4)))
+                                         | composer::less_than(4)))
             == values.begin() + 2);
         REQUIRE((values
                  | composer::partition_point(&numname::name | composer::size
-                                             | composer::less(4)))
+                                             | composer::less_than(4)))
                 == values.begin() + 2);
     }
     SECTION("partition_point called with a projection is callable with a range "
             "and a predicate")
     {
         constexpr auto pp_by_name = composer::partition_point(&numname::name);
-        STATIC_REQUIRE((values | pp_by_name(composer::size | composer::less(4)))
-                       == values.begin() + 2);
-        REQUIRE((values | pp_by_name(composer::size | composer::less(4)))
+        STATIC_REQUIRE(
+            (values | pp_by_name(composer::size | composer::less_than(4)))
+            == values.begin() + 2);
+        REQUIRE((values | pp_by_name(composer::size | composer::less_than(4)))
                 == values.begin() + 2);
     }
 }
@@ -1691,30 +1706,35 @@ SCENARIO("is_sorted is right curried")
             "ranges::is_sorted immediately")
     {
         STATIC_REQUIRE(
-            composer::is_sorted(values, composer::less, &numname::num));
+            composer::is_sorted(values, composer::less_than, &numname::num));
         STATIC_REQUIRE_FALSE(
-            composer::is_sorted(values, composer::less, &numname::name));
-        REQUIRE(composer::is_sorted(values, composer::less, &numname::num));
+            composer::is_sorted(values, composer::less_than, &numname::name));
+        REQUIRE(
+            composer::is_sorted(values, composer::less_than, &numname::num));
         REQUIRE_FALSE(
-            composer::is_sorted(values, composer::less, &numname::name));
+            composer::is_sorted(values, composer::less_than, &numname::name));
     }
     SECTION("is_sorted called with a range and a composed predicate calls "
             "ranges::is_sorted immediately")
     {
-        STATIC_REQUIRE(composer::is_sorted(values, by_num(composer::less)));
+        STATIC_REQUIRE(
+            composer::is_sorted(values, by_num(composer::less_than)));
         STATIC_REQUIRE_FALSE(
-            composer::is_sorted(values, by_name(composer::less)));
-        REQUIRE(composer::is_sorted(values, by_num(composer::less)));
-        REQUIRE_FALSE(composer::is_sorted(values, by_name(composer::less)));
+            composer::is_sorted(values, by_name(composer::less_than)));
+        REQUIRE(composer::is_sorted(values, by_num(composer::less_than)));
+        REQUIRE_FALSE(
+            composer::is_sorted(values, by_name(composer::less_than)));
     }
     SECTION(
         "is_sorted called with a composed predicate is pipeable from a range")
     {
-        STATIC_REQUIRE(values | composer::is_sorted(by_num(composer::less)));
-        STATIC_REQUIRE_FALSE(values
-                             | composer::is_sorted(by_name(composer::less)));
-        REQUIRE(values | composer::is_sorted(by_num(composer::less)));
-        REQUIRE_FALSE(values | composer::is_sorted(by_name(composer::less)));
+        STATIC_REQUIRE(values
+                       | composer::is_sorted(by_num(composer::less_than)));
+        STATIC_REQUIRE_FALSE(
+            values | composer::is_sorted(by_name(composer::less_than)));
+        REQUIRE(values | composer::is_sorted(by_num(composer::less_than)));
+        REQUIRE_FALSE(values
+                      | composer::is_sorted(by_name(composer::less_than)));
     }
 }
 
@@ -1725,46 +1745,53 @@ SCENARIO("is_sorted_until is right curried")
     SECTION("is_sorted_until called with a range, a predicate and a projection "
             "calls ranges::is_sorted_until directly")
     {
-        STATIC_REQUIRE(
-            composer::is_sorted_until(values, composer::less, &numname::num)
-            == values.end());
-        STATIC_REQUIRE(
-            composer::is_sorted_until(values, composer::less, &numname::name)
-            == values.begin() + 2);
-        REQUIRE(composer::is_sorted_until(values, composer::less, &numname::num)
+        STATIC_REQUIRE(composer::is_sorted_until(
+                           values, composer::less_than, &numname::num)
+                       == values.end());
+        STATIC_REQUIRE(composer::is_sorted_until(
+                           values, composer::less_than, &numname::name)
+                       == values.begin() + 2);
+        REQUIRE(composer::is_sorted_until(
+                    values, composer::less_than, &numname::num)
                 == values.end());
-        REQUIRE(
-            composer::is_sorted_until(values, composer::less, &numname::name)
-            == values.begin() + 2);
+        REQUIRE(composer::is_sorted_until(
+                    values, composer::less_than, &numname::name)
+                == values.begin() + 2);
     }
     SECTION("is_sorted_until called with a predicate and a projection, is "
             "callable pipeable from a range")
     {
         STATIC_REQUIRE(
-            (values | composer::is_sorted_until(composer::less, &numname::num))
+            (values
+             | composer::is_sorted_until(composer::less_than, &numname::num))
             == values.end());
         STATIC_REQUIRE(
-            (values | composer::is_sorted_until(composer::less, &numname::name))
+            (values
+             | composer::is_sorted_until(composer::less_than, &numname::name))
             == values.begin() + 2);
         REQUIRE(
-            (values | composer::is_sorted_until(composer::less, &numname::num))
+            (values
+             | composer::is_sorted_until(composer::less_than, &numname::num))
             == values.end());
         REQUIRE(
-            (values | composer::is_sorted_until(composer::less, &numname::name))
+            (values
+             | composer::is_sorted_until(composer::less_than, &numname::name))
             == values.begin() + 2);
     }
     SECTION("is_sorted_until called with a composed predicate is pipeable from "
             "a range")
     {
         STATIC_REQUIRE(
-            (values | composer::is_sorted_until(by_num(composer::less)))
+            (values | composer::is_sorted_until(by_num(composer::less_than)))
             == values.end());
         STATIC_REQUIRE(
-            (values | composer::is_sorted_until(by_name(composer::less)))
+            (values | composer::is_sorted_until(by_name(composer::less_than)))
             == values.begin() + 2);
-        REQUIRE((values | composer::is_sorted_until(by_num(composer::less)))
-                == values.end());
-        REQUIRE((values | composer::is_sorted_until(by_name(composer::less)))
-                == values.begin() + 2);
+        REQUIRE(
+            (values | composer::is_sorted_until(by_num(composer::less_than)))
+            == values.end());
+        REQUIRE(
+            (values | composer::is_sorted_until(by_name(composer::less_than)))
+            == values.begin() + 2);
     }
 }
