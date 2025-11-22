@@ -142,6 +142,12 @@ inline constexpr auto ends_with = make_arity_function<7, right_curry>(
     });
 
 #endif
+
+inline constexpr auto is_partitioned = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::is_partitioned(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

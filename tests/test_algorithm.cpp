@@ -1586,5 +1586,60 @@ SCENARIO("ends_with is right curried")
         REQUIRE_FALSE(values | ends_with_num(std::array{ 3, 4, 6 }));
     }
 }
-
 #endif // __cpp_lib_starts_ends_with
+
+SCENARIO("is_partitioned is right curried")
+{
+    SECTION("is_partitioned called with a range, a predicate and a projection "
+            "calls ranges::is_partitioned immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_partitioned(values, composer::less(3), &numname::num));
+        STATIC_REQUIRE_FALSE(composer::is_partitioned(
+            values, composer::less("three"), &numname::name));
+        REQUIRE(
+            composer::is_partitioned(values, composer::less(3), &numname::num));
+        REQUIRE_FALSE(composer::is_partitioned(
+            values, composer::less("three"), &numname::name));
+    }
+    SECTION("is_partitioned called with a range and a composed predicate calls "
+            "ranges::is_partitioned immediately")
+    {
+        STATIC_REQUIRE(composer::is_partitioned(
+            values, &numname::num | composer::less(3)));
+        STATIC_REQUIRE_FALSE(composer::is_partitioned(
+            values, &numname::name | composer::less("three")));
+        REQUIRE(composer::is_partitioned(values,
+                                         &numname::num | composer::less(3)));
+        REQUIRE_FALSE(composer::is_partitioned(
+            values, &numname::name | composer::less("three")));
+    }
+    SECTION("is_partitioned called with a predicate and a projection can be "
+            "piped from a range")
+    {
+        STATIC_REQUIRE(
+            values
+            | composer::is_partitioned(composer::less(3), &numname::num));
+        STATIC_REQUIRE_FALSE(values
+                             | composer::is_partitioned(composer::less("three"),
+                                                        &numname::name));
+        REQUIRE(values
+                | composer::is_partitioned(composer::less(3), &numname::num));
+        REQUIRE_FALSE(values
+                      | composer::is_partitioned(composer::less("three"),
+                                                 &numname::name));
+    }
+    SECTION("is_partitioned called with a projection, can be called with a "
+            "predicate and piped from a range")
+    {
+        constexpr auto is_partitioned_by_num
+            = composer::is_partitioned(&numname::num);
+        constexpr auto is_partitioned_by_name
+            = composer::is_partitioned(&numname::name);
+        STATIC_REQUIRE(values | is_partitioned_by_num(composer::less(3)));
+        STATIC_REQUIRE_FALSE(values
+                             | is_partitioned_by_name(composer::less("three")));
+        REQUIRE(values | is_partitioned_by_num(composer::less(3)));
+        REQUIRE_FALSE(values | is_partitioned_by_name(composer::less("three")));
+    }
+}

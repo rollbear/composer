@@ -385,3 +385,8 @@ Right curried version of [`std::ranges::starts_with`](https://en.cppreference.co
 Right curried version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
 
 **NOTE!** Not available in gcc-15 and lower
+
+### `composer::is_partitioned`
+
+Right curried version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
+
