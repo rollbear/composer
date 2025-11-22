@@ -275,14 +275,14 @@ Lelt curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utility
 
 ### `composer::size`
 
-Composable function object for [`std::ranges::size`]()
+Composable function object for [`std::ranges::size`](https://www.cppreference.com/w/cpp/ranges/size.html)
 
 ### `composer::ssize`
 
-Composable function object for [`std::ranges::ssize`]()
+Composable function object for [`std::ranges::ssize`](https://www.cppreference.com/w/cpp/ranges/ssize.html)
 
 ### `composer::distance`
 
-Composable function object for [`std::ranges::distance`]()
+Composable function object for [`std::ranges::distance`](https://www.cppreference.com/w/cpp/iterator/ranges/distance.html)
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
