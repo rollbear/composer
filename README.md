@@ -24,13 +24,20 @@ Teaser example:
 ```c++
 int main()
 {
-    static constexpr int numbers[]{1,2,3,4};
-    static constexpr std::string_view names[]{
-        "one", "two", "three", "four"
+    struct numname {
+        int num;
+        std::string_view name;
     };
-    constexpr auto it = std::ranges::find_if(std::views::zip(numbers, names),
-                                             get<1> | equal_to("three"));
-    return it | deref | get<0>; // returns 3
+    static constexpr numname values[]{
+        {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"}
+    };
+    constexpr auto by_name = composer::transform_args(&numname::name);
+    constexpr auto by_num = composer::transform_args(&numname::num);
+    assert(! composer::is_sorted(values, by_name(composer::less)));
+    assert(composer::is_sorted(values, by_num(composer::less)));
+    
+    constexpr auto it = values | composer::find_if(&numname::name | composer::equal_to("three"));
+    return it->num; // returns 3
 }
 ```
 
@@ -291,3 +298,113 @@ Composable function object for [`std::ranges::ssize`](https://www.cppreference.c
 Composable function object for [`std::ranges::distance`](https://www.cppreference.com/w/cpp/iterator/ranges/distance.html)
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
+
+## `<composer/algorithm.hpp>'
+
+### `composer::all_of`
+
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
+### `composer::any_of`
+
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
+### `composer::none_of`
+
+Right curried version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+
+### `composer::for_each`
+
+Right curried version of [`std::ranges::for_each`](https://en.cppreference.com/w/cpp/algorithm/ranges/for_each.html)
+
+### `composer::for_each_n`
+
+Right curried version of [`std::ranges::for_each_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/for_each_n.html)
+
+### `composer::count`
+
+Right curried version of [`std::ranges::count`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
+
+### `composer::count_if`
+
+Right curried version of [`std::ranges::count_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
+
+### `composer::find`
+
+Right curried version of [`std::ranges::find`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+
+### `composer::find_if`
+
+Right curried version of [`std::ranges::find_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+
+### `composer::find_if_not`
+
+Right curried version of [`std::ranges::find_if_not`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+
+### `composer::find_last`
+
+Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+
+### `composer::find_last_if`
+
+Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+
+### `composer::find_last_if_not`
+
+Right curried version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+
+### `composer::find_end`
+
+Right curried version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
+
+### `composer::find_first_of`
+
+Right curried version of [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
+
+### `composer::adjacent_find`
+
+Right curried version of [`std::ranges::adjacent_find`](https://www.cppreference.com/w/cpp/algorithm/ranges/adjacent_find.html)
+
+### `composer::search`
+
+Right curried version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
+
+### `composer::search_n`
+
+Right curried version of [`std::ranges::search_n`](https://www.cppreference.com/w/cpp/algorithm/ranges/search_n.html)
+
+### `composer::contains`
+
+Right curried version of [`std::ranges::contains`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
+
+### `composer::contains_subrange`
+
+Right curried version of [`std::ranges::contains_subrange`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
+
+### `composer::starts_with`
+
+Right curried version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
+
+**NOTE!** Not available in gcc-15 and lower
+
+### `composer::ends_with`
+
+Right curried version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
+
+**NOTE!** Not available in gcc-15 and lower
+
+### `composer::is_partitioned`
+
+Right curried version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
+
+### `composer::partition_point`
+
+Right curried version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
+
+### `composer::is_sorted`
+
+Right curried version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
+
+### `composer::is_sorted_until`
+
+Right curried version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)

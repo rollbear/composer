@@ -3,6 +3,7 @@
 
 #include "arity_function.hpp"
 #include "functional.hpp"
+#include "left_curry.hpp"
 
 namespace composer {
 
@@ -23,7 +24,7 @@ struct arg_transformer {
 };
 
 template <typename T>
-constexpr inline auto transformation(T&& t)
+constexpr auto transformation(T&& t)
 {
     if constexpr (std::is_member_pointer_v<std::remove_cvref_t<T>>) {
         return composer::mem_fn(std::forward<T>(t));
