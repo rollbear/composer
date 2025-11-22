@@ -3,10 +3,21 @@
 
 **composer** is an experimental C++23 library for functional composition.
 
-It is, by no means, complete, but it has the fundamental building blocks
-for making composable functions, and it provides a handy set of useful
-functions, primarily as a copy of many function templates from the standard
-library header [`<functional>`](https://en.cppreference.com/w/cpp/header/functional.html),
+There are basic building blocks for creating function objects and support
+[partial application](https://en.wikipedia.org/wiki/Partial_application) of
+function arguments, and a set of combosable functions.
+
+Partial application comes in two flavors [`left_curry`](#left_curry),
+which binds the left most arguments to the function, and
+[`right_curry`](#right curry), which binds the right most arcuments to
+the function.
+
+In this library, the function object that results from a partial application
+always owns the bound arguments, either by copying or by moving. This even
+goes for C-arrays, which otherwise always decay to ponters to the first
+element. If you want a bound argument to be referenced, you can use
+[`ref`](#ref) or [`cref`](#cref).
+
 
 Teaser example:
 
@@ -41,7 +52,7 @@ side function.
 Arity functions that accept only one argument can also be called using a *pipe* syntax,
 like `value | function` (which is synanymous with `function(value)`)
 
-### `composer::left_curry<F, N>`
+### <A name="left_curry"/> `composer::left_curry<F, N>`
 
 A `left_ccurry` is an `arity_function`, modeling a normal
 [curried function](https://en.wikipedia.org/wiki/Currying).
@@ -69,7 +80,7 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
-### `composer::right_curry<F, N>`
+### <A name="right_curry"/> `composer::right_curry<F, N>`
 
 A `right_curry` is an `arity_function` which models currying from the
 back, i.e. when called with fewer arguments than needed for the underlying
@@ -106,12 +117,12 @@ Exmaple:
 auto minus = make_arity_function<2, right_curry>([](auto a, auto b)-> decltype(a - b){ return a - b;});
 ```
 
-### `composer::ref(T&)`
+### <A name="ref"/> `composer::ref(T&)`
 
 Used when binding arguments to curried functions, and you want to bend them by
 reference.
 
-### `composer::cref(T&)`
+### <A name="cref"/> `composer::cref(T&)`
 
 Used when binding arguments to curried functions, and you want to bend them by
 const reference.
