@@ -48,7 +48,7 @@ inline constexpr auto bit_xor = right_curry<std::bit_xor<>, 2>{};
 inline constexpr auto bit_not = arity_function<std::bit_not<>, 1>{};
 
 template <typename R, typename C, arity_function_type F>
-inline constexpr auto operator|(R(C::* p), F&& f)
+constexpr auto operator|(R(C::* p), F&& f)
     -> decltype(mem_fn(p) | std::forward<F>(f))
     requires(!requires { std::forward<F>(f)(p); })
 {
@@ -56,7 +56,7 @@ inline constexpr auto operator|(R(C::* p), F&& f)
 }
 
 template <typename IN, typename C, typename R>
-[[nodiscard]] inline constexpr auto operator|(IN&& in, R(C::* p))
+[[nodiscard]] constexpr auto operator|(IN&& in, R(C::* p))
     -> decltype(mem_fn(p)(std::forward<IN>(in)))
 {
     return mem_fn(p)(std::forward<IN>(in));
