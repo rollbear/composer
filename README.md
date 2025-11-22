@@ -397,3 +397,7 @@ Right curried version of [`std::ranges::partition_point`](https://en.cppreferenc
 ### `composer::is_sorted`
 
 Right curried version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
+
+### `composer::is_sorted_until`
+
+Right curried version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)

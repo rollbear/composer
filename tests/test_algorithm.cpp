@@ -1717,3 +1717,54 @@ SCENARIO("is_sorted is right curried")
         REQUIRE_FALSE(values | composer::is_sorted(by_name(composer::less)));
     }
 }
+
+SCENARIO("is_sorted_until is right curried")
+{
+    constexpr auto by_num = composer::transform_args(&numname::num);
+    constexpr auto by_name = composer::transform_args(&numname::name);
+    SECTION("is_sorted_until called with a range, a predicate and a projection "
+            "calls ranges::is_sorted_until directly")
+    {
+        STATIC_REQUIRE(
+            composer::is_sorted_until(values, composer::less, &numname::num)
+            == values.end());
+        STATIC_REQUIRE(
+            composer::is_sorted_until(values, composer::less, &numname::name)
+            == values.begin() + 2);
+        REQUIRE(composer::is_sorted_until(values, composer::less, &numname::num)
+                == values.end());
+        REQUIRE(
+            composer::is_sorted_until(values, composer::less, &numname::name)
+            == values.begin() + 2);
+    }
+    SECTION("is_sorted_until called with a predicate and a projection, is "
+            "callable pipeable from a range")
+    {
+        STATIC_REQUIRE(
+            (values | composer::is_sorted_until(composer::less, &numname::num))
+            == values.end());
+        STATIC_REQUIRE(
+            (values | composer::is_sorted_until(composer::less, &numname::name))
+            == values.begin() + 2);
+        REQUIRE(
+            (values | composer::is_sorted_until(composer::less, &numname::num))
+            == values.end());
+        REQUIRE(
+            (values | composer::is_sorted_until(composer::less, &numname::name))
+            == values.begin() + 2);
+    }
+    SECTION("is_sorted_until called with a composed predicate is pipeable from "
+            "a range")
+    {
+        STATIC_REQUIRE(
+            (values | composer::is_sorted_until(by_num(composer::less)))
+            == values.end());
+        STATIC_REQUIRE(
+            (values | composer::is_sorted_until(by_name(composer::less)))
+            == values.begin() + 2);
+        REQUIRE((values | composer::is_sorted_until(by_num(composer::less)))
+                == values.end());
+        REQUIRE((values | composer::is_sorted_until(by_name(composer::less)))
+                == values.begin() + 2);
+    }
+}
