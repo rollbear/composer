@@ -21,6 +21,7 @@ add_executable(
         test_functional.cpp
         test_tuple.cpp
         test_transform_args.cpp
+        test_ranges.cpp
 )
 
 target_link_libraries(test_composer composer::composer Catch2::Catch2WithMain)
