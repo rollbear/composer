@@ -4,21 +4,21 @@
 
 TEST_CASE("a front bound function is called with all provided arguments")
 {
-    constexpr auto minus = composer::front_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
     REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("a front bound function is not callable with too many arguments")
 {
-    constexpr auto minus = composer::front_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
 }
 
 TEST_CASE("a front bound function called with fewer arguments that required, "
           "returns a callable that binds themthe beginning")
 {
-    constexpr auto minus = composer::front_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     constexpr auto f5minus = minus(5);
     STATIC_REQUIRE(f5minus(2) == 3);
     REQUIRE(f5minus(2) == 3);
@@ -103,7 +103,7 @@ TEST_CASE("a piped expression is a front bound function that calls the right "
 {
     auto to_string = composer::make_arity_function<1>(
         [](auto t) { return std::to_string(t); });
-    constexpr auto minus = composer::front_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     auto sub_from_2_to_str = sub_to_str(2);
     REQUIRE(sub_from_2_to_str(5) == "-3");

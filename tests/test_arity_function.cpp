@@ -6,20 +6,20 @@
 
 TEST_CASE("an arity function object is called with all provided arguments")
 {
-    constexpr auto minus = composer::arity_function<std::minus<>, 2>{};
+    constexpr auto minus = composer::arity_function<2, std::minus<>>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
     REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("an arity function is not callable with too many arguments")
 {
-    constexpr auto minus = composer::arity_function<std::minus<>, 2>{};
+    constexpr auto minus = composer::arity_function<2, std::minus<>>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
 }
 
 TEST_CASE("an arity function is not callable with too few arguments")
 {
-    constexpr auto minus = composer::arity_function<std::minus<>, 2>{};
+    constexpr auto minus = composer::arity_function<2, std::minus<>>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int>);
 }
 
@@ -84,7 +84,7 @@ TEST_CASE("a piped expressions calls the right hand side with the result of "
 {
     constexpr auto to_string = composer::make_arity_function<1>(
         [](auto v) { return std::to_string(v); });
-    constexpr auto minus = composer::arity_function<std::minus<>, 2>{};
+    constexpr auto minus = composer::arity_function<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     REQUIRE(sub_to_str(5, 3) == "2");
 }

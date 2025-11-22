@@ -46,7 +46,7 @@ int main()
 
 ## type templates
 
-### `composer::arity_function<F, N>`
+### `composer::arity_function<N, F>`
 
 A composable version of the function type `F`. `N` is the arity of the
 function, i.e. the number of arguments it takes, including defaulted arguments, if there
@@ -60,7 +60,7 @@ side function.
 Arity functions that accept only one argument can also be called using a *pipe* syntax,
 like `value | function` (which is synonymous with `function(value)`)
 
-### <A name="front_binding"></A> `composer::front_binding<F, N>`
+### <A name="front_binding"></A> `composer::front_binding<N, F>`
 
 A `front_binding` is an `arity_function`. If called with fewer arguments than
 the arity, a new callable is returned, which binds the arguments to the left.
@@ -86,7 +86,7 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
-### <A name="back_binding"></A> `composer::back_binding<F, N>`
+### <A name="back_binding"></A> `composer::back_binding<N, F>`
 
 A `back_binding` is an `arity_function`. If called with fewer arguments than
 needed for the underlying function, it binds the arguments to the right. This

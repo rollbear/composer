@@ -38,17 +38,17 @@ struct front_binder {
 
 } // namespace internal
 
-template <typename F, std::size_t N>
-struct [[nodiscard]] front_binding : arity_function<F, N> {
-    using arity_function<F, N>::operator();
+template <std::size_t N, typename F>
+struct [[nodiscard]] front_binding : arity_function<N, F> {
+    using arity_function<N, F>::operator();
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> front_binding<decltype(internal::front_binder{
+        -> front_binding<N - sizeof...(Ts),
+                         decltype(internal::front_binder{
                              std::forward<Self>(self),
                              std::tuple<internal::arg_binder_t<Ts>...>(
-                                 std::forward<Ts>(ts)...) }),
-                         N - sizeof...(Ts)>
+                                 std::forward<Ts>(ts)...) })>
         requires(sizeof...(Ts) < N) && (!requires {
                     std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
                 })

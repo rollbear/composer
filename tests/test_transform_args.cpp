@@ -55,7 +55,7 @@ TEST_CASE("transform_args can transform via a pointer to member")
 
     constexpr S s{ 5, 2 };
     constexpr auto equal_to
-        = composer::back_binding<std::ranges::equal_to, 2>{};
+        = composer::back_binding<2, std::ranges::equal_to>{};
     STATIC_REQUIRE(composer::transform_args(&S::a, equal_to(5))(s));
     REQUIRE(composer::transform_args(&S::a, equal_to(5))(s));
     STATIC_REQUIRE(composer::transform_args(&S::get_b, equal_to(2))(s));
@@ -68,7 +68,7 @@ TEST_CASE("transform_args is front binding")
         = [](const auto& p) -> decltype(*p) { return *p; };
     constexpr auto dereferenced_args = composer::transform_args(dereference);
     constexpr auto equal_to
-        = composer::back_binding<std::ranges::equal_to, 2>{};
+        = composer::back_binding<2, std::ranges::equal_to>{};
     constexpr int a = 2;
     STATIC_REQUIRE(dereferenced_args(equal_to(2))(&a));
     STATIC_REQUIRE_FALSE(dereferenced_args(equal_to(3))(&a));

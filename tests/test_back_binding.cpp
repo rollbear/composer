@@ -6,14 +6,14 @@
 
 TEST_CASE("a back bound function is called with all provided arguments")
 {
-    constexpr auto minus = composer::back_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::back_binding<2, std::minus<>>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
     REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("a back bound function is not callable with too many arguments")
 {
-    constexpr auto minus = composer::back_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::back_binding<2, std::minus<>>{};
     STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
     REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
 }
@@ -21,7 +21,7 @@ TEST_CASE("a back bound function is not callable with too many arguments")
 TEST_CASE("a back bound function called with fewer arguments than required, "
           "returns a callable that binds them at the end")
 {
-    constexpr auto minus = composer::back_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::back_binding<2, std::minus<>>{};
     constexpr auto minus2 = minus(2);
     STATIC_REQUIRE(minus2(5) == 3);
     REQUIRE(minus2(5) == 3);
@@ -106,7 +106,7 @@ TEST_CASE("a piped expression is a back bound function that calls the right "
 {
     auto to_string = composer::make_arity_function<1>(
         [](auto t) { return std::to_string(t); });
-    constexpr auto minus = composer::back_binding<std::minus<>, 2>{};
+    constexpr auto minus = composer::back_binding<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     auto minus2_to_str = sub_to_str(2);
     REQUIRE(minus2_to_str(5) == "3");

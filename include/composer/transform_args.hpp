@@ -39,10 +39,10 @@ inline constexpr auto transform_args = make_arity_function<2, front_binding>(
     []<typename T, arity_function_type F> [[nodiscard]] (T&& t, F&& f)
         -> internal::rebind_function_t<
             std::remove_cvref_t<F>,
+            std::remove_cvref_t<F>::arity,
             internal::arg_transformer<decltype(internal::transformation(
                                           std::forward<T>(t))),
-                                      std::remove_cvref_t<decltype(f.f)>>,
-            std::remove_cvref_t<F>::arity> {
+                                      std::remove_cvref_t<decltype(f.f)>>> {
         return { internal::transformation(std::forward<T>(t)),
                  std::forward_like<F>(f.f) };
     });
