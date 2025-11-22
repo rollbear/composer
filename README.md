@@ -390,3 +390,6 @@ Right curried version of [`std::ranges::ends_with`](https://en.cppreference.com/
 
 Right curried version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
 
+### `composer::partition_point`
+
+Right curried version o$ [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)

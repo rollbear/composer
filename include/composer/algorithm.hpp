@@ -148,6 +148,13 @@ inline constexpr auto is_partitioned = make_arity_function<4, right_curry>(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::is_partitioned(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto partition_point = make_arity_function<4, right_curry>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition_point(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partition_point(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

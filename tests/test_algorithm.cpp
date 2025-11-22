@@ -1,5 +1,6 @@
 #include <composer/algorithm.hpp>
 #include <composer/functional.hpp>
+#include <composer/ranges.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -1641,5 +1642,42 @@ SCENARIO("is_partitioned is right curried")
                              | is_partitioned_by_name(composer::less("three")));
         REQUIRE(values | is_partitioned_by_num(composer::less(3)));
         REQUIRE_FALSE(values | is_partitioned_by_name(composer::less("three")));
+    }
+}
+
+SCENARIO("partition_point is right curried")
+{
+    SECTION("calling partition_point with a range, a predicate and a "
+            "projection calls ranges::partition_point immediately")
+    {
+        STATIC_REQUIRE(
+            composer::partition_point(
+                values, composer::size | composer::less(4), &numname::name)
+            == values.begin() + 2);
+        REQUIRE(composer::partition_point(
+                    values, composer::size | composer::less(4), &numname::name)
+                == values.begin() + 2);
+    }
+    SECTION("partition_point called with a composed predicate can be piped "
+            "from a range")
+    {
+        STATIC_REQUIRE(
+            (values
+             | composer::partition_point(&numname::name | composer::size
+                                         | composer::less(4)))
+            == values.begin() + 2);
+        REQUIRE((values
+                 | composer::partition_point(&numname::name | composer::size
+                                             | composer::less(4)))
+                == values.begin() + 2);
+    }
+    SECTION("partition_point called with a projection is callable with a range "
+            "and a predicate")
+    {
+        constexpr auto pp_by_name = composer::partition_point(&numname::name);
+        STATIC_REQUIRE((values | pp_by_name(composer::size | composer::less(4)))
+                       == values.begin() + 2);
+        REQUIRE((values | pp_by_name(composer::size | composer::less(4)))
+                == values.begin() + 2);
     }
 }
