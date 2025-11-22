@@ -24,13 +24,20 @@ Teaser example:
 ```c++
 int main()
 {
-    static constexpr int numbers[]{1,2,3,4};
-    static constexpr std::string_view names[]{
-        "one", "two", "three", "four"
+    struct numname {
+        int num;
+        std::string_view name;
     };
-    constexpr auto it = std::ranges::find_if(std::views::zip(numbers, names),
-                                             get<1> | equal_to("three"));
-    return it | deref | get<0>; // returns 3
+    static constexpr numname values[]{
+        {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"}
+    };
+    constexpr auto by_name = composer::transform_args(&numname::name);
+    constexpr auto by_num = composer::transform_args(&numname::num);
+    assert(! composer::is_sorted(values, by_name(composer::less)));
+    assert(composer::is_sorted(values, by_num(composer::less)));
+    
+    constexpr auto it = values | composer::find_if(&numname::name | composer::equal_to("three"));
+    return it->num; // returns 3
 }
 ```
 
