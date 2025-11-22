@@ -5,16 +5,16 @@
 
 There are basic building blocks for creating function objects and support
 [partial application](https://en.wikipedia.org/wiki/Partial_application) of
-function arguments, and a set of combosable functions.
+function arguments, and a set of composable functions.
 
 Partial application comes in two flavors [`left_curry`](#left_curry),
 which binds the left most arguments to the function, and
-[`right_curry`](#right curry), which binds the right most arcuments to
+[`right_curry`](#right_curry), which binds the right most arguments to
 the function.
 
 In this library, the function object that results from a partial application
 always owns the bound arguments, either by copying or by moving. This even
-goes for C-arrays, which otherwise always decay to ponters to the first
+goes for C-arrays, which otherwise always decay to pointers to the first
 element. If you want a bound argument to be referenced, you can use
 [`ref`](#ref) or [`cref`](#cref).
 
@@ -57,12 +57,12 @@ where the function on the right hand side is callable with the result of the lef
 side function.
 
 Arity functions that accept only one argument can also be called using a *pipe* syntax,
-like `value | function` (which is synanymous with `function(value)`)
+like `value | function` (which is synonymous with `function(value)`)
 
-### <A name="left_curry"/> `composer::left_curry<F, N>`
+### <A name="left_curry"></A> `composer::left_curry<F, N>`
 
-A `left_ccurry` is an `arity_function`, modeling a normal
-[curried function](https://en.wikipedia.org/wiki/Currying).
+A `left_curry` is an `arity_function`, modeling a normal
+[curried function](https://en.wikipedia.org/wiki/Currying)
 If called with fewer arguments than
 the arity, a new callable is returned, which binds the arguments to the left.
 When that callable is invoked with args, the function is called with the bound
@@ -87,7 +87,7 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
-### <A name="right_curry"/> `composer::right_curry<F, N>`
+### <A name="right_curry"></A> `composer::right_curry<F, N>`
 
 A `right_curry` is an `arity_function` which models currying from the
 back, i.e. when called with fewer arguments than needed for the underlying
@@ -119,17 +119,17 @@ call `std::move(funcion_object)(args...)`.
 
 Make it easier to create arity functions from lambdas or other callables.
 
-Exmaple:
+Example:
 ```c++
 auto minus = make_arity_function<2, right_curry>([](auto a, auto b)-> decltype(a - b){ return a - b;});
 ```
 
-### <A name="ref"/> `composer::ref(T&)`
+### <A name="ref"></A> `composer::ref(T&)`
 
 Used when binding arguments to curried functions, and you want to bend them by
 reference.
 
-### <A name="cref"/> `composer::cref(T&)`
+### <A name="cref"></A> `composer::cref(T&)`
 
 Used when binding arguments to curried functions, and you want to bend them by
 const reference.
@@ -152,8 +152,8 @@ picking the member via the pointer-to-member.
 
 ### `operator|(V&& v, T C::*p)`
 
-Synonymous with `mem_fn(&C::p)(std::forward<V>(v)`. Only appliccable if the
-pointer to member is appliccable.
+Synonymous with `mem_fn(&C::p)(std::forward<V>(v)`. Only applicable if the
+pointer to member is applicable.
 
 ### `composer::equal_to(a, b)`
 
@@ -281,7 +281,7 @@ Right curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utilit
 
 ### `composer::apply_using`
 
-Lelt curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utility/apply.html)
+Left curried version of [`std::apply`](https://en.cppreference.com/w/cpp/utility/apply.html)
 
 ## `<composer/ranges.hpp>`
 
@@ -299,7 +299,7 @@ Composable function object for [`std::ranges::distance`](https://www.cppreferenc
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
 
-## `<composer/algorithm.hpp>'
+## `<composer/algorithm.hpp>`
 
 ### `composer::all_of`
 
