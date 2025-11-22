@@ -2,8 +2,8 @@
 #define COMPOSER_TRANSFORM_ARGS_HPP
 
 #include "arity_function.hpp"
+#include "front_binding.hpp"
 #include "functional.hpp"
-#include "left_curry.hpp"
 
 namespace composer {
 
@@ -35,7 +35,7 @@ constexpr auto transformation(T&& t)
 
 } // namespace internal
 
-inline constexpr auto transform_args = make_arity_function<2, left_curry>(
+inline constexpr auto transform_args = make_arity_function<2, front_binding>(
     []<typename T, arity_function_type F> [[nodiscard]] (T&& t, F&& f)
         -> internal::rebind_function_t<
             std::remove_cvref_t<F>,

@@ -20,7 +20,7 @@ constexpr std::array<numname, 5> values = {
 
 } // namespace
 
-SCENARIO("all_of is right curried")
+SCENARIO("all_of is back binding")
 {
     SECTION("when called with range, predicate and projection, it calls "
             "ranges::all_of directly")
@@ -130,7 +130,7 @@ SCENARIO("all_of is right curried")
     }
 }
 
-SCENARIO("any_of is right curried")
+SCENARIO("any_of is back binding")
 {
     SECTION("when called with range, predicate and projection, it calls "
             "ranges::any_of directly")
@@ -244,7 +244,7 @@ SCENARIO("any_of is right curried")
     }
 }
 
-SCENARIO("none_of is right curried")
+SCENARIO("none_of is back binding")
 {
     SECTION("when called with range, predicate and projection, it calls "
             "ranges::none_of directly")
@@ -358,7 +358,7 @@ SCENARIO("none_of is right curried")
     }
 }
 
-SCENARIO("for_each is right curried")
+SCENARIO("for_each is back binding")
 {
     static constexpr auto append_to_string
         = [](auto& s) { return [&s](int x) { s += std::to_string(x); }; };
@@ -415,7 +415,7 @@ SCENARIO("for_each is right curried")
     }
 }
 
-SCENARIO("for_each_n is right curried")
+SCENARIO("for_each_n is back binding")
 {
     static constexpr auto append_to_string
         = [](auto& s) { return [&s](int x) { s += std::to_string(x); }; };
@@ -463,7 +463,7 @@ SCENARIO("for_each_n is right curried")
     }
 }
 
-SCENARIO("count is right curried")
+SCENARIO("count is back binding")
 {
     SECTION("calling count with range, value and projection calls "
             "ranges::count directly")
@@ -545,7 +545,7 @@ SCENARIO("count is right curried")
     }
 }
 
-SCENARIO("count_if is right curried")
+SCENARIO("count_if is back binding")
 {
     SECTION("calling count_if with range, predicate and projection calls "
             "ranges::count_if directly")
@@ -665,7 +665,7 @@ SCENARIO("count_if is right curried")
     }
 }
 
-SCENARIO("find is right curried")
+SCENARIO("find is back binding")
 {
     SECTION("calling find with a range, a value and a projection calls "
             "ranges::find if directly")
@@ -703,7 +703,7 @@ SCENARIO("find is right curried")
     }
 }
 
-SCENARIO("find_if is right curried")
+SCENARIO("find_if is back binding")
 {
     SECTION("calling find_if with a range, a predicate and a projection calls "
             "ranges::find_if if directly")
@@ -799,7 +799,7 @@ SCENARIO("find_if is right curried")
     }
 }
 
-SCENARIO("find_if_not is right curried")
+SCENARIO("find_if_not is back binding")
 {
     SECTION(
         "calling find_if_not with a range, a predicate and a projection calls "
@@ -1138,7 +1138,7 @@ SCENARIO("find_last_if_not")
     }
 }
 
-SCENARIO("find_end is right curried")
+SCENARIO("find_end is back binding")
 {
     SECTION("calling find_end with two ranges calls ranges::find_end directly")
     {
@@ -1201,7 +1201,7 @@ SCENARIO("find_end is right curried")
     }
 }
 
-SCENARIO("find_first_of is right curried")
+SCENARIO("find_first_of is back binding")
 {
     SECTION("calling find_first_of with two ranges calls ranges::find_first_of "
             "directly")
@@ -1257,7 +1257,7 @@ SCENARIO("find_first_of is right curried")
     }
 }
 
-SCENARIO("adjacent_find is right curried")
+SCENARIO("adjacent_find is back binding")
 {
     static constexpr std::array numbers = { 1, 2, -2, 3, 3, 4, 5 };
     SECTION("adjacent_find called with a range calls ranges::adjacent_find "
@@ -1299,7 +1299,7 @@ SCENARIO("adjacent_find is right curried")
     }
 }
 
-SCENARIO("search is right curried")
+SCENARIO("search is back binding")
 {
     SECTION("search called with 2 ranges calls ranges::search immediately")
     {
@@ -1362,7 +1362,7 @@ SCENARIO("search is right curried")
     }
 }
 
-SCENARIO("search_n is right curried")
+SCENARIO("search_n is back binding")
 {
     static constexpr std::array ints = { 1, 2, 2, -3, -4, 2, 2, 2, 5, 6 };
 
@@ -1411,7 +1411,7 @@ SCENARIO("search_n is right curried")
     }
 }
 
-SCENARIO("contains is right curried")
+SCENARIO("contains is back binding")
 {
     SECTION("contains called with a range, a value and a projection calls "
             "ranges::contains immediately")
@@ -1440,7 +1440,7 @@ SCENARIO("contains is right curried")
     }
 }
 
-SCENARIO("contains_subrange is right curried")
+SCENARIO("contains_subrange is back binding")
 {
     SECTION("calling contains_subrange with two ranges, a predicate and a "
             "projection calls ranges::contains_subrange immediately")
@@ -1469,7 +1469,7 @@ SCENARIO("contains_subrange is right curried")
 
 #if defined(__cpp_lib_ranges_starts_ends_with)
 
-SCENARIO("starts_with is right curried")
+SCENARIO("starts_with is back binding")
 {
     SECTION("starts_with called with two ranges calls ranges::starts_with "
             "immediately")
@@ -1535,7 +1535,7 @@ SCENARIO("starts_with is right curried")
     }
 }
 
-SCENARIO("ends_with is right curried")
+SCENARIO("ends_with is back binding")
 {
     SECTION("ends_with called with two ranges calls ranges::ends_with "
             "immediately")
@@ -1601,7 +1601,7 @@ SCENARIO("ends_with is right curried")
 }
 #endif // __cpp_lib_starts_ends_with
 
-SCENARIO("is_partitioned is right curried")
+SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
             "calls ranges::is_partitioned immediately")
@@ -1659,7 +1659,7 @@ SCENARIO("is_partitioned is right curried")
     }
 }
 
-SCENARIO("partition_point is right curried")
+SCENARIO("partition_point is back binding")
 {
     SECTION("calling partition_point with a range, a predicate and a "
             "projection calls ranges::partition_point immediately")
@@ -1698,7 +1698,7 @@ SCENARIO("partition_point is right curried")
     }
 }
 
-SCENARIO("is_sorted is right curried")
+SCENARIO("is_sorted is back binding")
 {
     constexpr auto by_num = composer::transform_args(&numname::num);
     constexpr auto by_name = composer::transform_args(&numname::name);
@@ -1738,7 +1738,7 @@ SCENARIO("is_sorted is right curried")
     }
 }
 
-SCENARIO("is_sorted_until is right curried")
+SCENARIO("is_sorted_until is back binding")
 {
     constexpr auto by_num = composer::transform_args(&numname::num);
     constexpr auto by_name = composer::transform_args(&numname::name);

@@ -1,5 +1,5 @@
-#ifndef COMPOSER_RIGHT_CURRY_HPP
-#define COMPOSER_RIGHT_CURRY_HPP
+#ifndef COMPOSER_BACK_BINDING_HPP
+#define COMPOSER_BACK_BINDING_HPP
 
 #include "arity_function.hpp"
 
@@ -38,16 +38,16 @@ struct back_binder {
 } // namespace internal
 
 template <typename F, std::size_t N>
-struct [[nodiscard]] right_curry : arity_function<F, N> {
+struct [[nodiscard]] back_binding : arity_function<F, N> {
     using arity_function<F, N>::operator();
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> right_curry<decltype(internal::back_binder{
-                           std::forward<Self>(self),
-                           std::tuple<internal::arg_binder_t<Ts>...>(
-                               std::forward<Ts>(ts)...) }),
-                       N - sizeof...(Ts)>
+        -> back_binding<decltype(internal::back_binder{
+                            std::forward<Self>(self),
+                            std::tuple<internal::arg_binder_t<Ts>...>(
+                                std::forward<Ts>(ts)...) }),
+                        N - sizeof...(Ts)>
         requires(sizeof...(Ts) < N) && (!requires {
                     std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
                 })
@@ -57,4 +57,4 @@ struct [[nodiscard]] right_curry : arity_function<F, N> {
 };
 
 } // namespace composer
-#endif // COMPOSER_RIGHT_CURRY_HPP
+#endif // COMPOSER_BACK_BINDING_HPP
