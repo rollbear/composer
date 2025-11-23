@@ -166,6 +166,85 @@ inline constexpr auto is_sorted_until = make_arity_function<4, back_binding>(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::is_sorted_until(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto lower_bound = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::lower_bound(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::lower_bound(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto upper_bound = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::upper_bound(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::upper_bound(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto binary_search = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::binary_search(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::binary_search(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto equal_range = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::equal_range(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::equal_range(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto includes = make_arity_function<7, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::includes(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::includes(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto is_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::is_heap(std::forward<Ts>(ts)...)) {
+        return std::ranges::is_heap(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto is_heap_until = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_heap_until(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::is_heap_until(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto max = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::max(std::forward<Ts>(ts)...)) {
+        return std::ranges::max(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto max_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::max_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::max_element(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto min = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::min(std::forward<Ts>(ts)...)) {
+        return std::ranges::min(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto min_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::min_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::min_element(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto minmax_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::minmax_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::minmax_element(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto clamp = make_arity_function<5, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::clamp(std::forward<Ts>(ts)...)) {
+        return std::ranges::clamp(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

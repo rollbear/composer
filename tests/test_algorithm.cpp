@@ -1795,3 +1795,510 @@ SCENARIO("is_sorted_until is back binding")
             == values.begin() + 2);
     }
 }
+
+SCENARIO("lower_bound")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("lower_bound called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE(composer::lower_bound(
+                           even_numbers, 5, composer::less_than, &numname::num)
+                       == even_numbers.begin() + 3);
+        REQUIRE(composer::lower_bound(
+                    even_numbers, 5, composer::less_than, &numname::num)
+                == even_numbers.begin() + 3);
+    }
+    SECTION("lower_bound called with a predicate and a projection, called with "
+            "a value, is pipeable from a range")
+    {
+        constexpr auto lower_bound_num
+            = composer::lower_bound(composer::less_than, &numname::num);
+        STATIC_REQUIRE((even_numbers | lower_bound_num(8))
+                       == even_numbers.begin() + 4);
+        REQUIRE((even_numbers | lower_bound_num(8))
+                == even_numbers.begin() + 4);
+    }
+}
+
+SCENARIO("upper_bound")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("upper_bound called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE(composer::upper_bound(
+                           even_numbers, 5, composer::less_than, &numname::num)
+                       == even_numbers.begin() + 3);
+        REQUIRE(composer::upper_bound(
+                    even_numbers, 5, composer::less_than, &numname::num)
+                == even_numbers.begin() + 3);
+    }
+    SECTION("upper_bound called with a predicate and a projection, called with "
+            "a value, is pipeable from a range")
+    {
+        constexpr auto upper_bound_num
+            = composer::upper_bound(composer::less_than, &numname::num);
+        STATIC_REQUIRE((even_numbers | upper_bound_num(8))
+                       == even_numbers.begin() + 5);
+        REQUIRE((even_numbers | upper_bound_num(8))
+                == even_numbers.begin() + 5);
+    }
+}
+
+SCENARIO("binary_search")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("binary called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE_FALSE(composer::binary_search(
+            even_numbers, 5, composer::less_than, &numname::num));
+        REQUIRE_FALSE(composer::binary_search(
+            even_numbers, 5, composer::less_than, &numname::num));
+        STATIC_REQUIRE(composer::binary_search(
+            even_numbers, 6, composer::less_than, &numname::num));
+        REQUIRE(composer::binary_search(
+            even_numbers, 6, composer::less_than, &numname::num));
+    }
+    SECTION(
+        "binary_search called with a predicate and a projection, called with "
+        "a value, is pipeable from a range")
+    {
+        constexpr auto binary_search_num
+            = composer::binary_search(composer::less_than, &numname::num);
+        STATIC_REQUIRE(even_numbers | binary_search_num(8));
+        REQUIRE(even_numbers | binary_search_num(8));
+        STATIC_REQUIRE_FALSE(even_numbers | binary_search_num(7));
+        REQUIRE_FALSE(even_numbers | binary_search_num(7));
+    }
+}
+
+SCENARIO("equal_range")
+{
+    SECTION("equal_range called with a range, a value, a predicate and a "
+            "projection calls ranges::equal_range immediately")
+    {
+        constexpr auto sr = composer::equal_range(
+            values, 3, composer::less_than, &numname::num);
+        STATIC_REQUIRE(sr.begin() == values.begin() + 2);
+        STATIC_REQUIRE(sr.end() == values.begin() + 3);
+        auto r = composer::equal_range(
+            values, 3, composer::less_than, &numname::num);
+        REQUIRE(r.begin() == values.begin() + 2);
+        REQUIRE(r.end() == values.begin() + 3);
+    }
+    SECTION("equal_range called with a predicate and a projection, called with "
+            "a value is pipeable from a range")
+    {
+        static constexpr auto equal_by_num
+            = composer::equal_range(composer::less_than, &numname::num);
+        STATIC_REQUIRE((values | equal_by_num(3)).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
+        REQUIRE((values | equal_by_num(3)).begin() == values.begin() + 2);
+        REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
+    }
+}
+
+SCENARIO("includes")
+{
+    SECTION("includes called with a two ranges, a predicate and a projection "
+            "calls ranges::includes immediately")
+    {
+        STATIC_REQUIRE(composer::includes(
+            values, std::array{ 2, 3, 5 }, composer::less_than, &numname::num));
+        STATIC_REQUIRE_FALSE(composer::includes(
+            values, std::array{ 2, 3, 7 }, composer::less_than, &numname::num));
+        REQUIRE(composer::includes(
+            values, std::array{ 2, 3, 5 }, composer::less_than, &numname::num));
+        REQUIRE_FALSE(composer::includes(
+            values, std::array{ 2, 3, 7 }, composer::less_than, &numname::num));
+    }
+    SECTION("includes called with a predicate and a projection, called with a "
+            "range, is pipeable from a range")
+    {
+        static constexpr auto includes_nums
+            = composer::includes(composer::less_than, &numname::num);
+        STATIC_REQUIRE(values | includes_nums(std::array{ 2, 3, 5 }));
+        STATIC_REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
+        REQUIRE(values | includes_nums(std::array{ 2, 3, 5 }));
+        REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
+    }
+}
+
+SCENARIO("is_heap")
+{
+    static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
+                                                       { 2, "two" },
+                                                       { 6, "six" },
+                                                       { 3, "three" },
+                                                       { 5, "five" },
+                                                       { 4, "four" } } };
+    SECTION("is_heap called with a range, a predicate and a projection calls "
+            "ranges::is_heap immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_heap(values, composer::greater_than, &numname::num));
+        STATIC_REQUIRE_FALSE(
+            composer::is_heap(nonheap, composer::greater_than, &numname::num));
+        REQUIRE(
+            composer::is_heap(values, composer::greater_than, &numname::num));
+        REQUIRE_FALSE(
+            composer::is_heap(nonheap, composer::greater_than, &numname::num));
+    }
+    SECTION("is_heap called with a range and a composed predicate calls "
+            "ranges::is_heap immediately")
+    {
+        STATIC_REQUIRE(composer::is_heap(
+            values,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        STATIC_REQUIRE_FALSE(composer::is_heap(
+            nonheap,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        REQUIRE(composer::is_heap(
+            values,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        REQUIRE_FALSE(composer::is_heap(
+            nonheap,
+            composer::transform_args(&numname::num, composer::greater_than)));
+    }
+    SECTION("is_heap called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto is_heap_num = composer::is_heap(
+            composer::transform_args(&numname::num, composer::greater_than));
+        STATIC_REQUIRE(values | is_heap_num);
+        STATIC_REQUIRE_FALSE(nonheap | is_heap_num);
+        REQUIRE(values | is_heap_num);
+        REQUIRE_FALSE(nonheap | is_heap_num);
+    }
+}
+
+SCENARIO("is_heap_until")
+{
+    static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
+                                                       { 2, "two" },
+                                                       { 6, "six" },
+                                                       { 3, "three" },
+                                                       { 5, "five" },
+                                                       { 4, "four" } } };
+    SECTION(
+        "is_heap_until called with a range, a predicate and a projection calls "
+        "ranges::is_heap_until immediately")
+    {
+        STATIC_REQUIRE(composer::is_heap_until(
+                           values, composer::greater_than, &numname::num)
+                       == values.end());
+        STATIC_REQUIRE(composer::is_heap_until(
+                           nonheap, composer::greater_than, &numname::num)
+                       == std::prev(nonheap.end()));
+        REQUIRE(composer::is_heap_until(
+                    values, composer::greater_than, &numname::num)
+                == values.end());
+        REQUIRE(composer::is_heap_until(
+                    nonheap, composer::greater_than, &numname::num)
+                == std::prev(nonheap.end()));
+    }
+    SECTION("is_heap_until called with a range and a composed predicate calls "
+            "ranges::is_heap_until immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_heap_until(
+                values,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == values.end());
+        STATIC_REQUIRE(
+            composer::is_heap_until(
+                nonheap,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == std::prev(nonheap.end()));
+        REQUIRE(
+            composer::is_heap_until(
+                values,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == values.end());
+        REQUIRE(
+            composer::is_heap_until(
+                nonheap,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == std::prev(nonheap.end()));
+    }
+    SECTION("is_heap_until called with a composed predicate is pipeable from a "
+            "range")
+    {
+        constexpr auto is_heap_num = composer::is_heap_until(
+            composer::transform_args(&numname::num, composer::greater_than));
+        STATIC_REQUIRE((values | is_heap_num) == values.end());
+        STATIC_REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
+        REQUIRE((values | is_heap_num) == values.end());
+        REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
+    }
+}
+
+SCENARIO("max")
+{
+    static constexpr numname a{ 1, "one" };
+    static constexpr numname b{ 2, "two" };
+    SECTION("calling max with two values, a predicate and a projection calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max(a, b, composer::less_than, &numname::num).num == 2);
+        REQUIRE(composer::max(a, b, composer::less_than, &numname::num).num
+                == 2);
+    }
+    SECTION("calling max with two values and a composed predicate calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(composer::max(a,
+                                     b,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 2);
+        REQUIRE(composer::max(a,
+                              b,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 2);
+    }
+    SECTION("calling max with a range, a predicate and a projection calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max(values, composer::less_than, &numname::num).num == 5);
+        REQUIRE(composer::max(values, composer::less_than, &numname::num).num
+                == 5);
+    }
+    SECTION("calling max with a range and a composed predicate calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(composer::max(values,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 5);
+        REQUIRE(composer::max(values,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 5);
+    }
+    SECTION("max called with a composed predicate is callable with two values")
+    {
+        constexpr auto maxnum = composer::max(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE(maxnum(a, b).num == 2);
+        REQUIRE(maxnum(a, b).num == 2);
+    }
+    SECTION("max called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto maxnum = composer::max(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | maxnum).num == 5);
+        REQUIRE((values | maxnum).num == 5);
+    }
+}
+
+SCENARIO("max_element")
+{
+    SECTION("calling max_element with a range, a predicate and a projection "
+            "calls ranges::max_element immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max_element(values, composer::less_than, &numname::num)
+            == std::prev(values.end()));
+        REQUIRE(
+            composer::max_element(values, composer::less_than, &numname::num)
+            == std::prev(values.end()));
+    }
+    SECTION(
+        "max_element called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto maxnum = composer::max_element(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | maxnum) == std::prev(values.end()));
+        REQUIRE((values | maxnum) == std::prev(values.end()));
+    }
+}
+
+SCENARIO("min")
+{
+    static constexpr numname a{ 1, "one" };
+    static constexpr numname b{ 2, "two" };
+    SECTION("calling min with two values, a predicate and a projection calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min(a, b, composer::less_than, &numname::num).num == 1);
+        REQUIRE(composer::min(a, b, composer::less_than, &numname::num).num
+                == 1);
+    }
+    SECTION("calling min with two values and a composed predicate calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(composer::min(a,
+                                     b,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 1);
+        REQUIRE(composer::min(a,
+                              b,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 1);
+    }
+    SECTION("calling min with a range, a predicate and a projection calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min(values, composer::less_than, &numname::num).num == 1);
+        REQUIRE(composer::min(values, composer::less_than, &numname::num).num
+                == 1);
+    }
+    SECTION("calling min with a range and a composed predicate calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(composer::min(values,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 1);
+        REQUIRE(composer::min(values,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 1);
+    }
+    SECTION("min called with a composed predicate is callable with two values")
+    {
+        constexpr auto minnum = composer::min(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE(minnum(a, b).num == 1);
+        REQUIRE(minnum(a, b).num == 1);
+    }
+    SECTION("min called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto minnum = composer::min(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | minnum).num == 1);
+        REQUIRE((values | minnum).num == 1);
+    }
+}
+
+SCENARIO("min_element")
+{
+    SECTION("calling min_element with a range, a predicate and a projection "
+            "calls ranges::min_element immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min_element(values, composer::less_than, &numname::num)
+            == values.begin());
+        REQUIRE(
+            composer::min_element(values, composer::less_than, &numname::num)
+            == values.begin());
+    }
+    SECTION(
+        "min_element called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto minnum = composer::min_element(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | minnum) == values.begin());
+        REQUIRE((values | minnum) == values.begin());
+    }
+}
+
+SCENARIO("minmax_element")
+{
+    SECTION("calling minmax_element with a range, a predicate and a projection "
+            "calls ranges::minmax_element immediately")
+    {
+        const auto [min, max] = composer::minmax_element(
+            values, composer::less_than, &numname::num);
+        REQUIRE(min->num == 1);
+        REQUIRE(max->num == 5);
+    }
+    SECTION("minmax_element called with a composed predicate is pipeable from "
+            "a rannge")
+    {
+        const auto [min, max]
+            = values
+            | composer::minmax_element(
+                  composer::transform_args(&numname::num, composer::less_than));
+        REQUIRE(min->num == 1);
+        REQUIRE(max->num == 5);
+    }
+}
+
+SCENARIO("clamp")
+{
+    SECTION("calling clamp with three values, a predicate and a projection "
+            "calls ranges::clamp immediately")
+    {
+        STATIC_REQUIRE(composer::clamp(values[0],
+                                       values[2],
+                                       values[4],
+                                       composer::less_than,
+                                       &numname::num)
+                           .num
+                       == 3);
+        REQUIRE(composer::clamp(values[0],
+                                values[2],
+                                values[4],
+                                composer::less_than,
+                                &numname::num)
+                    .num
+                == 3);
+    }
+    SECTION("calling clamp with three values and a composed predicate calls "
+            "ranges::clamp immediately")
+    {
+        STATIC_REQUIRE(composer::clamp(values[0],
+                                       values[2],
+                                       values[4],
+                                       composer::transform_args(
+                                           &numname::num, composer::less_than))
+                           .num
+                       == 3);
+        REQUIRE(composer::clamp(values[0],
+                                values[2],
+                                values[4],
+                                composer::transform_args(&numname::num,
+                                                         composer::less_than))
+                    .num
+                == 3);
+    }
+    SECTION("clamp called with a composed predicate, called by two values is "
+            "callable with one value")
+    {
+        constexpr auto clamp_num = composer::clamp(
+            composer::transform_args(&numname::num, composer::less_than));
+        constexpr auto clamp24 = clamp_num(values[2], values[4]);
+        STATIC_REQUIRE(clamp24(values[0]).num == 3);
+        REQUIRE((values[0] | clamp24).num == 3);
+    }
+}

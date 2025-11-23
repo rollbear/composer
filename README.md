@@ -407,3 +407,55 @@ Back binding version of [`std::ranges::is_sorted`](https://en.cppreference.com/w
 ### `composer::is_sorted_until`
 
 Back binding version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)
+
+### `composer::lower_bound`
+
+Back binding version of [`std::ranges::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/lower_bound.html)
+
+### `composer::upper_bound`
+
+Back binding version of [`std::ranges::upper_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/upper_bound.html)
+
+### `composer::binary_search`
+
+Back binding version of [`std::ranges::binary_search`](https://en.cppreference.com/w/cpp/algorithm/ranges/binary_search.html)
+
+### `composer::equal_range`
+
+Back binding version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
+
+### `composer::includes`
+
+Back binding version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
+
+### `composer::is_heap`
+
+Back binding version of [`std::ranges::is_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap.html)
+
+### `composer::is_heap_until`
+
+Back binding version of [`std::ranges::is_heap_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap_until.html)
+
+### `composer::max`
+
+Back binding version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
+
+### `composer::max_element`
+
+Back binding version of [`std::ranges::max_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/max_element.html)
+
+### `composer::min`
+
+Back binding version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
+
+### `composer::min_element`
+
+Back binding version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)
+
+### `composer::minmax_element`
+
+Back binding version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)
+
+### `composer::clamp`
+
+Back binding version of [`std::ranges::clamp`](https://en.cppreference.com/w/cpp/algorithm/ranges/clamp.html)
