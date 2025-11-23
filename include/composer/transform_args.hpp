@@ -10,8 +10,8 @@ namespace composer {
 namespace internal {
 template <typename T, typename F>
 struct arg_transformer {
-    T t;
-    F f;
+    [[no_unique_address]] T t;
+    [[no_unique_address]] F f;
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)

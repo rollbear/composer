@@ -12,8 +12,8 @@ namespace internal {
 template <typename F, typename... As>
 struct back_binder {
     static constexpr auto indexes = std::index_sequence_for<As...>{};
-    F f;
-    std::tuple<As...> as;
+    [[no_unique_address]] F f;
+    [[no_unique_address]] std::tuple<As...> as;
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
