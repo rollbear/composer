@@ -2055,3 +2055,135 @@ SCENARIO("is_heap_until")
         REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
     }
 }
+
+SCENARIO("max")
+{
+    static constexpr numname a{ 1, "one" };
+    static constexpr numname b{ 2, "two" };
+    SECTION("calling max with two values, a predicate and a projection calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max(a, b, composer::less_than, &numname::num).num == 2);
+        REQUIRE(composer::max(a, b, composer::less_than, &numname::num).num
+                == 2);
+    }
+    SECTION("calling max with two values and a composed predicate calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(composer::max(a,
+                                     b,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 2);
+        REQUIRE(composer::max(a,
+                              b,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 2);
+    }
+    SECTION("calling max with a range, a predicate and a projection calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max(values, composer::less_than, &numname::num).num == 5);
+        REQUIRE(composer::max(values, composer::less_than, &numname::num).num
+                == 5);
+    }
+    SECTION("calling max with a range and a composed predicate calls "
+            "ranges::max immediately")
+    {
+        STATIC_REQUIRE(composer::max(values,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 5);
+        REQUIRE(composer::max(values,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 5);
+    }
+    SECTION("max called with a composed predicate is callable with two values")
+    {
+        constexpr auto maxnum = composer::max(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE(maxnum(a, b).num == 2);
+        REQUIRE(maxnum(a, b).num == 2);
+    }
+    SECTION("max called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto maxnum = composer::max(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | maxnum).num == 5);
+        REQUIRE((values | maxnum).num == 5);
+    }
+}
+
+SCENARIO("min")
+{
+    static constexpr numname a{ 1, "one" };
+    static constexpr numname b{ 2, "two" };
+    SECTION("calling min with two values, a predicate and a projection calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min(a, b, composer::less_than, &numname::num).num == 1);
+        REQUIRE(composer::min(a, b, composer::less_than, &numname::num).num
+                == 1);
+    }
+    SECTION("calling min with two values and a composed predicate calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(composer::min(a,
+                                     b,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 1);
+        REQUIRE(composer::min(a,
+                              b,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 1);
+    }
+    SECTION("calling min with a range, a predicate and a projection calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min(values, composer::less_than, &numname::num).num == 1);
+        REQUIRE(composer::min(values, composer::less_than, &numname::num).num
+                == 1);
+    }
+    SECTION("calling min with a range and a composed predicate calls "
+            "ranges::min immediately")
+    {
+        STATIC_REQUIRE(composer::min(values,
+                                     composer::transform_args(
+                                         &numname::num, composer::less_than))
+                           .num
+                       == 1);
+        REQUIRE(composer::min(values,
+                              composer::transform_args(&numname::num,
+                                                       composer::less_than))
+                    .num
+                == 1);
+    }
+    SECTION("min called with a composed predicate is callable with two values")
+    {
+        constexpr auto minnum = composer::min(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE(minnum(a, b).num == 1);
+        REQUIRE(minnum(a, b).num == 1);
+    }
+    SECTION("min called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto minnum = composer::min(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | minnum).num == 1);
+        REQUIRE((values | minnum).num == 1);
+    }
+}

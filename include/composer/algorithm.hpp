@@ -209,6 +209,17 @@ inline constexpr auto is_heap_until = make_arity_function<4, back_binding>(
         return std::ranges::is_heap_until(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto max = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::max(std::forward<Ts>(ts)...)) {
+        return std::ranges::max(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto min = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::min(std::forward<Ts>(ts)...)) {
+        return std::ranges::min(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

@@ -435,3 +435,11 @@ Back binding version of [`std::ranges::is_heap`](https://en.cppreference.com/w/c
 ### `composer::is_heap_until`
 
 Back binding version of [`std::ranges::is_heap_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap_until.html)
+
+### `composer::max`
+
+Back binding version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
+
+### `composer::min`
+
+Back binding version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
