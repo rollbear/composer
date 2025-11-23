@@ -185,6 +185,12 @@ inline constexpr auto binary_search = make_arity_function<5, back_binding>(
         return std::ranges::binary_search(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto equal_range = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::equal_range(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::equal_range(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

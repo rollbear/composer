@@ -1894,3 +1894,30 @@ SCENARIO("binary_search")
         REQUIRE_FALSE(even_numbers | binary_search_num(7));
     }
 }
+
+SCENARIO("equal_range")
+{
+    SECTION("equal_range called with a range, a value, a predicate and a "
+            "projection calls ranges::equal_range immediately")
+    {
+        constexpr auto sr = composer::equal_range(
+            values, 3, composer::less_than, &numname::num);
+        STATIC_REQUIRE(sr.begin() == values.begin() + 2);
+        STATIC_REQUIRE(sr.end() == values.begin() + 3);
+        auto r = composer::equal_range(
+            values, 3, composer::less_than, &numname::num);
+        REQUIRE(r.begin() == values.begin() + 2);
+        REQUIRE(r.end() == values.begin() + 3);
+    }
+    SECTION("equal_range called with a predicate and a projection, called with "
+            "a value is pipeable from a range")
+    {
+        static constexpr auto equal_by_num
+            = composer::equal_range(composer::less_than, &numname::num);
+        STATIC_REQUIRE((values | equal_by_num(3)).begin()
+                       == values.begin() + 2);
+        STATIC_REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
+        REQUIRE((values | equal_by_num(3)).begin() == values.begin() + 2);
+        REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
+    }
+}

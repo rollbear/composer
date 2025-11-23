@@ -419,3 +419,7 @@ Back binding version of [`std::ranges::upper_bound`](https://en.cppreference.com
 ### `composer::binary_search`
 
 Back binding version of [`std::ranges::binary_search`](https://en.cppreference.com/w/cpp/algorithm/ranges/binary_search.html)
+
+### `composer::equal_range`
+
+Back binding version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
