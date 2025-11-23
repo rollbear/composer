@@ -2122,6 +2122,28 @@ SCENARIO("max")
     }
 }
 
+SCENARIO("max_element")
+{
+    SECTION("calling max_element with a range, a predicate and a projection "
+            "calls ranges::max_element immediately")
+    {
+        STATIC_REQUIRE(
+            composer::max_element(values, composer::less_than, &numname::num)
+            == std::prev(values.end()));
+        REQUIRE(
+            composer::max_element(values, composer::less_than, &numname::num)
+            == std::prev(values.end()));
+    }
+    SECTION(
+        "max_element called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto maxnum = composer::max_element(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | maxnum) == std::prev(values.end()));
+        REQUIRE((values | maxnum) == std::prev(values.end()));
+    }
+}
+
 SCENARIO("min")
 {
     static constexpr numname a{ 1, "one" };
@@ -2185,5 +2207,27 @@ SCENARIO("min")
             composer::transform_args(&numname::num, composer::less_than));
         STATIC_REQUIRE((values | minnum).num == 1);
         REQUIRE((values | minnum).num == 1);
+    }
+}
+
+SCENARIO("min_element")
+{
+    SECTION("calling min_element with a range, a predicate and a projection "
+            "calls ranges::min_element immediately")
+    {
+        STATIC_REQUIRE(
+            composer::min_element(values, composer::less_than, &numname::num)
+            == values.begin());
+        REQUIRE(
+            composer::min_element(values, composer::less_than, &numname::num)
+            == values.begin());
+    }
+    SECTION(
+        "min_element called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto minnum = composer::min_element(
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE((values | minnum) == values.begin());
+        REQUIRE((values | minnum) == values.begin());
     }
 }

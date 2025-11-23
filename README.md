@@ -440,6 +440,14 @@ Back binding version of [`std::ranges::is_heap_until`](https://en.cppreference.c
 
 Back binding version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
 
+### `composer::max_element`
+
+Back binding version of [`std::ranges::max_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/max_element.html)
+
 ### `composer::min`
 
 Back binding version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
+
+### `composer::min_element`
+
+Back binding version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)

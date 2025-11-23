@@ -215,10 +215,22 @@ inline constexpr auto max = make_arity_function<4, back_binding>(
         return std::ranges::max(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto max_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::max_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::max_element(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto min = make_arity_function<4, back_binding>(
     []<typename... Ts>(
         Ts&&... ts) -> decltype(std::ranges::min(std::forward<Ts>(ts)...)) {
         return std::ranges::min(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto min_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::min_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::min_element(std::forward<Ts>(ts)...);
     });
 } // namespace composer
 
