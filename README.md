@@ -427,3 +427,7 @@ Back binding version of [`std::ranges::equal_range`](https://en.cppreference.com
 ### `composer::includes`
 
 Back binding version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
+
+### `composer::is_heap`
+
+Back binding version of [`std::ranges::is_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap.html)

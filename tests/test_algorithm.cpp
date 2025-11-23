@@ -1947,3 +1947,50 @@ SCENARIO("includes")
         REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
     }
 }
+
+SCENARIO("is_heap")
+{
+    static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
+                                                       { 2, "two" },
+                                                       { 6, "six" },
+                                                       { 3, "three" },
+                                                       { 5, "five" },
+                                                       { 4, "four" } } };
+    SECTION("is_heap called with a range, a predicate and a projection calls "
+            "ranges::is_heap immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_heap(values, composer::greater_than, &numname::num));
+        STATIC_REQUIRE_FALSE(
+            composer::is_heap(nonheap, composer::greater_than, &numname::num));
+        REQUIRE(
+            composer::is_heap(values, composer::greater_than, &numname::num));
+        REQUIRE_FALSE(
+            composer::is_heap(nonheap, composer::greater_than, &numname::num));
+    }
+    SECTION("is_heap called with a range and a composed predicate calls "
+            "ranges::is_heap immediately")
+    {
+        STATIC_REQUIRE(composer::is_heap(
+            values,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        STATIC_REQUIRE_FALSE(composer::is_heap(
+            nonheap,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        REQUIRE(composer::is_heap(
+            values,
+            composer::transform_args(&numname::num, composer::greater_than)));
+        REQUIRE_FALSE(composer::is_heap(
+            nonheap,
+            composer::transform_args(&numname::num, composer::greater_than)));
+    }
+    SECTION("is_heap called with a composed predicate is pipeable from a range")
+    {
+        constexpr auto is_heap_num = composer::is_heap(
+            composer::transform_args(&numname::num, composer::greater_than));
+        STATIC_REQUIRE(values | is_heap_num);
+        STATIC_REQUIRE_FALSE(nonheap | is_heap_num);
+        REQUIRE(values | is_heap_num);
+        REQUIRE_FALSE(nonheap | is_heap_num);
+    }
+}
