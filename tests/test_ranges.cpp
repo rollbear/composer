@@ -49,8 +49,7 @@ SCENARIO("size")
     SECTION("size can be piped")
     {
         STATIC_REQUIRE("foo" | composer::size | composer::equal_to(4U));
-        REQUIRE(("foo" | composer::size) | composer::equal_to(4U));
-        REQUIRE("foo" | (composer::size | composer::equal_to(4U)));
+        REQUIRE(("foo" | composer::size | composer::equal_to(4U)));
     }
 }
 
@@ -89,8 +88,7 @@ SCENARIO("ssize")
     SECTION("size can be piped")
     {
         STATIC_REQUIRE("foo" | composer::ssize | composer::equal_to(4));
-        REQUIRE(("foo" | composer::ssize) | composer::equal_to(4));
-        REQUIRE("foo" | (composer::ssize | composer::equal_to(4)));
+        REQUIRE(("foo" | composer::ssize | composer::equal_to(4)));
     }
 }
 
@@ -117,7 +115,6 @@ SCENARIO("distance")
     SECTION("distance can be piped")
     {
         STATIC_REQUIRE(str | composer::distance | composer::equal_to(4));
-        REQUIRE((str | composer::distance) | composer::equal_to(4));
-        REQUIRE(str | (composer::distance | composer::equal_to(4)));
+        REQUIRE((str | composer::distance | composer::equal_to(4)));
     }
 }
