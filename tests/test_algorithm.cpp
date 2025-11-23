@@ -1994,3 +1994,64 @@ SCENARIO("is_heap")
         REQUIRE_FALSE(nonheap | is_heap_num);
     }
 }
+
+SCENARIO("is_heap_until")
+{
+    static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
+                                                       { 2, "two" },
+                                                       { 6, "six" },
+                                                       { 3, "three" },
+                                                       { 5, "five" },
+                                                       { 4, "four" } } };
+    SECTION(
+        "is_heap_until called with a range, a predicate and a projection calls "
+        "ranges::is_heap_until immediately")
+    {
+        STATIC_REQUIRE(composer::is_heap_until(
+                           values, composer::greater_than, &numname::num)
+                       == values.end());
+        STATIC_REQUIRE(composer::is_heap_until(
+                           nonheap, composer::greater_than, &numname::num)
+                       == std::prev(nonheap.end()));
+        REQUIRE(composer::is_heap_until(
+                    values, composer::greater_than, &numname::num)
+                == values.end());
+        REQUIRE(composer::is_heap_until(
+                    nonheap, composer::greater_than, &numname::num)
+                == std::prev(nonheap.end()));
+    }
+    SECTION("is_heap_until called with a range and a composed predicate calls "
+            "ranges::is_heap_until immediately")
+    {
+        STATIC_REQUIRE(
+            composer::is_heap_until(
+                values,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == values.end());
+        STATIC_REQUIRE(
+            composer::is_heap_until(
+                nonheap,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == std::prev(nonheap.end()));
+        REQUIRE(
+            composer::is_heap_until(
+                values,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == values.end());
+        REQUIRE(
+            composer::is_heap_until(
+                nonheap,
+                composer::transform_args(&numname::num, composer::greater_than))
+            == std::prev(nonheap.end()));
+    }
+    SECTION("is_heap_until called with a composed predicate is pipeable from a "
+            "range")
+    {
+        constexpr auto is_heap_num = composer::is_heap_until(
+            composer::transform_args(&numname::num, composer::greater_than));
+        STATIC_REQUIRE((values | is_heap_num) == values.end());
+        STATIC_REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
+        REQUIRE((values | is_heap_num) == values.end());
+        REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
+    }
+}

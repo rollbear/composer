@@ -202,6 +202,13 @@ inline constexpr auto is_heap = make_arity_function<4, back_binding>(
         Ts&&... ts) -> decltype(std::ranges::is_heap(std::forward<Ts>(ts)...)) {
         return std::ranges::is_heap(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto is_heap_until = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_heap_until(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::is_heap_until(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
