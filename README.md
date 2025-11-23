@@ -412,3 +412,6 @@ Back binding version of [`std::ranges::is_sorted_until`](https://en.cppreference
 
 Back binding version of [`std::ranges::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/lower_bound.html)
 
+### `composer::upper_bound`
+
+Back binding version of [`std::ranges::upper_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/upper_bound.html)
