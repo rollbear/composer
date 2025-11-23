@@ -455,3 +455,7 @@ Back binding version of [`std::ranges::min_element`](https://en.cppreference.com
 ### `composer::minmax_element`
 
 Back binding version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)
+
+### `composer::clamp`
+
+Back binding version of [`std::ranges::clamp`](https://en.cppreference.com/w/cpp/algorithm/ranges/clamp.html)

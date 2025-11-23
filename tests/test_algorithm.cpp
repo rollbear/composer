@@ -2234,16 +2234,71 @@ SCENARIO("min_element")
 
 SCENARIO("minmax_element")
 {
-    SECTION("calling minmax_element with a range, a predicate and a projection calls ranges::minmax_element immediately")
+    SECTION("calling minmax_element with a range, a predicate and a projection "
+            "calls ranges::minmax_element immediately")
     {
-        const auto [min,max] = composer::minmax_element(values, composer::less_than, &numname::num);
+        const auto [min, max] = composer::minmax_element(
+            values, composer::less_than, &numname::num);
         REQUIRE(min->num == 1);
         REQUIRE(max->num == 5);
     }
-    SECTION("minmax_element called with a composed predicate is pipeable from a rannge")
+    SECTION("minmax_element called with a composed predicate is pipeable from "
+            "a rannge")
     {
-        const auto [min, max] = values | composer::minmax_element(composer::transform_args(&numname::num, composer::less_than));
+        const auto [min, max]
+            = values
+            | composer::minmax_element(
+                  composer::transform_args(&numname::num, composer::less_than));
         REQUIRE(min->num == 1);
         REQUIRE(max->num == 5);
+    }
+}
+
+SCENARIO("clamp")
+{
+    SECTION("calling clamp with three values, a predicate and a projection "
+            "calls ranges::clamp immediately")
+    {
+        STATIC_REQUIRE(composer::clamp(values[0],
+                                       values[2],
+                                       values[4],
+                                       composer::less_than,
+                                       &numname::num)
+                           .num
+                       == 3);
+        REQUIRE(composer::clamp(values[0],
+                                values[2],
+                                values[4],
+                                composer::less_than,
+                                &numname::num)
+                    .num
+                == 3);
+    }
+    SECTION("calling clamp with three values and a composed predicate calls "
+            "ranges::clamp immediately")
+    {
+        STATIC_REQUIRE(composer::clamp(values[0],
+                                       values[2],
+                                       values[4],
+                                       composer::transform_args(
+                                           &numname::num, composer::less_than))
+                           .num
+                       == 3);
+        REQUIRE(composer::clamp(values[0],
+                                values[2],
+                                values[4],
+                                composer::transform_args(&numname::num,
+                                                         composer::less_than))
+                    .num
+                == 3);
+    }
+    SECTION("clamp called with a composed predicate, called by two values is "
+            "callable with one value")
+    {
+        constexpr auto clamp_num = composer::clamp(
+            composer::transform_args(&numname::num, composer::less_than));
+        constexpr auto clamp24 = clamp_num(values[2], values[4]);
+        STATIC_REQUIRE(clamp24(values[0]).num == 3);
+        REQUIRE((values[0] | clamp24).num == 3);
     }
 }
