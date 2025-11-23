@@ -1859,3 +1859,38 @@ SCENARIO("upper_bound")
                 == even_numbers.begin() + 5);
     }
 }
+
+SCENARIO("binary_search")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("binary called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE_FALSE(composer::binary_search(
+            even_numbers, 5, composer::less_than, &numname::num));
+        REQUIRE_FALSE(composer::binary_search(
+            even_numbers, 5, composer::less_than, &numname::num));
+        STATIC_REQUIRE(composer::binary_search(
+            even_numbers, 6, composer::less_than, &numname::num));
+        REQUIRE(composer::binary_search(
+            even_numbers, 6, composer::less_than, &numname::num));
+    }
+    SECTION(
+        "binary_search called with a predicate and a projection, called with "
+        "a value, is pipeable from a range")
+    {
+        constexpr auto binary_search_num
+            = composer::binary_search(composer::less_than, &numname::num);
+        STATIC_REQUIRE(even_numbers | binary_search_num(8));
+        REQUIRE(even_numbers | binary_search_num(8));
+        STATIC_REQUIRE_FALSE(even_numbers | binary_search_num(7));
+        REQUIRE_FALSE(even_numbers | binary_search_num(7));
+    }
+}
