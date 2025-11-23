@@ -1827,3 +1827,35 @@ SCENARIO("lower_bound")
                 == even_numbers.begin() + 4);
     }
 }
+
+SCENARIO("upper_bound")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("upper_bound called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE(composer::upper_bound(
+                           even_numbers, 5, composer::less_than, &numname::num)
+                       == even_numbers.begin() + 3);
+        REQUIRE(composer::upper_bound(
+                    even_numbers, 5, composer::less_than, &numname::num)
+                == even_numbers.begin() + 3);
+    }
+    SECTION("upper_bound called with a predicate and a projection, called with "
+            "a value, is pipeable from a range")
+    {
+        constexpr auto upper_bound_num
+            = composer::upper_bound(composer::less_than, &numname::num);
+        STATIC_REQUIRE((even_numbers | upper_bound_num(8))
+                       == even_numbers.begin() + 5);
+        REQUIRE((even_numbers | upper_bound_num(8))
+                == even_numbers.begin() + 5);
+    }
+}
