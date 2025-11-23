@@ -1921,3 +1921,29 @@ SCENARIO("equal_range")
         REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
     }
 }
+
+SCENARIO("includes")
+{
+    SECTION("includes called with a two ranges, a predicate and a projection "
+            "calls ranges::includes immediately")
+    {
+        STATIC_REQUIRE(composer::includes(
+            values, std::array{ 2, 3, 5 }, composer::less_than, &numname::num));
+        STATIC_REQUIRE_FALSE(composer::includes(
+            values, std::array{ 2, 3, 7 }, composer::less_than, &numname::num));
+        REQUIRE(composer::includes(
+            values, std::array{ 2, 3, 5 }, composer::less_than, &numname::num));
+        REQUIRE_FALSE(composer::includes(
+            values, std::array{ 2, 3, 7 }, composer::less_than, &numname::num));
+    }
+    SECTION("includes called with a predicate and a projection, called with a "
+            "range, is pipeable from a range")
+    {
+        static constexpr auto includes_nums
+            = composer::includes(composer::less_than, &numname::num);
+        STATIC_REQUIRE(values | includes_nums(std::array{ 2, 3, 5 }));
+        STATIC_REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
+        REQUIRE(values | includes_nums(std::array{ 2, 3, 5 }));
+        REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
+    }
+}

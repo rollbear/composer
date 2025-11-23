@@ -423,3 +423,7 @@ Back binding version of [`std::ranges::binary_search`](https://en.cppreference.c
 ### `composer::equal_range`
 
 Back binding version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
+
+### `composer::includes`
+
+Back binding version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
