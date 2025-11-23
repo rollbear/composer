@@ -451,3 +451,7 @@ Back binding version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/a
 ### `composer::min_element`
 
 Back binding version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)
+
+### `composer::minmax_element`
+
+Back binding version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)

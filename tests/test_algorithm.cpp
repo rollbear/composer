@@ -2231,3 +2231,19 @@ SCENARIO("min_element")
         REQUIRE((values | minnum) == values.begin());
     }
 }
+
+SCENARIO("minmax_element")
+{
+    SECTION("calling minmax_element with a range, a predicate and a projection calls ranges::minmax_element immediately")
+    {
+        const auto [min,max] = composer::minmax_element(values, composer::less_than, &numname::num);
+        REQUIRE(min->num == 1);
+        REQUIRE(max->num == 5);
+    }
+    SECTION("minmax_element called with a composed predicate is pipeable from a rannge")
+    {
+        const auto [min, max] = values | composer::minmax_element(composer::transform_args(&numname::num, composer::less_than));
+        REQUIRE(min->num == 1);
+        REQUIRE(max->num == 5);
+    }
+}
