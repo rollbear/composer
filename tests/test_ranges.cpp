@@ -60,12 +60,10 @@ SCENARIO("ssize")
         STATIC_REQUIRE(composer::ssize("foo") == ss{ 4 });
         REQUIRE(composer::ssize("foo") == ss{ 4 });
     }
-    SECTION("ssize can be called on a type with a .ssize() member function")
+    SECTION("ssize can be called on a type with a .size() member function")
     {
         struct S {
             [[nodiscard]] constexpr ptrdiff_t size() const { return 3; }
-
-            [[nodiscard]] constexpr ptrdiff_t ssize() const { return 3; }
         };
 
         STATIC_REQUIRE(composer::ssize(S{}) == ss{ 3 });
@@ -85,7 +83,7 @@ SCENARIO("ssize")
         STATIC_REQUIRE(composer::ssize(obj) == ss{ 4 });
         REQUIRE(composer::ssize(obj) == ss{ 4 });
     }
-    SECTION("size can be piped")
+    SECTION("ssize can be piped")
     {
         STATIC_REQUIRE("foo" | composer::ssize | composer::equal_to(4));
         REQUIRE(("foo" | composer::ssize | composer::equal_to(4)));
