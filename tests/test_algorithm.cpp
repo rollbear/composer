@@ -1795,3 +1795,35 @@ SCENARIO("is_sorted_until is back binding")
             == values.begin() + 2);
     }
 }
+
+SCENARIO("lower_bound")
+{
+    static constexpr std::array<numname, 6> even_numbers
+        = { { { 0, "zero" },
+              { 2, "two" },
+              { 4, "four" },
+              { 6, "six" },
+              { 8, "eight" },
+              { 10, "ten" } } };
+
+    SECTION("lower_bound called with a range, a value, a predicate and a "
+            "projection calls ranges::lower_bound immediately")
+    {
+        STATIC_REQUIRE(composer::lower_bound(
+                           even_numbers, 5, composer::less_than, &numname::num)
+                       == even_numbers.begin() + 3);
+        REQUIRE(composer::lower_bound(
+                    even_numbers, 5, composer::less_than, &numname::num)
+                == even_numbers.begin() + 3);
+    }
+    SECTION("lower_bound called with a predicate and a projection, called with "
+            "a value, is pipeable from a range")
+    {
+        constexpr auto lower_bound_num
+            = composer::lower_bound(composer::less_than, &numname::num);
+        STATIC_REQUIRE((even_numbers | lower_bound_num(8))
+                       == even_numbers.begin() + 4);
+        REQUIRE((even_numbers | lower_bound_num(8))
+                == even_numbers.begin() + 4);
+    }
+}

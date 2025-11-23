@@ -166,6 +166,13 @@ inline constexpr auto is_sorted_until = make_arity_function<4, back_binding>(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::is_sorted_until(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto lower_bound = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::lower_bound(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::lower_bound(std::forward<Ts>(ts)...);
+    });
+
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
