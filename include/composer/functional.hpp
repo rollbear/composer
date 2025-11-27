@@ -50,7 +50,8 @@ inline constexpr auto bit_not = arity_function<1, std::bit_not<>>{};
 template <typename R, typename C, arity_function_type F>
 constexpr auto operator|(R(C::* p), F&& f)
     -> decltype(mem_fn(p) | std::forward<F>(f))
-    requires(!requires { std::forward<F>(f)(p); })
+    requires(!requires { std::forward<F>(f)(p); }
+             || arity_function_v<decltype(std::forward<F>(f)(p))>)
 {
     return mem_fn(p) | std::forward<F>(f);
 }

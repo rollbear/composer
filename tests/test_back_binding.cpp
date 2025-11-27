@@ -193,6 +193,8 @@ TEST_CASE("back_binding bound arrays are copied")
         = composer::make_arity_function<2, composer::back_binding>(
             [](int, auto& p) -> auto& { return p; });
     char array[] = "foo";
+    static constexpr auto identity = composer::make_arity_function<1>(
+        [](auto x) -> decltype(x) { return x; });
     SECTION("non-const function object forwards copy as non-const array")
     {
         auto bound_func = f(array);
@@ -203,7 +205,7 @@ TEST_CASE("back_binding bound arrays are copied")
     }
     SECTION("const function object forwards copy as const array")
     {
-        const auto bound_func = f(array);
+        const auto bound_func = identity | f(array);
         auto& bound_array = bound_func(0);
         STATIC_REQUIRE(
             std::is_same_v<decltype(bound_array), const char (&)[4]>);
