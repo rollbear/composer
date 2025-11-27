@@ -133,10 +133,9 @@ struct [[nodiscard]] arity_function {
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> decltype(std::forward_like<Self>(self.f)(
-            unwrap(std::forward<Ts>(ts))...))
+        -> decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))
     {
-        return std::forward_like<Self>(self.f)(unwrap(std::forward<Ts>(ts))...);
+        return std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
     }
 
     template <typename Self, typename RH>
