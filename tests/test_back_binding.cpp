@@ -1,5 +1,7 @@
 #include <composer/back_binding.hpp>
 
+#include "test_utils.hpp"
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <memory>
@@ -14,8 +16,7 @@ TEST_CASE("a back bound function is called with all provided arguments")
 TEST_CASE("a back bound function is not callable with too many arguments")
 {
     constexpr auto minus = composer::back_binding<2, std::minus<>>{};
-    STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
-    REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
+    STATIC_REQUIRE_FALSE(can_call(minus, 1, 2, 3));
 }
 
 TEST_CASE("a back bound function called with fewer arguments than required, "
@@ -220,11 +221,8 @@ TEST_CASE("back_binding bound arrays are copied")
         // people depend on it.
 
         auto bound_func = f(array);
-        STATIC_REQUIRE(
-            !std::is_invocable_v<decltype(std::move(bound_func)), int>);
-        STATIC_REQUIRE(
-            !std::is_invocable_v<decltype(std::move(std::as_const(bound_func))),
-                                 int>);
+        STATIC_REQUIRE_FALSE(can_call(std::move(bound_func), 1));
+        STATIC_REQUIRE_FALSE(can_call(std::move(std::as_const(bound_func)), 1));
     }
     SECTION("bound objects are constexpr")
     {
