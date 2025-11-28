@@ -1,5 +1,7 @@
 #include <composer/arity_function.hpp>
 
+#include "test_utils.hpp"
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <type_traits>
@@ -14,13 +16,13 @@ TEST_CASE("an arity function object is called with all provided arguments")
 TEST_CASE("an arity function is not callable with too many arguments")
 {
     constexpr auto minus = composer::arity_function<2, std::minus<>>{};
-    STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int, int, int>);
+    STATIC_REQUIRE_FALSE(can_call(minus, 1, 2, 3));
 }
 
 TEST_CASE("an arity function is not callable with too few arguments")
 {
     constexpr auto minus = composer::arity_function<2, std::minus<>>{};
-    STATIC_REQUIRE_FALSE(std::is_invocable_v<decltype(minus), int>);
+    STATIC_REQUIRE_FALSE(can_call(minus, 1));
 }
 
 TEST_CASE("an arity function is callable with fewer arguments than the stated "
@@ -83,7 +85,9 @@ TEST_CASE("a piped expressions calls the right hand side with the result of "
           "the left hand side")
 {
     constexpr auto to_string = composer::make_arity_function<1>(
-        [](auto v) { return std::to_string(v); });
+        [](auto v) -> decltype(std::to_string(v)) {
+            return std::to_string(v);
+        });
     constexpr auto minus = composer::arity_function<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     REQUIRE(sub_to_str(5, 3) == "2");
