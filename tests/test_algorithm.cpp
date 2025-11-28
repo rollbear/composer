@@ -3,6 +3,8 @@
 #include <composer/ranges.hpp>
 #include <composer/transform_args.hpp>
 
+#include "test_utils.hpp"
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 
@@ -2301,5 +2303,58 @@ SCENARIO("clamp")
         constexpr auto clamp24 = clamp_num(values[2], values[4]);
         STATIC_REQUIRE(clamp24(values[0]).num == 3);
         REQUIRE((values[0] | clamp24).num == 3);
+    }
+}
+
+SCENARIO("sort")
+{
+    std::array ints{ 1, 5, 2, 3, 8 };
+
+    SECTION("calling sort with an array of ints sorts in increasing order")
+    {
+        composer::sort(ints);
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 1, 2, 3, 5, 8 }));
+    }
+    SECTION("calling sort with an array and a predicate changes sort order")
+    {
+        composer::sort(ints, composer::greater_than);
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 8, 5, 3, 2, 1 }));
+    }
+    SECTION("sort called with a predicate is callable with an array of ints")
+    {
+        constexpr auto sort_decreasing = composer::sort(composer::greater_than);
+        sort_decreasing(ints);
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 8, 5, 3, 2, 1 }));
+    }
+    SECTION("sort called with a predicate and a projection is callable with an "
+            "array")
+    {
+        constexpr auto sort_by_name
+            = composer::sort(composer::less_than, &numname::name);
+        auto valcopy = values;
+        sort_by_name(valcopy);
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 1, 3, 2 }));
+    }
+    SECTION("sort called with a composed predicate is callable with an array")
+    {
+        constexpr auto sort_by_name = composer::sort(
+            composer::transform_args(&numname::name, composer::less_than));
+        auto valcopy = values;
+        sort_by_name(valcopy);
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 1, 3, 2 }));
+    }
+    SECTION("piping an array of ints to sort is not allowed")
+    {
+        STATIC_REQUIRE_FALSE(can_pipe(ints, composer::sort));
+    }
+    SECTION("calling sort with an rvalue array is not allowed")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::sort, std::move(ints)));
+    }
+    SECTION("calling sort with a const array returns an arity_function")
+    {
+        STATIC_REQUIRE(returns_callable(composer::sort, std::as_const(ints)));
     }
 }
