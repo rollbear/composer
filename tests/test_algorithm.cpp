@@ -21,6 +21,7 @@ constexpr std::array<numname, 5> values = {
     { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" }, { 5, "five" } }
 };
 
+constexpr auto dup(auto&& x) { return x; }
 } // namespace
 
 SCENARIO("all_of is back binding")
@@ -130,6 +131,11 @@ SCENARIO("all_of is back binding")
             = composer::all_of(&numname::num | composer::greater_than(0));
         STATIC_REQUIRE(all_pos_ints(std::begin(values), std::end(values)));
         REQUIRE(all_pos_ints(std::begin(values), std::end(values)));
+    }
+    SECTION("all_of is allowed on an r-value range")
+    {
+        REQUIRE(composer::all_of(dup(values),
+                                 &numname::num | composer::greater_than(0)));
     }
 }
 
@@ -245,6 +251,11 @@ SCENARIO("any_of is back binding")
         STATIC_REQUIRE_FALSE(any_gt5(std::begin(values), std::end(values)));
         REQUIRE_FALSE(any_gt5(std::begin(values), std::end(values)));
     }
+    SECTION("any_of is allowed on an r-value range")
+    {
+        REQUIRE(composer::any_of(dup(values),
+                                 &numname::num | composer::less_than(3)));
+    }
 }
 
 SCENARIO("none_of is back binding")
@@ -359,6 +370,11 @@ SCENARIO("none_of is back binding")
         STATIC_REQUIRE_FALSE(any_gt4(std::begin(values), std::end(values)));
         REQUIRE_FALSE(any_gt4(std::begin(values), std::end(values)));
     }
+    SECTION("none_of is allowed on an r-value range")
+    {
+        REQUIRE(composer::any_of(dup(values),
+                                 &numname::num | composer::greater_than(3)));
+    }
 }
 
 SCENARIO("for_each is back binding")
@@ -415,6 +431,14 @@ SCENARIO("for_each is back binding")
             composer::mem_fn(&numname::num) | append_to_string(result));
         append_ints_from(std::begin(values), std::end(values));
         REQUIRE(result == "12345");
+    }
+    SECTION("for_each is not allowed on an r-value range")
+    {
+        std::string result;
+        STATIC_REQUIRE_FALSE(can_call(composer::for_each,
+                                      dup(values),
+                                      composer::mem_fn(&numname::num)
+                                          | append_to_string(result)));
     }
 }
 
@@ -546,6 +570,10 @@ SCENARIO("count is back binding")
         REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
         REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
     }
+    SECTION("count is allowed on an r-value range")
+    {
+        REQUIRE(composer::count(dup(values), 3, &numname::num) == 1);
+    }
 }
 
 SCENARIO("count_if is back binding")
@@ -666,6 +694,12 @@ SCENARIO("count_if is back binding")
         REQUIRE(num_3s(std::begin(values), std::end(values)) == 1);
         REQUIRE(num_6s(std::begin(values), std::end(values)) == 0);
     }
+    SECTION("count_if is allowed on an r-value range")
+    {
+        REQUIRE(composer::count_if(dup(values),
+                                   &numname::num | composer::equal_to(3))
+                == 1);
+    }
 }
 
 SCENARIO("find is back binding")
@@ -703,6 +737,11 @@ SCENARIO("find is back binding")
         STATIC_REQUIRE(num_is_2(std::begin(values), std::end(values))->name
                        == "two");
         REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
+    }
+    SECTION("find is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::find, dup(values), 2, &numname::num));
     }
 }
 
@@ -799,6 +838,12 @@ SCENARIO("find_if is back binding")
         STATIC_REQUIRE(num_is_2(std::begin(values), std::end(values))->name
                        == "two");
         REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
+    }
+    SECTION("find_if is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::find_if,
+                                      dup(values),
+                                      &numname::num | composer::equal_to(2)));
     }
 }
 
@@ -902,6 +947,12 @@ SCENARIO("find_if_not is back binding")
                        == "two");
         REQUIRE(num_is_2(std::begin(values), std::end(values))->name == "two");
     }
+    SECTION("find_if_not is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::find_if_not,
+                                      dup(values),
+                                      &numname::num | composer::equal_to(2)));
+    }
 }
 
 SCENARIO("find_last")
@@ -944,6 +995,11 @@ SCENARIO("find_last")
         STATIC_REQUIRE(std::end(tail) == std::end(values));
         REQUIRE(std::begin(tail)->num == 3);
         REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("find_last is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::find_last, dup(values), 3, &numname::num));
     }
 }
 
@@ -1039,6 +1095,12 @@ SCENARIO("find_last_if")
         STATIC_REQUIRE(std::end(tail) == std::end(values));
         REQUIRE(std::begin(tail)->num == 3);
         REQUIRE(std::end(tail) == std::end(values));
+    }
+    SECTION("find_last_if is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::find_last_if,
+                                      dup(values),
+                                      &numname::num | composer::equal_to(3)));
     }
 }
 
@@ -1139,6 +1201,12 @@ SCENARIO("find_last_if_not")
         REQUIRE(std::begin(tail)->num == 3);
         REQUIRE(std::end(tail) == std::end(values));
     }
+    SECTION("find_last_if_not is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::find_last_if_not,
+                                      dup(values),
+                                      &numname::num | composer::equal_to(2)));
+    }
 }
 
 SCENARIO("find_end is back binding")
@@ -1202,6 +1270,13 @@ SCENARIO("find_end is back binding")
                 == haystack.begin() + 4);
         REQUIRE((haystack | find_end_neg_needle).end() == haystack.begin() + 6);
     }
+    SECTION("find_end is not allowed on an r-value range")
+    {
+        std::vector haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needle = { -1, -2 };
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::find_end, std::move(haystack), needle));
+    }
 }
 
 SCENARIO("find_first_of is back binding")
@@ -1258,6 +1333,13 @@ SCENARIO("find_first_of is back binding")
                  | &numname::name)
                 == "four");
     }
+    SECTION("find_first_of is not allowed on an r-value range")
+    {
+        std::vector haystack = { 1, 2, 3, 4, 1, 2, 5 };
+        static constexpr std::array needles = { 6, 4 };
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::find_first_of, std::move(haystack), needles));
+    }
 }
 
 SCENARIO("adjacent_find is back binding")
@@ -1299,6 +1381,11 @@ SCENARIO("adjacent_find is back binding")
             = composer::adjacent_find(composer::equal_to);
         STATIC_REQUIRE((numbers | abs_adjacent) == numbers.begin() + 3);
         REQUIRE((numbers | abs_adjacent) == numbers.begin() + 3);
+    }
+    SECTION("adjacent_find is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::adjacent_find, std::array(numbers)));
     }
 }
 
@@ -1363,6 +1450,14 @@ SCENARIO("search is back binding")
         REQUIRE((values | search_in_numname(needle)).end()
                 == values.begin() + 4);
     }
+    SECTION("search is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::search,
+                                      dup(values),
+                                      std::array{ 3, 4 },
+                                      composer::equal_to,
+                                      &numname::num));
+    }
 }
 
 SCENARIO("search_n is back binding")
@@ -1412,6 +1507,10 @@ SCENARIO("search_n is back binding")
         REQUIRE((ints | search_2s(3)).begin() == ints.begin() + 5);
         REQUIRE((ints | search_2s(3)).end() == ints.begin() + 8);
     }
+    SECTION("search_n is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE(returns_callable(composer::search_n, dup(ints), 2));
+    }
 }
 
 SCENARIO("contains is back binding")
@@ -1441,6 +1540,11 @@ SCENARIO("contains is back binding")
         REQUIRE(values | contains_num(3));
         REQUIRE_FALSE(values | contains_num(0));
     }
+    SECTION("contains can be called with an r-value range")
+    {
+        REQUIRE(composer::contains(std::array{ 1, 2, 3, 4, 5 }, 3));
+        REQUIRE_FALSE(composer::contains(std::array{ 1, 2, 3, 4, 5 }, 8));
+    }
 }
 
 SCENARIO("contains_subrange is back binding")
@@ -1467,6 +1571,15 @@ SCENARIO("contains_subrange is back binding")
                              | contains_subrange_num(std::array{ 2, 3, 5 }));
         REQUIRE(values | contains_subrange_num(std::array{ 2, 3, 4 }));
         REQUIRE_FALSE(values | contains_subrange_num(std::array{ 2, 3, 5 }));
+    }
+    SECTION("contains_subrange can be called with an r-value range")
+    {
+        constexpr auto contains_subrange_num
+            = composer::contains_subrange(composer::equal_to, &numname::num);
+
+        REQUIRE(contains_subrange_num(dup(values), std::array{ 2, 3, 4 }));
+        REQUIRE_FALSE(
+            contains_subrange_num(dup(values), std::array{ 2, 3, 5 }));
     }
 }
 
@@ -1536,6 +1649,14 @@ SCENARIO("starts_with is back binding")
         REQUIRE(values | starts_with_num(std::array{ 1, 2, 3 }));
         REQUIRE_FALSE(values | starts_with_num(std::array{ 1, 2, 4 }));
     }
+    SECTION("starts_with can be called with an r-value range")
+    {
+        constexpr auto starts_with_num
+            = composer::starts_with(composer::equal_to, &numname::num);
+
+        REQUIRE(starts_with_num(dup(values), std::array{ 1, 2, 3 }));
+        REQUIRE_FALSE(starts_with_num(dup(values), std::array{ 1, 2, 5 }));
+    }
 }
 
 SCENARIO("ends_with is back binding")
@@ -1601,6 +1722,13 @@ SCENARIO("ends_with is back binding")
         REQUIRE(values | ends_with_num(std::array{ 3, 4, 5 }));
         REQUIRE_FALSE(values | ends_with_num(std::array{ 3, 4, 6 }));
     }
+    SECTION("ends_with can be called with an r-value range")
+    {
+        constexpr auto ends_with_num
+            = composer::ends_with(composer::equal_to, &numname::num);
+        REQUIRE(ends_with_num(dup(values), std::array{ 3, 4, 5 }));
+        REQUIRE_FALSE(ends_with_num(dup(values), std::array{ 3, 4, 6 }));
+    }
 }
 #endif // __cpp_lib_starts_ends_with
 
@@ -1660,6 +1788,16 @@ SCENARIO("is_partitioned is back binding")
         REQUIRE_FALSE(values
                       | is_partitioned_by_name(composer::less_than("three")));
     }
+    SECTION("is_partitioned can be called with an r-value range")
+    {
+        constexpr auto is_partitioned_by_num
+            = composer::is_partitioned(&numname::num);
+        constexpr auto is_partitioned_by_name
+            = composer::is_partitioned(&numname::name);
+        REQUIRE(is_partitioned_by_num(dup(values), composer::less_than(3)));
+        REQUIRE_FALSE(
+            is_partitioned_by_name(dup(values), composer::less_than("three")));
+    }
 }
 
 SCENARIO("partition_point is back binding")
@@ -1698,6 +1836,13 @@ SCENARIO("partition_point is back binding")
             == values.begin() + 2);
         REQUIRE((values | pp_by_name(composer::size | composer::less_than(4)))
                 == values.begin() + 2);
+    }
+    SECTION("partition_point is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(
+            can_call(composer::partition_point,
+                     dup(values),
+                     &numname::name | composer::size | composer::less_than(4)));
     }
 }
 
@@ -1738,6 +1883,12 @@ SCENARIO("is_sorted is back binding")
         REQUIRE(values | composer::is_sorted(by_num(composer::less_than)));
         REQUIRE_FALSE(values
                       | composer::is_sorted(by_name(composer::less_than)));
+    }
+    SECTION("is_sorted can be called with an r-value range")
+    {
+        REQUIRE(composer::is_sorted(dup(values), by_num(composer::less_than)));
+        REQUIRE_FALSE(
+            composer::is_sorted(dup(values), by_name(composer::less_than)));
     }
 }
 
@@ -1797,6 +1948,12 @@ SCENARIO("is_sorted_until is back binding")
             (values | composer::is_sorted_until(by_name(composer::less_than)))
             == values.begin() + 2);
     }
+    SECTION("is_sorted_until is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::is_sorted_until,
+                                      dup(values),
+                                      by_num(composer::less_than)));
+    }
 }
 
 SCENARIO("lower_bound")
@@ -1829,6 +1986,13 @@ SCENARIO("lower_bound")
         REQUIRE((even_numbers | lower_bound_num(8))
                 == even_numbers.begin() + 4);
     }
+    SECTION("lower_bound is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE(returns_callable(composer::lower_bound,
+                                        dup(values),
+                                        composer::less_than,
+                                        &numname::num));
+    }
 }
 
 SCENARIO("upper_bound")
@@ -1860,6 +2024,13 @@ SCENARIO("upper_bound")
                        == even_numbers.begin() + 5);
         REQUIRE((even_numbers | upper_bound_num(8))
                 == even_numbers.begin() + 5);
+    }
+    SECTION("upper_bound is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE(returns_callable(composer::upper_bound,
+                                        dup(values),
+                                        composer::less_than,
+                                        &numname::num));
     }
 }
 
@@ -1896,6 +2067,13 @@ SCENARIO("binary_search")
         STATIC_REQUIRE_FALSE(even_numbers | binary_search_num(7));
         REQUIRE_FALSE(even_numbers | binary_search_num(7));
     }
+    SECTION("binary_search can be called on an r-value range")
+    {
+        constexpr auto binary_search_num
+            = composer::binary_search(composer::less_than, &numname::num);
+        REQUIRE(binary_search_num(dup(even_numbers), 8));
+        REQUIRE_FALSE(binary_search_num(dup(even_numbers), 7));
+    }
 }
 
 SCENARIO("equal_range")
@@ -1923,6 +2101,13 @@ SCENARIO("equal_range")
         REQUIRE((values | equal_by_num(3)).begin() == values.begin() + 2);
         REQUIRE((values | equal_by_num(3)).end() == values.begin() + 3);
     }
+    SECTION("equal_range is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE(returns_callable(composer::equal_range,
+                                        dup(values),
+                                        composer::less_than,
+                                        &numname::num));
+    }
 }
 
 SCENARIO("includes")
@@ -1948,6 +2133,13 @@ SCENARIO("includes")
         STATIC_REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
         REQUIRE(values | includes_nums(std::array{ 2, 3, 5 }));
         REQUIRE_FALSE(values | includes_nums(std::array{ 2, 3, 7 }));
+    }
+    SECTION("includes can be called with an r-value range")
+    {
+        static constexpr auto includes_nums
+            = composer::includes(composer::less_than, &numname::num);
+        REQUIRE(includes_nums(dup(values), std::array{ 2, 3, 5 }));
+        REQUIRE_FALSE(includes_nums(dup(values), std::array{ 2, 3, 7 }));
     }
 }
 
@@ -1995,6 +2187,13 @@ SCENARIO("is_heap")
         STATIC_REQUIRE_FALSE(nonheap | is_heap_num);
         REQUIRE(values | is_heap_num);
         REQUIRE_FALSE(nonheap | is_heap_num);
+    }
+    SECTION("is_heap can be called on an r-value range")
+    {
+        constexpr auto is_heap_num = composer::is_heap(
+            composer::transform_args(&numname::num, composer::greater_than));
+        REQUIRE(is_heap_num(dup(values)));
+        REQUIRE_FALSE(is_heap_num(dup(nonheap)));
     }
 }
 
@@ -2056,6 +2255,13 @@ SCENARIO("is_heap_until")
         STATIC_REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
         REQUIRE((values | is_heap_num) == values.end());
         REQUIRE((nonheap | is_heap_num) == std::prev(nonheap.end()));
+    }
+    SECTION("is_heap_until is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(
+            composer::is_heap_until,
+            dup(values),
+            composer::transform_args(&numname::num, composer::greater_than)));
     }
 }
 
@@ -2145,6 +2351,13 @@ SCENARIO("max_element")
         STATIC_REQUIRE((values | maxnum) == std::prev(values.end()));
         REQUIRE((values | maxnum) == std::prev(values.end()));
     }
+    SECTION("max_element is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::max_element,
+                                      dup(values),
+                                      composer::less_than,
+                                      &numname::num));
+    }
 }
 
 SCENARIO("min")
@@ -2233,6 +2446,13 @@ SCENARIO("min_element")
         STATIC_REQUIRE((values | minnum) == values.begin());
         REQUIRE((values | minnum) == values.begin());
     }
+    SECTION("min_element is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(composer::min_element,
+                                      dup(values),
+                                      composer::less_than,
+                                      &numname::num));
+    }
 }
 
 SCENARIO("minmax_element")
@@ -2246,7 +2466,7 @@ SCENARIO("minmax_element")
         REQUIRE(max->num == 5);
     }
     SECTION("minmax_element called with a composed predicate is pipeable from "
-            "a rannge")
+            "a range")
     {
         const auto [min, max]
             = values
@@ -2254,6 +2474,13 @@ SCENARIO("minmax_element")
                   composer::transform_args(&numname::num, composer::less_than));
         REQUIRE(min->num == 1);
         REQUIRE(max->num == 5);
+    }
+    SECTION("minmax_element is not allowed on an r-value range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(
+            composer::minmax_element,
+            dup(values),
+            composer::transform_args(&numname::num, composer::less_than)));
     }
 }
 
