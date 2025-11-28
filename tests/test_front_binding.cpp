@@ -104,7 +104,9 @@ TEST_CASE("a piped expression is a front bound function that calls the right "
           "hand function with the result of the left hand function")
 {
     auto to_string = composer::make_arity_function<1>(
-        [](auto t) { return std::to_string(t); });
+        [](auto t) -> decltype(std::to_string(t)) {
+            return std::to_string(t);
+        });
     constexpr auto minus = composer::front_binding<2, std::minus<>>{};
     auto sub_to_str = minus | to_string;
     auto sub_from_2_to_str = sub_to_str(2);

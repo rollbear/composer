@@ -37,9 +37,9 @@ struct back_binder {
     template <typename Self, std::size_t... Is, typename... Ts>
     constexpr auto
     call(this Self&& self, std::index_sequence<Is...>, Ts&&... ts)
-        -> decltype(std::forward_like<Self>(self.f)(
+        -> not_dangling_t<decltype(std::forward_like<Self>(self.f)(
             std::forward<Ts>(ts)...,
-            unwrap(std::forward_like<Self>(std::get<Is>(self.as)))...))
+            unwrap(std::forward_like<Self>(std::get<Is>(self.as)))...))>
     {
         return std::forward_like<Self>(self.f)(
             std::forward<Ts>(ts)...,
