@@ -94,6 +94,10 @@ struct not_dangling {
 template <>
 struct not_dangling<std::ranges::dangling> {};
 
+template <template <typename...> class C, typename... Ts>
+    requires(std::is_same_v<Ts, std::ranges::dangling> || ...)
+struct not_dangling<C<Ts...>> {};
+
 template <typename T>
 using not_dangling_t = typename not_dangling<T>::type;
 
