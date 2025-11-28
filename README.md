@@ -19,6 +19,13 @@ goes for C-arrays, which otherwise always decay to pointers to the first
 element. If you want a bound argument to be referenced, you can use
 [`ref`](#ref) or [`cref`](#cref).
 
+Some function templates in the standard library returns
+[`std::ranges::dangling`](https://www.cppreference.com/w/cpp/ranges/dangling.html)
+when called with an r-value range. The `composer` version of these function
+templates disallow those calls because they are almost always bugs that are
+difficult to find.
+
+
 Teaser example:
 
 ```c++
