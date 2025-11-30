@@ -2593,14 +2593,16 @@ SCENARIO("partial_sort")
             "projection calls ranges::stable_sort immediately")
     {
         auto valcopy = values;
-        composer::partial_sort(
-            valcopy, valcopy.begin() + 3, composer::less_than, &numname::num);
+        composer::partial_sort(valcopy,
+                               valcopy.begin() + 3,
+                               composer::greater_than,
+                               &numname::num);
         REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
                          | std::views::take(3),
-                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+                     Catch::Matchers::RangeEquals({ 5, 4, 3 }));
         REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
                          | std::views::drop(3) | std::ranges::to<std::vector>(),
-                     Catch::Matchers::UnorderedEquals(std::vector{ 4, 5 }));
+                     Catch::Matchers::UnorderedEquals(std::vector{ 1, 2 }));
     }
     SECTION("calling partial_sort with a range, an iterator and a composed "
             "predicate calls ranger::stable_sort immediately")
@@ -2609,21 +2611,21 @@ SCENARIO("partial_sort")
         composer::partial_sort(
             valcopy,
             valcopy.begin() + 3,
-            composer::transform_args(&numname::num, composer::less_than));
+            composer::transform_args(&numname::num, composer::greater_than));
         REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
                          | std::views::take(3),
-                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+                     Catch::Matchers::RangeEquals({ 5, 4, 3 }));
     }
     SECTION("calling partial_sort with a composed predicate returns a callable "
             "for a range and an iterator")
     {
         auto valcopy = values;
         constexpr auto sort_by_num = composer::partial_sort(
-            composer::transform_args(&numname::num, composer::less_than));
+            composer::transform_args(&numname::num, composer::greater_than));
         sort_by_num(valcopy, valcopy.begin() + 3);
         REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
                          | std::views::take(3),
-                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+                     Catch::Matchers::RangeEquals({ 5, 4, 3 }));
     }
     SECTION("partial_sort called with an iterator and a composed predicate is "
             "callable with an l-value range")
@@ -2631,11 +2633,11 @@ SCENARIO("partial_sort")
         auto valcopy = values;
         auto dangerous = composer::partial_sort(
             valcopy.begin() + 3,
-            composer::transform_args(&numname::num, composer::less_than));
+            composer::transform_args(&numname::num, composer::greater_than));
         dangerous(valcopy);
         REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
                          | std::views::take(3),
-                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+                     Catch::Matchers::RangeEquals({ 5, 4, 3 }));
     }
     SECTION("partial_sort called with an iterator and a composed predicate is "
             "not callable with an r-value range")
@@ -2643,7 +2645,7 @@ SCENARIO("partial_sort")
         auto valcopy = values;
         auto dangerous = composer::partial_sort(
             valcopy.begin() + 3,
-            composer::transform_args(&numname::num, composer::less_than));
+            composer::transform_args(&numname::num, composer::greater_than));
         STATIC_REQUIRE(returns_callable(dangerous, std::move(valcopy)));
     }
     SECTION("partial_sort called with an iterator and a composed predicate is "
@@ -2652,7 +2654,7 @@ SCENARIO("partial_sort")
         auto valcopy = values;
         auto dangerous = composer::partial_sort(
             valcopy.begin() + 3,
-            composer::transform_args(&numname::num, composer::less_than));
+            composer::transform_args(&numname::num, composer::greater_than));
         STATIC_REQUIRE_FALSE(can_pipe(valcopy, dangerous));
     }
 }
