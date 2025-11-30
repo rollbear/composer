@@ -2656,3 +2656,54 @@ SCENARIO("partial_sort")
         STATIC_REQUIRE_FALSE(can_pipe(valcopy, dangerous));
     }
 }
+
+SCENARIO("partial_sort_copy")
+{
+    SECTION("calling partial_sort_copy with input range, output range and "
+            "composed predicate calls ranges::partial_sort_copy immediately")
+    {
+        std::vector<numname> result(3);
+        composer::partial_sort_copy(
+            values,
+            result,
+            composer::transform_args(&numname::name, composer::less_than));
+        REQUIRE_THAT(result | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 1 }));
+    }
+    SECTION("partial_sort_copy called with a composed predicate is callable "
+            "with an input range and an output range")
+    {
+        constexpr auto sort_by_name = composer::partial_sort_copy(
+            composer::transform_args(&numname::name, composer::less_than));
+        std::vector<numname> result(3);
+        sort_by_name(values, result);
+        REQUIRE_THAT(result | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 1 }));
+    }
+    SECTION("partial_sort_copy called with an output range by ref and a "
+            "composed predicate is callable with an l-value range")
+    {
+        std::vector<numname> result(3);
+        auto sort_by_name = composer::partial_sort_copy(
+            composer::ref(result),
+            composer::transform_args(&numname::name, composer::less_than));
+        sort_by_name(values);
+        REQUIRE_THAT(result | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 1 }));
+    }
+    SECTION("partial_sort_copy cannot be called with an r-value output range")
+    {
+        STATIC_REQUIRE_FALSE(can_call(
+            composer::partial_sort_copy,
+            values,
+            std::vector<numname>(3),
+            composer::transform_args(&numname::num, composer::less_than)));
+    }
+    SECTION("partial_sort_copy can not be called with an r-value input range")
+    {
+        std::vector<numname> result(3);
+        auto sort_by_name = composer::partial_sort_copy(
+            composer::transform_args(&numname::name, composer::less_than));
+        STATIC_REQUIRE(returns_callable(sort_by_name, dup(values), result));
+    }
+}
