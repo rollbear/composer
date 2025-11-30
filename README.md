@@ -533,3 +533,12 @@ Back binding version of [`std::ranges::partial_sort`](https://en.cppreference.co
 
 `composer::partial_sort` cannot be called with an r-value range.
 
+#### `composer::partial_sort_copy`
+
+Back binding version of [`std::ranges::partial_sort_copy`](https://en.cppreference.com/w/cpp/algorithm/ranges/partial_sort_copy.html)
+
+`composer::partial_sort_copy` cannot be called with r-value ranges.
+
+_Note!_ If you bind the output range by value, the result will end up in the
+copy of the range owned by the function object. If you want to bind the output
+range, do so via `composer::ref`.
