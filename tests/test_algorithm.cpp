@@ -7,6 +7,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
+#include <catch2/matchers/catch_matchers_vector.hpp>
 
 #include <array>
 #include <cmath>
@@ -2583,5 +2584,75 @@ SCENARIO("sort")
     SECTION("calling sort with a const array returns an arity_function")
     {
         STATIC_REQUIRE(returns_callable(composer::sort, std::as_const(ints)));
+    }
+}
+
+SCENARIO("partial_sort")
+{
+    SECTION("calling partial_sort with a range, an iterator, a predicate and a "
+            "projection calls ranges::stable_sort immediately")
+    {
+        auto valcopy = values;
+        composer::partial_sort(
+            valcopy, valcopy.begin() + 3, composer::less_than, &numname::num);
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
+                         | std::views::take(3),
+                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
+                         | std::views::drop(3) | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 4, 5 }));
+    }
+    SECTION("calling partial_sort with a range, an iterator and a composed "
+            "predicate calls ranger::stable_sort immediately")
+    {
+        auto valcopy = values;
+        composer::partial_sort(
+            valcopy,
+            valcopy.begin() + 3,
+            composer::transform_args(&numname::num, composer::less_than));
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
+                         | std::views::take(3),
+                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+    }
+    SECTION("calling partial_sort with a composed predicate returns a callable "
+            "for a range and an iterator")
+    {
+        auto valcopy = values;
+        constexpr auto sort_by_num = composer::partial_sort(
+            composer::transform_args(&numname::num, composer::less_than));
+        sort_by_num(valcopy, valcopy.begin() + 3);
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
+                         | std::views::take(3),
+                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+    }
+    SECTION("partial_sort called with an iterator and a composed predicate is "
+            "callable with an l-value range")
+    {
+        auto valcopy = values;
+        auto dangerous = composer::partial_sort(
+            valcopy.begin() + 3,
+            composer::transform_args(&numname::num, composer::less_than));
+        dangerous(valcopy);
+        REQUIRE_THAT(valcopy | std::views::transform(&numname::num)
+                         | std::views::take(3),
+                     Catch::Matchers::RangeEquals({ 1, 2, 3 }));
+    }
+    SECTION("partial_sort called with an iterator and a composed predicate is "
+            "not callable with an r-value range")
+    {
+        auto valcopy = values;
+        auto dangerous = composer::partial_sort(
+            valcopy.begin() + 3,
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE(returns_callable(dangerous, std::move(valcopy)));
+    }
+    SECTION("partial_sort called with an iterator and a composed predicate is "
+            "not pipeable from a range")
+    {
+        auto valcopy = values;
+        auto dangerous = composer::partial_sort(
+            valcopy.begin() + 3,
+            composer::transform_args(&numname::num, composer::less_than));
+        STATIC_REQUIRE_FALSE(can_pipe(valcopy, dangerous));
     }
 }
