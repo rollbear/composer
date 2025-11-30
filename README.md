@@ -361,167 +361,167 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_if`](https
 
 `composer::find_if` cannot be called with an r-value range.
 
-### `composer::find_if_not`
+#### `composer::find_if_not`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_if_not`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
 
 `composer::find_if_not` cannot be called with an r-value range.
 
-### `composer::find_last`
+#### `composer::find_last`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 `composer::find_last` cannot be called with r-value range.
 
-### `composer::find_last_if`
+#### `composer::find_last_if`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 `composer::find_last_if` cannot be called with an r-value range.
 
-### `composer::find_last_if_not`
+#### `composer::find_last_if_not`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 `composer::find_last_if_not` cannot be called with an r-value range.
 
-### `composer::find_end`
+#### `composer::find_end`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
 
 `composer.:find_end` cannot be called with an r-value range.
 
-### `composer::find_first_of`
+#### `composer::find_first_of`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
 
 `composer::find_first_of` cannot be called with an r-value range.
 
-### `composer::adjacent_find`
+#### `composer::adjacent_find`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::adjacent_find`](https://www.cppreference.com/w/cpp/algorithm/ranges/adjacent_find.html)
 
 `composer::adjacent_find` cannot be called with an r-value range.
 
-### `composer::search`
+#### `composer::search`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
 
 `composer::search` cannot be called with an r-value range.
 
-### `composer::search_n`
+#### `composer::search_n`
 
 `composer::search_n` cannot be called with an r-value range.
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::search_n`](https://www.cppreference.com/w/cpp/algorithm/ranges/search_n.html)
 
-### `composer::contains`
+#### `composer::contains`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::contains`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
 
-### `composer::contains_subrange`
+#### `composer::contains_subrange`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::contains_subrange`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
 
-### `composer::starts_with`
+#### `composer::starts_with`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
 
 **NOTE!** Not available in gcc-15 and lower
 
-### `composer::ends_with`
+#### `composer::ends_with`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
 
 **NOTE!** Not available in gcc-15 and lower
 
-### `composer::is_partitioned`
+#### `composer::is_partitioned`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
 
-### `composer::partition_point`
+#### `composer::partition_point`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
 
 `composer::partition_point` cannot be called with an r-value range.
 
-### `composer::is_sorted`
+#### `composer::is_sorted`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
 
-### `composer::is_sorted_until`
+#### `composer::is_sorted_until`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)
 
 `composer::is_sorted_until` cannot be called with an r-value range.
 
-### `composer::lower_bound`
+#### `composer::lower_bound`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/lower_bound.html)
 
 `composer::lower_bound` cannot be called with an r-value range.
 
-### `composer::upper_bound`
+#### `composer::upper_bound`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::upper_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/upper_bound.html)
 
 `composer::upper_bound` cannot be called with an r-value range.
 
-### `composer::binary_search`
+#### `composer::binary_search`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::binary_search`](https://en.cppreference.com/w/cpp/algorithm/ranges/binary_search.html)
 
-### `composer::equal_range`
+#### `composer::equal_range`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
 
 `composer::equal_range` cannot be called with an r-value range.
 
-### `composer::includes`
+#### `composer::includes`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
 
-### `composer::is_heap`
+#### `composer::is_heap`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap.html)
 
-### `composer::is_heap_until`
+#### `composer::is_heap_until`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_heap_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap_until.html)
 
 `composer::is_heap_until` cannot be called with an r-value range.
 
-### `composer::max`
+#### `composer::max`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
 
-### `composer::max_element`
+#### `composer::max_element`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::max_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/max_element.html)
 
 `composer::max_element` cannot be called with an r-value range.
 
-### `composer::min`
+#### `composer::min`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
 
-### `composer::min_element`
+#### `composer::min_element`
 
 `composer::minmax_element` cannot be called with an r-value range.
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)
 
-### `composer::minmax_element`
+#### `composer::minmax_element`
 
 `composer::minmax_element` cannot be called with an r-value range.
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)
 
-### `composer::clamp`
+#### `composer::clamp`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::clamp`](https://en.cppreference.com/w/cpp/algorithm/ranges/clamp.html)
 
-### `composer::sort`
+#### `composer::sort`
 
 Back binding version of [`std::ranges::sort`](https://en.cppreference.com/w/cpp/algorithm/ranges/sort.html)
 
