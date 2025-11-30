@@ -526,3 +526,10 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::clamp`](https:/
 Back binding version of [`std::ranges::sort`](https://en.cppreference.com/w/cpp/algorithm/ranges/sort.html)
 
 `composer::sort` cannot be called with an r-value range.
+
+#### `composer::partial_sort`
+
+Back binding version of [`std::ranges::partial_sort`](https://en.cppreference.com/w/cpp/algorithm/ranges/partial_sort.html)
+
+`composer::partial_sort` cannot be called with an r-value range.
+

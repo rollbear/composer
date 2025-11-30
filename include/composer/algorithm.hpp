@@ -272,6 +272,11 @@ inline constexpr auto sort = make_arity_function<4, back_binding>(
         return std::ranges::sort(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto partial_sort = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partial_sort(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partial_sort(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
