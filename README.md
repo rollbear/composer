@@ -449,6 +449,12 @@ Back binding version of [`std::ranges::partition`](https://en.cppreference.com/w
 
 `composer::partition` cannod be called with an r-value range.
 
+### `composer::stable_partition`
+
+Back binding version of [`std::ranges::stabpartition`](https://en.cppreference.com/w/cpp/algorithm/ranges/stable_partition.html)
+
+`composer::stable_partition` cannod be called with an r-value range.
+
 #### `composer::partition_point`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)

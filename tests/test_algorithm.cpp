@@ -1846,6 +1846,47 @@ SCENARIO("partition is back binding")
     }
 }
 
+SCENARIO("stable_partition is back binding")
+{
+    SECTION("stable_partition called with a range, a predicate and a "
+            "projection calls "
+            "ranges::stable_partition immediately")
+    {
+        auto local_values = values;
+        composer::stable_partition(local_values,
+                                   composer::size | composer::less_than(5),
+                                   &numname::name);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals(std::array{ 1, 2, 4, 5, 3 }));
+    }
+    SECTION("stable_partition called with a composed predicate, is callable "
+            "with a range")
+    {
+        auto local_values = values;
+        auto short_strings_first
+            = composer::stable_partition(composer::transform_args(
+                &numname::name | composer::size, composer::less_than(5)));
+        short_strings_first(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals(std::array{ 1, 2, 4, 5, 3 }));
+    }
+    SECTION("stable_partition is not callable with an r-value range")
+    {
+        auto short_strings_first
+            = composer::stable_partition(composer::transform_args(
+                &numname::name | composer::size, composer::less_than(4)));
+        STATIC_REQUIRE(returns_callable(short_strings_first, dup(values)));
+    }
+    SECTION("stable_partition is not pipeable")
+    {
+        auto local_values = values;
+        auto short_strings_first
+            = composer::stable_partition(composer::transform_args(
+                &numname::name | composer::size, composer::less_than(4)));
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, short_strings_first));
+    }
+}
+
 SCENARIO("partition_point is back binding")
 {
     SECTION("calling partition_point with a range, a predicate and a "
