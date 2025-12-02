@@ -447,7 +447,13 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_partitioned`
 
 Back binding version of [`std::ranges::partition`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition.html)
 
-`composer::partition` cannod be called with an r-value range.
+`composer::partition` cannot be called with an r-value range.
+
+### `composer::partition_copy`
+
+Back binding version of [`std::ranges::partition_copy`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_copy.html)
+
+`composer::partition_copy` cannot be called with an r-value range.
 
 ### `composer::stable_partition`
 

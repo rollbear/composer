@@ -165,6 +165,12 @@ inline constexpr auto partition = make_arity_function<4, back_binding>(
         return std::ranges::partition(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto partition_copy = make_arity_function<6, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition_copy(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partition_copy(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto stable_partition = make_arity_function<4, back_binding>(
     []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::stable_partition(
                                        std::forward<Ts>(ts)...)) {

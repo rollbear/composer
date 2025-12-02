@@ -1846,6 +1846,93 @@ SCENARIO("partition is back binding")
     }
 }
 
+SCENARIO("partition_copy is back binding")
+{
+    SECTION("partition_copy called with a const range, two iterators, a "
+            "predicate and a projection calls "
+            "ranges::partition immediately")
+    {
+        std::vector<numname> short_names;
+        std::vector<numname> long_names;
+        composer::partition_copy(values,
+                                 std::back_inserter(short_names),
+                                 std::back_inserter(long_names),
+                                 composer::size | composer::less_than(4),
+                                 &numname::name);
+        REQUIRE_THAT(short_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 1, 2 }));
+        REQUIRE_THAT(long_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 3, 4, 5 }));
+    }
+    SECTION("partition_copy called with a composed predicate, is callable with "
+            "a range")
+    {
+        auto by_string_length
+            = composer::partition_copy(composer::transform_args(
+                &numname::name | composer::size, composer::less_than(4)));
+        std::vector<numname> short_names;
+        std::vector<numname> long_names;
+        by_string_length(values,
+                         std::back_inserter(short_names),
+                         std::back_inserter(long_names));
+        REQUIRE_THAT(short_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 1, 2 }));
+        REQUIRE_THAT(long_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 3, 4, 5 }));
+    }
+    SECTION("partition_copy called with two output iterators, a composed "
+            "predicate, is callable with a range")
+    {
+        std::vector<numname> short_names;
+        std::vector<numname> long_names;
+        auto by_string_length = composer::partition_copy(
+            std::back_inserter(short_names),
+            std::back_inserter(long_names),
+            composer::transform_args(&numname::name | composer::size,
+                                     composer::less_than(4)));
+        by_string_length(values);
+        REQUIRE_THAT(short_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 1, 2 }));
+        REQUIRE_THAT(long_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 3, 4, 5 }));
+    }
+    SECTION("partition_copy is not callable with an r-value range")
+    {
+        std::vector<numname> short_names;
+        std::vector<numname> long_names;
+        auto by_string_length = composer::partition_copy(
+            std::back_inserter(short_names),
+            std::back_inserter(long_names),
+            composer::transform_args(&numname::name | composer::size,
+                                     composer::less_than(4)));
+        STATIC_REQUIRE(returns_callable(by_string_length, dup(values)));
+    }
+    SECTION("partition_copy is pipeable")
+    {
+        std::vector<numname> short_names;
+        std::vector<numname> long_names;
+        auto by_string_length = composer::partition_copy(
+            std::back_inserter(short_names),
+            std::back_inserter(long_names),
+            composer::transform_args(&numname::name | composer::size,
+                                     composer::less_than(4)));
+        auto [in_it, short_it, long_it] = values | by_string_length;
+        REQUIRE_THAT(short_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 1, 2 }));
+        REQUIRE_THAT(long_names | std::views::transform(&numname::num)
+                         | std::ranges::to<std::vector>(),
+                     Catch::Matchers::UnorderedEquals(std::vector{ 3, 4, 5 }));
+        REQUIRE(in_it == values.end());
+    }
+}
+
 SCENARIO("stable_partition is back binding")
 {
     SECTION("stable_partition called with a range, a predicate and a "
