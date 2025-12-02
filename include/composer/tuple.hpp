@@ -6,10 +6,10 @@
 
 namespace composer {
 template <std::size_t I>
-inline constexpr auto get = make_arity_function<1>(
+inline constexpr auto get = make_arity_function<1>(nodiscard{
     []<typename T>(T&& t) -> decltype(std::get<I>(std::forward<T>(t))) {
         return std::get<I>(std::forward<T>(t));
-    });
+    } });
 
 inline constexpr auto apply_to = make_arity_function<100, back_binding>(
     []<typename F, typename... Ts>(F&& f, Ts&&... ts)

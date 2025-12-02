@@ -12,8 +12,19 @@ namespace internal {
 template <typename F, typename... As>
 struct back_binder {
     static constexpr auto indexes = std::index_sequence_for<As...>{};
+    static constexpr bool is_nodiscard = nodiscard_function<F>;
     [[no_unique_address]] F f;
     [[no_unique_address]] std::tuple<As...> as;
+
+    template <typename Self, typename... Ts>
+    [[nodiscard]]
+    constexpr auto operator()(this Self&& self, Ts&&... ts)
+        -> decltype(std::forward<Self>(self).call(indexes,
+                                                  std::forward<Ts>(ts)...))
+        requires nodiscard_function<F>
+    {
+        return std::forward<Self>(self).call(indexes, std::forward<Ts>(ts)...);
+    }
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
