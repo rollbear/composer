@@ -19,7 +19,6 @@ goes for C-arrays, which otherwise always decay to pointers to the first
 element. If you want a bound argument to be referenced, you can use
 [`ref`](#ref) or [`cref`](#cref).
 
-
 Teaser example:
 
 ```c++
@@ -112,6 +111,16 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
+### <A name="nodiscard"></A> `nodiscard<F>`
+
+Used when defining a new function, to ensure that the return from it is marked
+[`[[nodiscard]]`](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
+
+Example:
+```
+auto minus = back_binding<2, nodiscard<std::minus<>>>{};
+```
+
 ## helper function template objects
 
 ### `composer::make_arity_function<N, Kind = arity_function>(F&& f)`
@@ -139,7 +148,7 @@ bind them by const reference.
 
 ### `composer::mem_fn(T C::*)`
 
-Creates a composable function objects that calls
+Creates a [`nodiscard`](#nodiscard) composable function objects that calls
 [`std::mem_fn`](https://en.cppreference.com/w/cpp/utility/functional/mem_fn.html)
 on its argument.
 
@@ -156,91 +165,91 @@ pointer to member is applicable.
 
 ### `composer::equal_to(a, b)`
 
-Back binding version of [`std::ranges::equal_to`](https://en.cppreference.com/w/cpp/utility/functional/ranges/equal_to). 
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::equal_to`](https://en.cppreference.com/w/cpp/utility/functional/ranges/equal_to). 
 
 ### `composer::not_equal_to(a, b)`
 
-Back binding version of [`std::ranges::not_equal_to`](https://en.cppreference.com/w/cpp/utility/functional/ranges/not_equal_to).
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::not_equal_to`](https://en.cppreference.com/w/cpp/utility/functional/ranges/not_equal_to).
 
 ### `composer::less_than(a, b)`
 
-Back binding version of [`std::ranges::less`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less).
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::less`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less).
 
 ### `composer::less_or_equal_to(a, b)`
 
-Back binding version of [`std::ranges::less_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less_equal).
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::less_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/less_equal).
 
 ### `composer::greater_than(a, b)`
 
-Back binding version of [`std::ranges::greater`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater).
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::greater`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater).
 
 ### `composer::greater_or_equal_to(a, b)`
 
-Back binding version of [`std::ranges::greater_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater_equal).
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::greater_equal`](https://en.cppreference.com/w/cpp/utility/functional/ranges/greater_equal).
 
 ### `composer::compare_three_wayl(a, b)`
 
-Back binding version of [`std::compare_three_way`](https://en.cppreference.com/w/cpp/utility/compare/compare_three_way).
+Back binding [`nodiscard`](#nodiscard) version of [`std::compare_three_way`](https://en.cppreference.com/w/cpp/utility/compare/compare_three_way).
 
 ### `composer::identity`
 
-Composable version of [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity.html).
+Composable [`nodiscard`](#nodiscard) version of [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity.html).
 
 ### `composer::dereference`
 
-Composable function that returns the result of unary `operator*` on its argument.
+Composable [`nodiscard`](#nodiscard) function that returns the result of unary `operator*` on its argument.
 
 ### `composer::plus`
 
-Back binding version of [`std::plus<>`](https://en.cppreference.com/w/cpp/utility/functional/plus_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::plus<>`](https://en.cppreference.com/w/cpp/utility/functional/plus_void.html)
 
 ### `composer::minus`
 
-Back binding version of [`std::minus<>`](https://en.cppreference.com/w/cpp/utility/functional/minus_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::minus<>`](https://en.cppreference.com/w/cpp/utility/functional/minus_void.html)
 
 ### `composer::multiplies`
 
-Back binding version of [`std::multiplies<>`](https://en.cppreference.com/w/cpp/utility/functional/multiplies_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::multiplies<>`](https://en.cppreference.com/w/cpp/utility/functional/multiplies_void.html)
 
 ### `composer::divides`
 
-Back binding version of [`std::divides<>`](https://en.cppreference.com/w/cpp/utility/functional/divides_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::divides<>`](https://en.cppreference.com/w/cpp/utility/functional/divides_void.html)
 
 ### `composer::modulus`
 
-Back binding version of [`std::modulus<>`](https://en.cppreference.com/w/cpp/utility/functional/modulus_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::modulus<>`](https://en.cppreference.com/w/cpp/utility/functional/modulus_void.html)
 
 ### `composer::negate`
 
-Composable version of [`std::negate`](https://en.cppreference.com/w/cpp/utility/functional/negate.html)
+Composable [`nodiscard`](#nodiscard) version of [`std::negate`](https://en.cppreference.com/w/cpp/utility/functional/negate.html)
 
 ### `composer::logical_and`
 
-Back binding version of [`std::logical_and<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_and_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::logical_and<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_and_void.html)
 
 ### `composer::logical_or`
 
-Back binding version of [`std::logical_or<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_and_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::logical_or<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_and_void.html)
 
 ### `composer::logical_not`
 
-Composable version of [`std::logical_not<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_not_void.html)
+Composable [`nodiscard`](#nodiscard) version of [`std::logical_not<>`](https://en.cppreference.com/w/cpp/utility/functional/logical_not_void.html)
 
 ### `composer::bit_and`
 
-Back binding version of [`std::bit_and<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_and_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::bit_and<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_and_void.html)
 
 ### `composer::bit_or`
 
-Back binding version of [`std::bit_or<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_or_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::bit_or<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_or_void.html)
 
 ### `composer::bit_xor`
 
-Back binding version of [`std::bit_xor<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_xor_void.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::bit_xor<>`](https://en.cppreference.com/w/cpp/utility/functional/bit_xor_void.html)
 
 ### `composer::bit_not`
 
-Composable version of [`std::bit_not<>](https://en.cppreference.com/w/cpp/utility/functional/bit_not_void.html)
+Composable [`nodiscard`](#nodiscard) version of [`std::bit_not<>](https://en.cppreference.com/w/cpp/utility/functional/bit_not_void.html)
 
 ## `composer/transform_args.hpp>`
 
@@ -264,13 +273,14 @@ std::array<int*, N> values = ...
 std::ranges::sort(values, less_ptr);
 ```
 
-
+[`nodiscard`](#nodiscard) is transitive from the composed object to the result object.
 
 ## `<composer/tuple.hpp>`
 
 ### `template <size_t I> composer::get`
 
-Composable function to select the I:th member of a tuple-like type. See [`std::get`](https://en.cppreference.com/w/cpp/utility/tuple/get)
+Composable [`nodiscard`](#nodiscard) function to select the I:th member of a
+tuple-like type. See [`std::get`](https://en.cppreference.com/w/cpp/utility/tuple/get)
 
 There is unfortunately no *type* overload since `get` needs to be an object, not a function template, and object templates cannot be overloaded.
 
@@ -286,15 +296,15 @@ Front binding version of [`std::apply`](https://en.cppreference.com/w/cpp/utilit
 
 ### `composer::size`
 
-Composable function object for [`std::ranges::size`](https://www.cppreference.com/w/cpp/ranges/size.html)
+Composable [`nodiscard`](#nodiscard) function object for [`std::ranges::size`](https://www.cppreference.com/w/cpp/ranges/size.html)
 
 ### `composer::ssize`
 
-Composable function object for [`std::ranges::ssize`](https://www.cppreference.com/w/cpp/ranges/ssize.html)
+Composable [`nodiscard`](#nodiscard) function object for [`std::ranges::ssize`](https://www.cppreference.com/w/cpp/ranges/ssize.html)
 
 ### `composer::distance`
 
-Composable function object for [`std::ranges::distance`](https://www.cppreference.com/w/cpp/iterator/ranges/distance.html)
+Composable [`nodiscard`](#nodiscard) function object for [`std::ranges::distance`](https://www.cppreference.com/w/cpp/iterator/ranges/distance.html)
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
 
@@ -302,15 +312,15 @@ Composable function object for [`std::ranges::distance`](https://www.cppreferenc
 
 ### `composer::all_of`
 
-Back binding version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
 
 ### `composer::any_of`
 
-Back binding version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
 
 ### `composer::none_of`
 
-Back binding version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::any_of`](https://en.cppreference.com/w/cpp/algorithm/ranges/all_any_none_of.html)
 
 ### `composer::for_each`
 
@@ -322,140 +332,140 @@ Back binding version of [`std::ranges::for_each_n`](https://en.cppreference.com/
 
 ### `composer::count`
 
-Back binding version of [`std::ranges::count`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::count`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
 
 ### `composer::count_if`
 
-Back binding version of [`std::ranges::count_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::count_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/count.html)
 
 ### `composer::find`
 
-Back binding version of [`std::ranges::find`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
 
 ### `composer::find_if`
 
-Back binding version of [`std::ranges::find_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
 
 ### `composer::find_if_not`
 
-Back binding version of [`std::ranges::find_if_not`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_if_not`](https://en.cppreference.com/w/cpp/algorithm/ranges/find.html)
 
 ### `composer::find_last`
 
-Back binding version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 ### `composer::find_last_if`
 
-Back binding version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 ### `composer::find_last_if_not`
 
-Back binding version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_last`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_last.html)
 
 ### `composer::find_end`
 
-Back binding version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_end`](https://en.cppreference.com/w/cpp/algorithm/ranges/find_end.html)
 
 ### `composer::find_first_of`
 
-Back binding version of [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::find_first_of](https://en.cppreference.com/w/cpp/algorithm/ranges/find_first_of.html)
 
 ### `composer::adjacent_find`
 
-Back binding version of [`std::ranges::adjacent_find`](https://www.cppreference.com/w/cpp/algorithm/ranges/adjacent_find.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::adjacent_find`](https://www.cppreference.com/w/cpp/algorithm/ranges/adjacent_find.html)
 
 ### `composer::search`
 
-Back binding version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::search`](https://www.cppreference.com/w/cpp/algorithm/ranges/search.html)
 
 ### `composer::search_n`
 
-Back binding version of [`std::ranges::search_n`](https://www.cppreference.com/w/cpp/algorithm/ranges/search_n.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::search_n`](https://www.cppreference.com/w/cpp/algorithm/ranges/search_n.html)
 
 ### `composer::contains`
 
-Back binding version of [`std::ranges::contains`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::contains`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
 
 ### `composer::contains_subrange`
 
-Back binding version of [`std::ranges::contains_subrange`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::contains_subrange`](https://www.cppreference.com/w/cpp/algorithm/ranges/contains.html)
 
 ### `composer::starts_with`
 
-Back binding version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::starts_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/starts_with.html)
 
 **NOTE!** Not available in gcc-15 and lower
 
 ### `composer::ends_with`
 
-Back binding version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::ends_with`](https://en.cppreference.com/w/cpp/algorithm/ranges/ends_with.html)
 
 **NOTE!** Not available in gcc-15 and lower
 
 ### `composer::is_partitioned`
 
-Back binding version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
 
 ### `composer::partition_point`
 
-Back binding version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
 
 ### `composer::is_sorted`
 
-Back binding version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_sorted`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted.html)
 
 ### `composer::is_sorted_until`
 
-Back binding version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_sorted_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_sorted_until.html)
 
 ### `composer::lower_bound`
 
-Back binding version of [`std::ranges::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/lower_bound.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::lower_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/lower_bound.html)
 
 ### `composer::upper_bound`
 
-Back binding version of [`std::ranges::upper_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/upper_bound.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::upper_bound`](https://en.cppreference.com/w/cpp/algorithm/ranges/upper_bound.html)
 
 ### `composer::binary_search`
 
-Back binding version of [`std::ranges::binary_search`](https://en.cppreference.com/w/cpp/algorithm/ranges/binary_search.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::binary_search`](https://en.cppreference.com/w/cpp/algorithm/ranges/binary_search.html)
 
 ### `composer::equal_range`
 
-Back binding version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::equal_range`](https://en.cppreference.com/w/cpp/algorithm/ranges/equal_rangeh.html)
 
 ### `composer::includes`
 
-Back binding version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
 
 ### `composer::is_heap`
 
-Back binding version of [`std::ranges::is_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap.html)
 
 ### `composer::is_heap_until`
 
-Back binding version of [`std::ranges::is_heap_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap_until.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_heap_until`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_heap_until.html)
 
 ### `composer::max`
 
-Back binding version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::max`](https://en.cppreference.com/w/cpp/algorithm/ranges/max.html)
 
 ### `composer::max_element`
 
-Back binding version of [`std::ranges::max_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/max_element.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::max_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/max_element.html)
 
 ### `composer::min`
 
-Back binding version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::min`](https://en.cppreference.com/w/cpp/algorithm/ranges/min.html)
 
 ### `composer::min_element`
 
-Back binding version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::min_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/min_element.html)
 
 ### `composer::minmax_element`
 
-Back binding version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::minmax_element`](https://en.cppreference.com/w/cpp/algorithm/ranges/minmax_element.html)
 
 ### `composer::clamp`
 
-Back binding version of [`std::ranges::clamp`](https://en.cppreference.com/w/cpp/algorithm/ranges/clamp.html)
+Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::clamp`](https://en.cppreference.com/w/cpp/algorithm/ranges/clamp.html)

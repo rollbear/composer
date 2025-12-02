@@ -5,6 +5,15 @@
 #include <utility>
 
 namespace composer {
+
+template <typename T>
+concept nodiscard_function = requires { T::is_nodiscard; } && T::is_nodiscard;
+
+template <typename T>
+struct nodiscard : T {
+    static constexpr bool is_nodiscard = true;
+};
+
 template <typename>
 inline constexpr bool arity_function_v = false;
 
@@ -99,6 +108,7 @@ template <typename LH, typename RH>
 struct composition {
     LH lh;
     RH rh;
+    static constexpr bool is_nodiscard = nodiscard_function<RH>;
 
     template <typename Self, typename... Ts>
     [[nodiscard]] constexpr auto operator()(this Self&& self, Ts&&... ts)
@@ -129,7 +139,17 @@ using rebind_function_t = typename rebind_function<C, N, F>::type;
 template <std::size_t N, typename F>
 struct [[nodiscard]] arity_function {
     static constexpr auto arity = N;
+    static constexpr bool is_nodiscard = nodiscard_function<F>;
     [[no_unique_address]] F f;
+
+    template <typename Self, typename... Ts>
+    [[nodiscard]]
+    constexpr auto operator()(this Self&& self, Ts&&... ts)
+        -> decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))
+        requires nodiscard_function<F>
+    {
+        return std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
+    }
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)

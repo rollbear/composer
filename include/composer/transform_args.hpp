@@ -12,6 +12,7 @@ template <typename T, typename F>
 struct arg_transformer {
     [[no_unique_address]] T t;
     [[no_unique_address]] F f;
+    static constexpr bool is_nodiscard = nodiscard_function<F>;
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
