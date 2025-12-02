@@ -549,3 +549,11 @@ range, do so via `composer::ref`.
 [`std::ranges::stable_sort`](https://en.cppreference.com/w/cpp/algorithm/ranges/stable_sort.html)
 
 `composer::stable_sort` cannot be called with r-value ranges.
+
+#### `composer::nth_element`
+
+[Back binding](#back_binding) version of
+[`std::ranges::nth_elementt`](https://en.cppreference.com/w/cpp/algorithm/ranges/nth_element.html)
+
+`composer::nth_element` cannot be called with r-value ranges.
+

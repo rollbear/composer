@@ -289,6 +289,12 @@ inline constexpr auto stable_sort = make_arity_function<4, back_binding>(
                                        std::forward<Ts>(ts)...)) {
         return std::ranges::stable_sort(std::forward<Ts>(ts)...);
     });
+
+inline constexpr auto nth_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::nth_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::nth_element(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP

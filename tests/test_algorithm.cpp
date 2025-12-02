@@ -2746,3 +2746,46 @@ SCENARIO("stable_sort")
         STATIC_REQUIRE(returns_callable(sort_by_name_len, dup(values)));
     }
 }
+
+SCENARIO("nth_element")
+{
+    SECTION("calling nth_element with a range, an iterator and a composed "
+            "predicate calls ranges::nth_element immediately")
+    {
+        auto local_values = values;
+        composer::nth_element(
+            local_values,
+            local_values.begin() + 2,
+            composer::transform_args(&numname::name, composer::less_than));
+        REQUIRE(local_values[2].num == 1);
+        REQUIRE_THAT(
+            local_values | std::views::transform(&numname::num)
+                | std::ranges::to<std::vector>(),
+            Catch::Matchers::UnorderedEquals(std::vector{ 1, 2, 3, 4, 5 }));
+    }
+    SECTION("calling nth_element with a composed predicate is callable with a "
+            "range and an iterato")
+    {
+        auto local_values = values;
+        auto nth_by_name = composer::nth_element(
+            composer::transform_args(&numname::name, composer::less_than));
+        nth_by_name(local_values, local_values.begin() + 2);
+        REQUIRE(local_values[2].num == 1);
+    }
+    SECTION("nth_element is not callable with an r-value range")
+    {
+        auto local_values = values;
+        auto nth_by_name = composer::nth_element(
+            composer::transform_args(&numname::name, composer::less_than));
+        STATIC_REQUIRE(returns_callable(
+            nth_by_name, std::move(local_values), local_values.begin() + 2));
+    }
+    SECTION("nth_element is not pipeable")
+    {
+        auto local_values = values;
+        auto third_by_name = composer::nth_element(
+            local_values.begin() + 2,
+            composer::transform_args(&numname::name, composer::less_than));
+        STATIC_REQUIRE_FALSE(can_pipe(values, third_by_name));
+    }
+}
