@@ -563,6 +563,12 @@ Back binding version of [`std::ranges::make_heap`](https://en.cppreference.com/w
 
 `composer::make_heap` cannot be called with an r-value range.
 
+#### `composer::push_heap`
+
+Back binding version of [`std::ranges::push_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/push_heap.html)
+
+`composer::push_heap` cannot be called with an r-value range.
+
 ### Minimum/maximum operations
 
 #### `composer::max`

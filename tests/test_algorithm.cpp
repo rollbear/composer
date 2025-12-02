@@ -2481,6 +2481,50 @@ SCENARIO("make_heap")
     }
 }
 
+SCENARIO("push_heap")
+{
+    SECTION("push_heap called with a range, a predicate and a projection calls "
+            "ranges::push_heap immediately")
+    {
+        std::vector<numname> local_heap;
+        for (auto& v : values) {
+            local_heap.push_back(v);
+            composer::push_heap(
+                local_heap, composer::greater_than, &numname::name);
+        }
+        REQUIRE(composer::is_heap(
+            local_heap,
+            composer::transform_args(&numname::name, composer::greater_than)));
+    }
+    SECTION(
+        "push_heap called with a composed predicate is callable with a range")
+    {
+        auto push_heap_by_name = composer::push_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        std::vector<numname> local_heap;
+        for (auto& v : values) {
+            local_heap.push_back(v);
+            push_heap_by_name(local_heap);
+        }
+        REQUIRE(composer::is_heap(
+            local_heap,
+            composer::transform_args(&numname::name, composer::greater_than)));
+    }
+    SECTION("push_heap is not callable with an r-value range")
+    {
+        auto push_heap_by_name = composer::push_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE(returns_callable(push_heap_by_name, dup(values)));
+    }
+    SECTION("push_heap is not pipeable")
+    {
+        auto push_heap_by_name = composer::push_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        auto local_values = values;
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, push_heap_by_name));
+    }
+}
+
 SCENARIO("max")
 {
     static constexpr numname a{ 1, "one" };
