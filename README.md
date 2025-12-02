@@ -542,3 +542,10 @@ Back binding version of [`std::ranges::partial_sort_copy`](https://en.cppreferen
 _Note!_ If you bind the output range by value, the result will end up in the
 copy of the range owned by the function object. If you want to bind the output
 range, do so via `composer::ref`.
+
+#### `composer::stable_sort`
+
+[Back binding](#back_binding) version of
+[`std::ranges::stable_sort`](https://en.cppreference.com/w/cpp/algorithm/ranges/stable_sort.html)
+
+`composer::stable_sort` cannot be called with r-value ranges.

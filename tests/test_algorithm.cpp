@@ -2709,3 +2709,40 @@ SCENARIO("partial_sort_copy")
         STATIC_REQUIRE(returns_callable(sort_by_name, dup(values), result));
     }
 }
+
+SCENARIO("stable_sort")
+{
+    SECTION("calling stable_sort with a range, a predicate and a projection "
+            "calls ranges::stable_sort immediately")
+    {
+        auto local_values = values;
+        composer::stable_sort(
+            local_values, composer::greater_than, &numname::num);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 3, 2, 1 }));
+    }
+    SECTION("calling stable_sort with a range and a composed predicate calls "
+            "ranges::stable_sort immediately")
+    {
+        auto local_values = values;
+        auto sort_by_name_len = composer::stable_sort(composer::transform_args(
+            &numname::name | composer::size, composer::greater_than));
+        sort_by_name_len(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 3, 4, 5, 1, 2 }));
+    }
+    SECTION("stable_sort called with a composed predicate is not pipeable from "
+            "a range")
+    {
+        auto local_values = values;
+        auto sort_by_name_len = composer::stable_sort(composer::transform_args(
+            &numname::name | composer::size, composer::greater_than));
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, sort_by_name_len));
+    }
+    SECTION("stable_sort is not callable with an r-value range")
+    {
+        auto sort_by_name_len = composer::stable_sort(composer::transform_args(
+            &numname::name | composer::size, composer::greater_than));
+        STATIC_REQUIRE(returns_callable(sort_by_name_len, dup(values)));
+    }
+}
