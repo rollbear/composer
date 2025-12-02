@@ -245,6 +245,12 @@ inline constexpr auto is_heap_until
             return std::ranges::is_heap_until(std::forward<Ts>(ts)...);
         } });
 
+inline constexpr auto make_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::make_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::make_heap(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto max = make_arity_function<4, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::max(
                                                   std::forward<Ts>(ts)...)) {

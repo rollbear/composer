@@ -557,6 +557,12 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_heap_until`]
 
 `composer::is_heap_until` cannot be called with an r-value range.
 
+#### `composer::make_heap`
+
+Back binding version of [`std::ranges::make_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/make_heap.html)
+
+`composer::make_heap` cannot be called with an r-value range.
+
 ### Minimum/maximum operations
 
 #### `composer::max`

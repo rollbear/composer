@@ -23,7 +23,10 @@ constexpr std::array<numname, 5> values = {
 };
 
 template <typename T>
-constexpr auto dup(T&& t) { return std::forward<T>(t); }
+constexpr auto dup(T&& t)
+{
+    return std::forward<T>(t);
+}
 } // namespace
 
 SCENARIO("all_of is back binding")
@@ -2437,6 +2440,44 @@ SCENARIO("is_heap_until")
             composer::is_heap_until,
             dup(values),
             composer::transform_args(&numname::num, composer::greater_than)));
+    }
+}
+
+SCENARIO("make_heap")
+{
+    SECTION("make_heap called with a range, a predicate and a projection calls "
+            "ranges::make_heap immediately")
+    {
+        auto local_values = values;
+        composer::make_heap(
+            local_values, composer::greater_than, &numname::name);
+        REQUIRE(composer::is_heap(
+            local_values,
+            composer::transform_args(&numname::name, composer::greater_than)));
+    }
+    SECTION(
+        "make_heap called with a composed predicate is callable with a range")
+    {
+        auto make_heap_by_name = composer::make_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        auto local_values = values;
+        make_heap_by_name(local_values);
+        REQUIRE(composer::is_heap(
+            local_values,
+            composer::transform_args(&numname::name, composer::greater_than)));
+    }
+    SECTION("make_heap is not callable with an r-value range")
+    {
+        auto make_heap_by_name = composer::make_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE(returns_callable(make_heap_by_name, dup(values)));
+    }
+    SECTION("make_heap is not pipeable")
+    {
+        auto make_heap_by_name = composer::make_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        auto local_values = values;
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, make_heap_by_name));
     }
 }
 
