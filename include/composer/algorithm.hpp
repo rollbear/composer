@@ -159,6 +159,12 @@ inline constexpr auto is_partitioned
             return std::ranges::is_partitioned(std::forward<Ts>(ts)...);
         } });
 
+inline constexpr auto partition = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partition(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto partition_point
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition_point(

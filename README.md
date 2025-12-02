@@ -443,6 +443,12 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::ends_with`](htt
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::is_partitioned`](https://en.cppreference.com/w/cpp/algorithm/ranges/is_partitioned.html)
 
+### `composer::partition`
+
+Back binding version of [`std::ranges::partition`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition.html)
+
+`composer::partition` cannod be called with an r-value range.
+
 #### `composer::partition_point`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::partition_point`](https://en.cppreference.com/w/cpp/algorithm/ranges/partition_point)
