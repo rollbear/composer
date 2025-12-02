@@ -22,7 +22,8 @@ constexpr std::array<numname, 5> values = {
     { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" }, { 5, "five" } }
 };
 
-constexpr auto dup(auto&& x) { return x; }
+template <typename T>
+constexpr auto dup(T&& t) { return std::forward<T>(t); }
 } // namespace
 
 SCENARIO("all_of is back binding")
