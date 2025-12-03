@@ -265,6 +265,12 @@ inline constexpr auto set_symmetric_difference
                 std::forward<Ts>(ts)...);
         });
 
+inline constexpr auto set_union = make_arity_function<8, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::set_union(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::set_union(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_heap = make_arity_function<4, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_heap(
                                                   std::forward<Ts>(ts)...)) {

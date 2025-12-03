@@ -569,6 +569,10 @@ Back binding version of [`std::ranges::set_intersection`](https://en.cppreferenc
 
 Back binding version of [`std::ranges::set_symmetric_difference`](https://en.cppreference.com/w/cpp/algorithm/ranges/set_symmetric_difference.html)
 
+#### `composer::set_union`
+
+Back binding version of [`std::ranges::set_union`](https://en.cppreference.com/w/cpp/algorithm/ranges/set_union.html)
+
 ### Heap operations
 
 #### `composer::is_heap`
