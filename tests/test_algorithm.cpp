@@ -16,7 +16,22 @@ namespace {
 struct numname {
     int num;
     std::string_view name;
+
+    friend std::ostream& operator<<(std::ostream& os, const numname& n)
+    {
+        return os << "{ " << n.num << ", " << n.name << " }";
+    }
 };
+
+std::ostream& operator<<(std::ostream& os, std::span<const numname> s)
+{
+    os << '{';
+    const char* separator = " ";
+    for (const auto& n : s) {
+        os << std::exchange(separator, ", ") << n;
+    }
+    return os << " }";
+}
 
 constexpr std::array<numname, 5> values = {
     { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" }, { 5, "five" } }
@@ -2522,6 +2537,70 @@ SCENARIO("push_heap")
             composer::transform_args(&numname::name, composer::greater_than));
         auto local_values = values;
         STATIC_REQUIRE_FALSE(can_pipe(local_values, push_heap_by_name));
+    }
+}
+
+SCENARIO("pop_heap")
+{
+    std::vector heap_of_values(values.begin(), values.end());
+    composer::make_heap(heap_of_values, composer::greater_than, &numname::name);
+
+    SECTION("calling pop_heap with a range, a predicate and a projection calls "
+            "ranges::pop_heap immediately")
+    {
+        std::vector<numname> sorted;
+        while (!heap_of_values.empty()) {
+            sorted.push_back(heap_of_values.front());
+            composer::pop_heap(
+                heap_of_values, composer::greater_than, &numname::name);
+            heap_of_values.pop_back();
+        }
+        REQUIRE_THAT(sorted | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "five", "four", "one", "three", "two" }));
+    }
+    SECTION("pop_heap called with a predicate and a projection is callable "
+            "with a range")
+    {
+        std::vector<numname> sorted;
+        auto pop_by_name
+            = composer::pop_heap(composer::greater_than, &numname::name);
+        while (!heap_of_values.empty()) {
+            sorted.push_back(heap_of_values.front());
+            pop_by_name(heap_of_values);
+            heap_of_values.pop_back();
+        }
+        REQUIRE_THAT(sorted | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "five", "four", "one", "three", "two" }));
+    }
+    SECTION(
+        "pop_heap called with a composed predicate is callable with a range")
+    {
+        std::vector<numname> sorted;
+        auto pop_by_name = composer::pop_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        while (!heap_of_values.empty()) {
+            sorted.push_back(heap_of_values.front());
+            pop_by_name(heap_of_values);
+            heap_of_values.pop_back();
+        }
+        REQUIRE_THAT(sorted | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "five", "four", "one", "three", "two" }));
+    }
+    SECTION("pop_heap cannot be called with an r-value range")
+    {
+        auto pop_by_name = composer::pop_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE(
+            returns_callable(pop_by_name, std::move(heap_of_values)));
+    }
+    SECTION("pop_heap is not pipeable")
+    {
+        auto pop_by_name = composer::pop_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE_FALSE(can_pipe(heap_of_values, pop_by_name));
     }
 }
 
