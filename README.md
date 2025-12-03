@@ -541,6 +541,13 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::equal_range`](h
 
 ### Set operations (on sorted ranges)
 
+#### `composer::merge`
+
+Back binding version o [`std::ranges::merge`](https://en.cppreference.com/w/cpp/algorithm/ranges/merge.html)
+
+`composer::merge` cannot be called with r-value ranges.
+
+
 #### `composer::includes`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)

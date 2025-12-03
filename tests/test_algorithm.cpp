@@ -2303,6 +2303,49 @@ SCENARIO("equal_range")
     }
 }
 
+SCENARIO("merge")
+{
+    static constexpr std::array odd{ 1, 3, 5 };
+    static constexpr std::array even{ 0, 2, 4 };
+
+    SECTION("calling merge with two ranges, an output and a predicate calls "
+            "ranges::merge immediately")
+    {
+        std::vector<int> result;
+        composer::merge(
+            odd, even, std::back_inserter(result), composer::less_than);
+        REQUIRE_THAT(result,
+                     Catch::Matchers::RangeEquals({ 0, 1, 2, 3, 4, 5 }));
+    }
+    SECTION("merge called with a predicate is callable with a pair of ranges "
+            "and an output")
+    {
+        std::vector<int> result;
+        auto merge_increasing = composer::merge(composer::less_than);
+        merge_increasing(odd, even, std::back_inserter(result));
+        REQUIRE_THAT(result,
+                     Catch::Matchers::RangeEquals({ 0, 1, 2, 3, 4, 5 }));
+    }
+    SECTION("merge called with an output and a predicate is callable with a "
+            "pair of ranges")
+    {
+        std::vector<int> result;
+        auto merge_increasing
+            = composer::merge(std::back_inserter(result), composer::less_than);
+        merge_increasing(odd, even);
+        REQUIRE_THAT(result,
+                     Catch::Matchers::RangeEquals({ 0, 1, 2, 3, 4, 5 }));
+    }
+    SECTION("merge cannot be called with r-value ranges")
+    {
+        std::vector<int> result;
+        auto merge_increasing
+            = composer::merge(std::back_inserter(result), composer::less_than);
+        STATIC_REQUIRE(returns_callable(merge_increasing, odd, dup(even)));
+        STATIC_REQUIRE(returns_callable(merge_increasing, dup(odd), even));
+    }
+}
+
 SCENARIO("includes")
 {
     SECTION("includes called with a two ranges, a predicate and a projection "
