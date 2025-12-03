@@ -2065,6 +2065,51 @@ SCENARIO("replace_if")
     }
 }
 
+SCENARIO("unique")
+{
+    auto local_values = values;
+    SECTION("unique called with a range, a predicate and a projection calls "
+            "ranges::unique immediately")
+    {
+        auto rest = composer::unique(
+            local_values,
+            composer::transform_args(composer::size, composer::equal_to),
+            &numname::name);
+
+        auto remaining
+            = std::span(local_values).first(local_values.size() - rest.size());
+        REQUIRE_THAT(remaining | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals({ "one", "three", "four" }));
+        REQUIRE_THAT(remaining | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 3, 4 }));
+    }
+    SECTION("unique called with a composed predicate is callable with a range")
+    {
+        auto unique_by_name_len = composer::unique(composer::transform_args(
+            &numname::name | composer::size, composer::equal_to));
+        auto rest = unique_by_name_len(local_values);
+        auto remaining
+            = std::span(local_values).first(local_values.size() - rest.size());
+        REQUIRE_THAT(remaining | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals({ "one", "three", "four" }));
+        REQUIRE_THAT(remaining | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 3, 4 }));
+    }
+    SECTION("unique is not callable with an r-value range")
+    {
+        auto unique_by_name_len = composer::unique(composer::transform_args(
+            &numname::name | composer::size, composer::equal_to));
+        STATIC_REQUIRE(
+            returns_callable(unique_by_name_len, std::move(local_values)));
+    }
+    SECTION("unique is not pipeable")
+    {
+        auto unique_by_name_len = composer::unique(composer::transform_args(
+            &numname::name | composer::size, composer::equal_to));
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, unique_by_name_len));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "

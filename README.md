@@ -481,6 +481,12 @@ Back binding version of [`std::ranges::replace_if`](https://en.cppreference.com/
 
 `composer::replace_if` cannot be called with an r-value range.
 
+#### `composer::unique`
+
+Back binding version of [`std::ranges::unique`](https://en.cppreference.com/w/cpp/algorithm/ranges/unique.html)
+
+`composer::unique` cannot be colled with an r-value range.
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

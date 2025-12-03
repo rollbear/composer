@@ -195,9 +195,15 @@ inline constexpr auto replace = make_arity_function<5, back_binding>(
     });
 
 inline constexpr auto replace_if = make_arity_function<5, back_binding>(
-    []<typename... Ts>(
-        Ts&&... ts) -> decltype(std::ranges::replace_if(std::forward<Ts>(ts)...)) {
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::replace_if(
+                                       std::forward<Ts>(ts)...)) {
         return std::ranges::replace_if(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto unique = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::unique(std::forward<Ts>(ts)...)) {
+        return std::ranges::unique(std::forward<Ts>(ts)...);
     });
 
 inline constexpr auto is_partitioned
