@@ -443,6 +443,10 @@ Back binding version of [`std::ranges::fill`](https://en.cppreference.com/w/cpp/
 
 `composer::fill` cannot be called with an r-value range.
 
+#### `composer::fill_n`
+
+Back binding version of [`std::ranges::fill_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/fill_n.html)
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

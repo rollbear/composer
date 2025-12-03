@@ -1788,6 +1788,36 @@ SCENARIO("fill")
     }
 }
 
+SCENARIO("fill_n")
+{
+    std::vector<int> result;
+    auto inserter = std::back_inserter(result);
+    SECTION("fill_n called with an iterator, a count and a value calls "
+            "ranges::fill_n immediately")
+    {
+        composer::fill_n(inserter, 3, -1);
+
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ -1, -1, -1 }));
+    }
+    SECTION(
+        "fill called with a values is callable with an iterator and a count")
+    {
+        auto make_zero = composer::fill_n(0);
+
+        make_zero(inserter, 5);
+
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ 0, 0, 0, 0, 0 }));
+    }
+    SECTION("fill called with a count and a value is callable with an iterator")
+    {
+        auto make_zero = composer::fill_n(5, 0);
+
+        make_zero(inserter);
+
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ 0, 0, 0, 0, 0 }));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
