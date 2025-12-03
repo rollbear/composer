@@ -2412,6 +2412,43 @@ SCENARIO("includes")
     }
 }
 
+SCENARIO("set_difference")
+{
+    static constexpr std::array lower = { 4, 3, 2, 1 };
+    static constexpr std::array higher = { 6, 5, 4, 3 };
+
+    SECTION("calling set_difference with two inputs, and output and a "
+            "predicate calls ranges::set_difference immediately")
+    {
+        std::vector<int> output;
+        composer::set_difference(
+            lower, higher, std::back_inserter(output), composer::greater_than);
+        composer::set_difference(
+            higher, lower, std::back_inserter(output), composer::greater_than);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 2, 1, 6, 5 }));
+    }
+    SECTION("set_difference called with an output and a predicate is callable "
+            "with a pair of ranges")
+    {
+        std::vector<int> output;
+        auto diff_falling = composer::set_difference(std::back_inserter(output),
+                                                     composer::greater_than);
+        diff_falling(lower, higher);
+        diff_falling(higher, lower);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 2, 1, 6, 5 }));
+    }
+    SECTION("set_difference called with an output and a predicate, called with "
+            "a range, is callable with a range")
+    {
+        std::vector<int> output;
+        auto diff_falling = composer::set_difference(std::back_inserter(output),
+                                                     composer::greater_than);
+        auto remove_higher = diff_falling(composer::ref(higher));
+        remove_higher(lower);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 2, 1 }));
+    }
+}
+
 SCENARIO("is_heap")
 {
     static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },

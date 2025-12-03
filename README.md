@@ -549,13 +549,18 @@ Back binding version o [`std::ranges::merge`](https://en.cppreference.com/w/cpp/
 
 #### `composer::inplace_merge`
 
-Back binding version o [`std::ranges::inplace_merge`](https://en.cppreference.com/w/cpp/algorithm/ranges/inplace_merge.html)
+Back binding version of [`std::ranges::inplace_merge`](https://en.cppreference.com/w/cpp/algorithm/ranges/inplace_merge.html)
 
 `composer::inplace_merge` cannot be called with an r-value range.
 
 #### `composer::includes`
 
 Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::includes`](https://en.cppreference.com/w/cpp/algorithm/ranges/includes.html)
+
+#### `composer::set_difference`
+
+Back binding version of [`std::ranges::set_difference`](https://en.cppreference.com/w/cpp/algorithm/ranges/set_difference.html)
+
 
 ### Heap operations
 
