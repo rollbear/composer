@@ -1818,6 +1818,37 @@ SCENARIO("fill_n")
     }
 }
 
+SCENARIO("generate")
+{
+    static constexpr auto incrementer
+        = [](auto x) { return [x]() mutable { return x++; }; };
+    SECTION("generate called with a range and a generator calls "
+            "ranges::generate immediately")
+    {
+        std::array ints = { 0, 0, 0, 0 };
+        composer::generate(ints, incrementer(1));
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 1, 2, 3, 4 }));
+    }
+    SECTION("generate called with a generator is callable with a range")
+    {
+        std::array ints = { 0, 0, 0, 0 };
+        auto iota = composer::generate(incrementer(0));
+        iota(ints);
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 0, 1, 2, 3 }));
+    }
+    SECTION("generate is not callable with an r-value range")
+    {
+        auto iota = composer::generate(incrementer(1));
+        STATIC_REQUIRE(returns_callable(iota, std::array{ 1, 2, 3 }));
+    }
+    SECTION("generate is not pipeable")
+    {
+        std::array ints = { 0, 0, 0, 0 };
+        auto iota = composer::generate(incrementer(0));
+        STATIC_REQUIRE_FALSE(can_pipe(ints, iota));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "

@@ -447,6 +447,12 @@ Back binding version of [`std::ranges::fill`](https://en.cppreference.com/w/cpp/
 
 Back binding version of [`std::ranges::fill_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/fill_n.html)
 
+#### `composer::generate`
+
+Back binding version of [`std::ranges::generate`](https://en.cppreference.com/w/cpp/algorithm/ranges/generate.html)
+
+`composer::generate` cannot be called with an r-value range.
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`
