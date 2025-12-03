@@ -1849,6 +1849,35 @@ SCENARIO("generate")
     }
 }
 
+SCENARIO("generate_n")
+{
+    static constexpr auto incrementer
+        = [](auto x) { return [x]() mutable { return x++; }; };
+    std::vector<int> result;
+    auto inserter = std::back_inserter(result);
+
+    SECTION("generate_n called with an iterator, a count and a generator calls "
+            "ranges::generate_n immediately")
+    {
+        composer::generate_n(inserter, 4, incrementer(1));
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ 1, 2, 3, 4 }));
+    }
+    SECTION("generate_n called with a count and a generator is callable with a "
+            "range")
+    {
+        auto iota = composer::generate_n(4, incrementer(0));
+        iota(inserter);
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ 0, 1, 2, 3 }));
+    }
+    SECTION("generate_n called with a generator is callable with an iterator "
+            "anda count")
+    {
+        auto iota = composer::generate_n(incrementer(0));
+        iota(inserter, 4);
+        REQUIRE_THAT(result, Catch::Matchers::RangeEquals({ 0, 1, 2, 3 }));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "

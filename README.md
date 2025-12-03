@@ -453,6 +453,10 @@ Back binding version of [`std::ranges::generate`](https://en.cppreference.com/w/
 
 `composer::generate` cannot be called with an r-value range.
 
+#### `composer::generate_n`
+
+Back binding version of [`std::ranges::generate_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/generate_n.html)
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

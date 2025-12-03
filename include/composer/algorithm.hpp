@@ -170,6 +170,12 @@ inline constexpr auto generate = make_arity_function<3, back_binding>(
         return std::ranges::generate(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto generate_n = make_arity_function<3, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::generate_n(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::generate_n(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_partitioned
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(
