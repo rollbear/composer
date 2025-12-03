@@ -437,6 +437,12 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::ends_with`](htt
 
 ### Modifying sequence operations
 
+#### `composer::fill`
+
+Back binding version of [`std::ranges::fill`](https://en.cppreference.com/w/cpp/algorithm/ranges/fill.html)
+
+`composer::fill` cannot be called with an r-value range.
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

@@ -152,6 +152,12 @@ inline constexpr auto ends_with
 
 #endif
 
+inline constexpr auto fill = make_arity_function<3, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::fill(std::forward<Ts>(ts)...)) {
+        return std::ranges::fill(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_partitioned
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(

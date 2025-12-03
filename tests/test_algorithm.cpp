@@ -1752,6 +1752,42 @@ SCENARIO("ends_with is back binding")
 }
 #endif // __cpp_lib_starts_ends_with
 
+SCENARIO("fill")
+{
+    SECTION(
+        "fill called with a range and a value calls ranges::fill immediately")
+    {
+        std::array ints = { 1, 2, 3, 4, 5 };
+
+        composer::fill(ints, -1);
+
+        REQUIRE_THAT(ints,
+                     Catch::Matchers::RangeEquals({ -1, -1, -1, -1, -1 }));
+    }
+    SECTION("fill called with a values is callable with a range")
+    {
+        auto make_zero = composer::fill(0);
+
+        std::array ints = { 1, 2, 3, 4, 5 };
+
+        make_zero(ints);
+
+        REQUIRE_THAT(ints, Catch::Matchers::RangeEquals({ 0, 0, 0, 0, 0 }));
+    }
+    SECTION("fill is not callable with an r-value range")
+    {
+        auto make_zero = composer::fill(0);
+
+        STATIC_REQUIRE(returns_callable(make_zero, std::array{ 1, 2, 3 }));
+    }
+    SECTION("fill is not pipeable")
+    {
+        std::array ints = { 1, 2, 3, 4, 5 };
+        auto make_zero = composer::fill(0);
+        STATIC_REQUIRE_FALSE(can_pipe(ints, make_zero));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
