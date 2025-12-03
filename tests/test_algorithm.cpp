@@ -2488,6 +2488,43 @@ SCENARIO("set_intersection")
     }
 }
 
+SCENARIO("set_symmetric_difference")
+{
+    static constexpr std::array lower = { 4, 3, 2, 1 };
+    static constexpr std::array higher = { 6, 5, 4, 3 };
+
+    SECTION(
+        "calling set_symmetric_difference with two inputs, and output and a "
+        "predicate calls ranges::set_symmetric_difference immediately")
+    {
+        std::vector<int> output;
+        composer::set_symmetric_difference(
+            lower, higher, std::back_inserter(output), composer::greater_than);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 6, 5, 2, 1 }));
+    }
+    SECTION("set_symmetric_difference called with an output and a predicate is "
+            "callable "
+            "with a pair of ranges")
+    {
+        std::vector<int> output;
+        auto diff_falling = composer::set_symmetric_difference(
+            std::back_inserter(output), composer::greater_than);
+        diff_falling(lower, higher);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 6, 5, 2, 1 }));
+    }
+    SECTION("set_symmetric_difference called with an output and a predicate, "
+            "called with "
+            "a range, is callable with a range")
+    {
+        std::vector<int> output;
+        auto diff_falling = composer::set_symmetric_difference(
+            std::back_inserter(output), composer::greater_than);
+        auto unique = diff_falling(composer::ref(higher));
+        unique(lower);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 6, 5, 2, 1 }));
+    }
+}
+
 SCENARIO("is_heap")
 {
     static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
