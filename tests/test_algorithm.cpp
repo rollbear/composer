@@ -1969,6 +1969,45 @@ SCENARIO("remove_if")
     }
 }
 
+SCENARIO("replace")
+{
+    auto local_values = values;
+    SECTION("replace called with a range, two values and a projection calls "
+            "ranges::replace immediately")
+    {
+        composer::replace(local_values, 1, numname{ 0, "zero" }, &numname::num);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 0, 2, 3, 4, 5 }));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "zero", "two", "three", "four", "five" }));
+    }
+    SECTION("replace called with a projection, called with an old value and a "
+            "replacement, is callable with a range")
+    {
+        auto replace_by_num = composer::replace(&numname::num);
+        auto replace_1_0 = replace_by_num(1, numname{ 0, "zero" });
+        replace_1_0(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 0, 2, 3, 4, 5 }));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "zero", "two", "three", "four", "five" }));
+    }
+    SECTION("replace is not callable with an r-value range")
+    {
+        auto replace_by_num = composer::replace(&numname::num);
+        auto replace_1_0 = replace_by_num(1, numname{ 0, "zero" });
+        STATIC_REQUIRE(returns_callable(replace_1_0, std::move(local_values)));
+    }
+    SECTION("replace is not pipeable")
+    {
+        auto replace_by_num = composer::replace(&numname::num);
+        auto replace_1_0 = replace_by_num(1, numname{ 0, "zero" });
+        STATIC_REQUIRE_FALSE(can_pipe(std::move(local_values), replace_1_0));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
