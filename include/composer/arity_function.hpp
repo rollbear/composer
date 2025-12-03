@@ -1,6 +1,7 @@
 #ifndef COMPOSER_ARITY_FUNCTION_HPP
 #define COMPOSER_ARITY_FUNCTION_HPP
 
+#include <ranges>
 #include <type_traits>
 #include <utility>
 
@@ -85,6 +86,21 @@ struct arg_binder<T (&)[N]> {
 template <typename T>
 using arg_binder_t = typename arg_binder<T>::type;
 
+template <typename T>
+struct not_dangling {
+    using type = T;
+};
+
+template <>
+struct not_dangling<std::ranges::dangling> {};
+
+template <template <typename...> class C, typename... Ts>
+    requires(std::is_same_v<Ts, std::ranges::dangling> || ...)
+struct not_dangling<C<Ts...>> {};
+
+template <typename T>
+using not_dangling_t = typename not_dangling<T>::type;
+
 } // namespace internal
 
 template <typename T, std::size_t N>
@@ -145,7 +161,8 @@ struct [[nodiscard]] arity_function {
     template <typename Self, typename... Ts>
     [[nodiscard]]
     constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))
+        -> internal::not_dangling_t<
+            decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))>
         requires nodiscard_function<F>
     {
         return std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
@@ -153,7 +170,8 @@ struct [[nodiscard]] arity_function {
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))
+        -> internal::not_dangling_t<
+            decltype(std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...))>
     {
         return std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
     }
@@ -179,10 +197,20 @@ inline constexpr auto make_arity_function
 template <typename IN, arity_function_type F>
 [[nodiscard]] constexpr auto operator|(IN&& in, F&& f)
     -> decltype(std::forward<F>(f)(std::forward<IN>(in)))
-    requires(!arity_function_v<std::remove_cvref_t<IN>>)
+    requires(!arity_function_v<std::remove_cvref_t<IN>> && requires {
+        std::forward<F>(f)(std::as_const(in));
+    } && !arity_function_v<decltype(std::forward<F>(f)(std::as_const(in)))>)
 {
     return std::forward<F>(f)(std::forward<IN>(in));
 }
+
+template <typename IN, arity_function_type F>
+constexpr void operator|(IN&& in, F&& f)
+    requires(!arity_function_v<std::remove_cvref_t<IN>>
+             && (!requires { std::forward<F>(f)(std::as_const(in)); }
+                 || arity_function_v<
+                     decltype(std::forward<F>(f)(std::as_const(in)))>))
+= delete;
 
 } // namespace composer
 

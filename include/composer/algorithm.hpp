@@ -152,12 +152,84 @@ inline constexpr auto ends_with
 
 #endif
 
+inline constexpr auto fill = make_arity_function<3, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::fill(std::forward<Ts>(ts)...)) {
+        return std::ranges::fill(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto fill_n = make_arity_function<3, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::fill_n(std::forward<Ts>(ts)...)) {
+        return std::ranges::fill_n(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto generate = make_arity_function<3, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::generate(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::generate(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto generate_n = make_arity_function<3, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::generate_n(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::generate_n(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto remove = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::remove(std::forward<Ts>(ts)...)) {
+        return std::ranges::remove(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto remove_if = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::remove_if(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::remove_if(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto replace = make_arity_function<5, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::replace(std::forward<Ts>(ts)...)) {
+        return std::ranges::replace(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto replace_if = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::replace_if(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::replace_if(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto unique = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::unique(std::forward<Ts>(ts)...)) {
+        return std::ranges::unique(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_partitioned
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(
                                            std::forward<Ts>(ts)...)) {
             return std::ranges::is_partitioned(std::forward<Ts>(ts)...);
         } });
+
+inline constexpr auto partition = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partition(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto partition_copy = make_arity_function<6, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partition_copy(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partition_copy(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto stable_partition = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::stable_partition(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::stable_partition(std::forward<Ts>(ts)...);
+    });
 
 inline constexpr auto partition_point
     = make_arity_function<4, back_binding>(nodiscard{
@@ -208,11 +280,50 @@ inline constexpr auto equal_range
             return std::ranges::equal_range(std::forward<Ts>(ts)...);
         } });
 
+inline constexpr auto merge = make_arity_function<8, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::merge(std::forward<Ts>(ts)...)) {
+        return std::ranges::merge(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto inplace_merge = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::inplace_merge(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::inplace_merge(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto includes = make_arity_function<7, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::includes(
                                                   std::forward<Ts>(ts)...)) {
         return std::ranges::includes(std::forward<Ts>(ts)...);
     } });
+
+inline constexpr auto set_difference = make_arity_function<8, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::set_difference(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::set_difference(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto set_intersection = make_arity_function<8, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::set_intersection(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::set_intersection(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto set_symmetric_difference
+    = make_arity_function<8, back_binding>(
+        []<typename... Ts>(Ts&&... ts)
+            -> decltype(std::ranges::set_symmetric_difference(
+                std::forward<Ts>(ts)...)) {
+            return std::ranges::set_symmetric_difference(
+                std::forward<Ts>(ts)...);
+        });
+
+inline constexpr auto set_union = make_arity_function<8, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::set_union(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::set_union(std::forward<Ts>(ts)...);
+    });
 
 inline constexpr auto is_heap = make_arity_function<4, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_heap(
@@ -226,6 +337,30 @@ inline constexpr auto is_heap_until
                                            std::forward<Ts>(ts)...)) {
             return std::ranges::is_heap_until(std::forward<Ts>(ts)...);
         } });
+
+inline constexpr auto make_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::make_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::make_heap(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto push_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::push_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::push_heap(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto pop_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::pop_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::pop_heap(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto sort_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::sort_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::sort_heap(std::forward<Ts>(ts)...);
+    });
 
 inline constexpr auto max = make_arity_function<4, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::max(
@@ -266,6 +401,35 @@ inline constexpr auto clamp = make_arity_function<5, back_binding>(
         return std::ranges::clamp(std::forward<Ts>(ts)...);
     } });
 
+inline constexpr auto sort = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::sort(std::forward<Ts>(ts)...)) {
+        return std::ranges::sort(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto partial_sort = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partial_sort(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partial_sort(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto partial_sort_copy = make_arity_function<7, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::partial_sort_copy(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::partial_sort_copy(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto stable_sort = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::stable_sort(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::stable_sort(std::forward<Ts>(ts)...);
+    });
+
+inline constexpr auto nth_element = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::nth_element(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::nth_element(std::forward<Ts>(ts)...);
+    });
 } // namespace composer
 
 #endif // COMPOSER_ALGORITHM_HPP
