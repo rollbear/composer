@@ -561,6 +561,10 @@ Back binding [`nodiscard`](#nodiscard) version of [`std::ranges::includes`](http
 
 Back binding version of [`std::ranges::set_difference`](https://en.cppreference.com/w/cpp/algorithm/ranges/set_difference.html)
 
+#### `composer::set_intersection`
+
+Back binding version of [`std::ranges::set_intersection`](https://en.cppreference.com/w/cpp/algorithm/ranges/set_intersection.html)
+
 
 ### Heap operations
 

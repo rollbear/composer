@@ -2449,6 +2449,45 @@ SCENARIO("set_difference")
     }
 }
 
+SCENARIO("set_intersection")
+{
+    static constexpr std::array lower = { 4, 3, 2, 1 };
+    static constexpr std::array higher = { 6, 5, 4, 3 };
+
+    SECTION("calling set_intersection with two inputs, and output and a "
+            "predicate calls ranges::set_intersection immediately")
+    {
+        std::vector<int> output;
+        composer::set_intersection(
+            lower, higher, std::back_inserter(output), composer::greater_than);
+        composer::set_intersection(
+            higher, lower, std::back_inserter(output), composer::greater_than);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 4, 3, 4, 3 }));
+    }
+    SECTION(
+        "set_intersection called with an output and a predicate is callable "
+        "with a pair of ranges")
+    {
+        std::vector<int> output;
+        auto overlapping_falling = composer::set_intersection(
+            std::back_inserter(output), composer::greater_than);
+        overlapping_falling(lower, higher);
+        overlapping_falling(higher, lower);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 4, 3, 4, 3 }));
+    }
+    SECTION(
+        "set_intersection called with an output and a predicate, called with "
+        "a range, is callable with a range")
+    {
+        std::vector<int> output;
+        auto overlapping_falling = composer::set_intersection(
+            std::back_inserter(output), composer::greater_than);
+        auto keep_higher = overlapping_falling(composer::ref(higher));
+        keep_higher(lower);
+        REQUIRE_THAT(output, Catch::Matchers::RangeEquals({ 4, 3 }));
+    }
+}
+
 SCENARIO("is_heap")
 {
     static constexpr std::array<numname, 6> nonheap{ { { 1, "one" },
