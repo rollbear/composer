@@ -1917,6 +1917,58 @@ SCENARIO("remove")
     }
 }
 
+SCENARIO("remove_if")
+{
+    auto local_values = values | std::ranges::to<std::vector>();
+
+    SECTION(
+        "calling remove_if with a range, a predicate and a projection calls "
+        "ranges::remove_if immediately")
+    {
+        composer::remove_if(local_values, composer::equal_to(3), &numname::num);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION("calling remove_if with a projection is callable with a range and "
+            "a predicate")
+    {
+        constexpr auto remove_num = composer::remove_if(&numname::num);
+        remove_num(local_values, composer::equal_to(3));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION("calling remove_if with a predicate and a projection is callable "
+            "with a range")
+    {
+        constexpr auto remove_3
+            = composer::remove_if(composer::equal_to(3), &numname::num);
+        remove_3(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION(
+        "calling remove_if with a composed predicate is callable with a range")
+    {
+        constexpr auto remove_3
+            = composer::remove_if(&numname::num | composer::equal_to(3));
+        remove_3(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION("remove is not callable with an r-value range")
+    {
+        constexpr auto remove_3
+            = composer::remove_if(&numname::num | composer::equal_to(3));
+        STATIC_REQUIRE(returns_callable(remove_3, std::move(local_values)));
+    }
+    SECTION("remove is not pipeable")
+    {
+        constexpr auto remove_3
+            = composer::remove_if(&numname::num | composer::equal_to(3));
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, remove_3));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
