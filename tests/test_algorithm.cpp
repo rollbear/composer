@@ -2604,6 +2604,56 @@ SCENARIO("pop_heap")
     }
 }
 
+SCENARIO("sort_heap")
+{
+    std::vector heap_of_values(values.begin(), values.end());
+    composer::make_heap(heap_of_values, composer::greater_than, &numname::name);
+
+    SECTION(
+        "calling sort_heap with a range, a predicate and a projection calls "
+        "ranges::sort_heap immediately")
+    {
+        composer::sort_heap(
+            heap_of_values, composer::greater_than, &numname::name);
+        REQUIRE_THAT(heap_of_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "two", "three", "one", "four", "five" }));
+    }
+    SECTION("sort_heap called with a predicate and a projection is callable "
+            "with a range")
+    {
+        auto sort_by_name
+            = composer::sort_heap(composer::greater_than, &numname::name);
+        sort_by_name(heap_of_values);
+        REQUIRE_THAT(heap_of_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "two", "three", "one", "four", "five" }));
+    }
+    SECTION(
+        "sort_heap called with a composed predicate is callable with a range")
+    {
+        auto sort_by_name = composer::sort_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        sort_by_name(heap_of_values);
+        REQUIRE_THAT(heap_of_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "two", "three", "one", "four", "five" }));
+    }
+    SECTION("sort_heap cannot be called with an r-value range")
+    {
+        auto sort_by_name = composer::sort_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE(
+            returns_callable(sort_by_name, std::move(heap_of_values)));
+    }
+    SECTION("sort_heap is not pipeable")
+    {
+        auto sort_by_name = composer::sort_heap(
+            composer::transform_args(&numname::name, composer::greater_than));
+        STATIC_REQUIRE_FALSE(can_pipe(heap_of_values, sort_by_name));
+    }
+}
+
 SCENARIO("max")
 {
     static constexpr numname a{ 1, "one" };

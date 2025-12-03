@@ -263,6 +263,12 @@ inline constexpr auto pop_heap = make_arity_function<4, back_binding>(
         return std::ranges::pop_heap(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto sort_heap = make_arity_function<4, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::sort_heap(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::sort_heap(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto max = make_arity_function<4, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::max(
                                                   std::forward<Ts>(ts)...)) {

@@ -571,10 +571,15 @@ Back binding version of [`std::ranges::push_heap`](https://en.cppreference.com/w
 
 #### `composer::pop_heap`
 
-
 Back binding version of [´std::ranges::pop_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/pop_heap.html)
 
 `composer::pop_heap` cannot be called with an r-value range.
+
+#### `composer::sort_heap`
+
+Back binding version of [´std::ranges::sort_heap`](https://en.cppreference.com/w/cpp/algorithm/ranges/sort_heap.html)
+
+`composer::sort_heap` cannot be called with an r-value range.
 
 ### Minimum/maximum operations
 
