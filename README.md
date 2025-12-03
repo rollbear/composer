@@ -457,6 +457,12 @@ Back binding version of [`std::ranges::generate`](https://en.cppreference.com/w/
 
 Back binding version of [`std::ranges::generate_n`](https://en.cppreference.com/w/cpp/algorithm/ranges/generate_n.html)
 
+#### `composer::remove`
+
+Back binding version of [`std::ranges::remove`](https://en.cppreference.com/w/cpp/algorithm/ranges/remove.html)
+
+`composer::remove` cannot be called with an r-value range.
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

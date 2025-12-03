@@ -176,6 +176,12 @@ inline constexpr auto generate_n = make_arity_function<3, back_binding>(
         return std::ranges::generate_n(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto remove = make_arity_function<4, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::remove(std::forward<Ts>(ts)...)) {
+        return std::ranges::remove(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_partitioned
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(

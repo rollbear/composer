@@ -1878,6 +1878,45 @@ SCENARIO("generate_n")
     }
 }
 
+SCENARIO("remove")
+{
+    auto local_values = values | std::ranges::to<std::vector>();
+
+    SECTION("calling remove with a range, a value and a projection calls "
+            "ranges::remove immediately")
+    {
+        composer::remove(local_values, 3, &numname::num);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION(
+        "calling remove with a projection is callable with a range and a value")
+    {
+        constexpr auto remove_num = composer::remove(&numname::num);
+        remove_num(local_values, 3);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION(
+        "calling remove with a value and a projection is callable with a range")
+    {
+        constexpr auto remove_3 = composer::remove(3, &numname::num);
+        remove_3(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 1, 2, 4, 5, 5 }));
+    }
+    SECTION("remove is not callable with an r-value range")
+    {
+        constexpr auto remove_3 = composer::remove(3, &numname::num);
+        STATIC_REQUIRE(returns_callable(remove_3, std::move(local_values)));
+    }
+    SECTION("remove is not pipeable")
+    {
+        constexpr auto remove_3 = composer::remove(3, &numname::num);
+        STATIC_REQUIRE_FALSE(can_pipe(local_values, remove_3));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "
