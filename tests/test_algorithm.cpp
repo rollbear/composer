@@ -2008,6 +2008,63 @@ SCENARIO("replace")
     }
 }
 
+SCENARIO("replace_if")
+{
+    auto local_values = values;
+    SECTION("replace_if called with a range, a predicate, a value and a "
+            "projection calls "
+            "ranges::replace immediately")
+    {
+        composer::replace_if(local_values,
+                             composer::equal_to(1),
+                             numname{ 0, "zero" },
+                             &numname::num);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 0, 2, 3, 4, 5 }));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "zero", "two", "three", "four", "five" }));
+    }
+    SECTION(
+        "replace_if called with a projection, called with a predicate and a "
+        "replacement, is callable with a range")
+    {
+        auto replace_by_num = composer::replace_if(&numname::num);
+        auto replace_1_0
+            = replace_by_num(composer::equal_to(1), numname{ 0, "zero" });
+        replace_1_0(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 0, 2, 3, 4, 5 }));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "zero", "two", "three", "four", "five" }));
+    }
+    SECTION("replace_if called with a composed predicate and a "
+            "replacement, is callable with a range")
+    {
+        auto replace_1_0 = composer::replace_if(
+            &numname::num | composer::equal_to(1), numname{ 0, "zero" });
+        replace_1_0(local_values);
+        REQUIRE_THAT(local_values | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 0, 2, 3, 4, 5 }));
+        REQUIRE_THAT(local_values | std::views::transform(&numname::name),
+                     Catch::Matchers::RangeEquals(
+                         { "zero", "two", "three", "four", "five" }));
+    }
+    SECTION("replace_if is not callable with an r-value range")
+    {
+        auto replace_1_0 = composer::replace_if(
+            &numname::num | composer::equal_to(1), numname{ 0, "zero" });
+        STATIC_REQUIRE(returns_callable(replace_1_0, std::move(local_values)));
+    }
+    SECTION("replace_if is not pipeable")
+    {
+        auto replace_1_0 = composer::replace_if(
+            &numname::num | composer::equal_to(1), numname{ 0, "zero" });
+        STATIC_REQUIRE_FALSE(can_pipe(std::move(local_values), replace_1_0));
+    }
+}
+
 SCENARIO("is_partitioned is back binding")
 {
     SECTION("is_partitioned called with a range, a predicate and a projection "

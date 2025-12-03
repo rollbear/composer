@@ -475,6 +475,12 @@ Back binding version of [`std::ranges::replace`](https://en.cppreference.com/w/c
 
 `composer::replace` cannot be called with an r-value range.
 
+#### `composer::replace_if`
+
+Back binding version of [`std::ranges::replace_if`](https://en.cppreference.com/w/cpp/algorithm/ranges/replace.html)
+
+`composer::replace_if` cannot be called with an r-value range.
+
 ### Partitioninng operations
 
 #### `composer::is_partitioned`

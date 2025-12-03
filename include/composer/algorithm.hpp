@@ -194,6 +194,12 @@ inline constexpr auto replace = make_arity_function<5, back_binding>(
         return std::ranges::replace(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto replace_if = make_arity_function<5, back_binding>(
+    []<typename... Ts>(
+        Ts&&... ts) -> decltype(std::ranges::replace_if(std::forward<Ts>(ts)...)) {
+        return std::ranges::replace_if(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto is_partitioned
     = make_arity_function<4, back_binding>(nodiscard{
         []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::is_partitioned(
