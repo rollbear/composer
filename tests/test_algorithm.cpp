@@ -2346,6 +2346,39 @@ SCENARIO("merge")
     }
 }
 
+SCENARIO("inplace_merge")
+{
+    std::array<numname, 5> nums = { { { 5, "five" },
+                                      { 3, "three" },
+                                      { 1, "one" },
+                                      { 4, "four" },
+                                      { 2, "two" } } };
+    SECTION("inplace_merge called with a range, an iteratora, a predicate and "
+            "a projection calls ranges::inplace_merge immediately")
+    {
+        composer::inplace_merge(
+            nums, nums.begin() + 3, composer::greater_than, &numname::num);
+        REQUIRE_THAT(nums | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 3, 2, 1 }));
+    }
+    SECTION("inplace_merge called with a predicate and a projection is "
+            "callable with a range and an iterator")
+    {
+        auto merge_greater_num
+            = composer::inplace_merge(composer::greater_than, &numname::num);
+        merge_greater_num(nums, nums.begin() + 3);
+        REQUIRE_THAT(nums | std::views::transform(&numname::num),
+                     Catch::Matchers::RangeEquals({ 5, 4, 3, 2, 1 }));
+    }
+    SECTION("inplace_merge is not callable with an r-value range")
+    {
+        auto merge_greater_num
+            = composer::inplace_merge(composer::greater_than, &numname::num);
+        STATIC_REQUIRE(returns_callable(
+            merge_greater_num, std::move(nums), nums.begin() + 3));
+    }
+}
+
 SCENARIO("includes")
 {
     SECTION("includes called with a two ranges, a predicate and a projection "

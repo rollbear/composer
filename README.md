@@ -547,6 +547,11 @@ Back binding version o [`std::ranges::merge`](https://en.cppreference.com/w/cpp/
 
 `composer::merge` cannot be called with r-value ranges.
 
+#### `composer::inplace_merge`
+
+Back binding version o [`std::ranges::inplace_merge`](https://en.cppreference.com/w/cpp/algorithm/ranges/inplace_merge.html)
+
+`composer::inplace_merge` cannot be called with an r-value range.
 
 #### `composer::includes`
 

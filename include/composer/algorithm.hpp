@@ -232,6 +232,12 @@ inline constexpr auto merge = make_arity_function<8, back_binding>(
         return std::ranges::merge(std::forward<Ts>(ts)...);
     });
 
+inline constexpr auto inplace_merge = make_arity_function<5, back_binding>(
+    []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::inplace_merge(
+                                       std::forward<Ts>(ts)...)) {
+        return std::ranges::inplace_merge(std::forward<Ts>(ts)...);
+    });
+
 inline constexpr auto includes = make_arity_function<7, back_binding>(
     nodiscard{ []<typename... Ts>(Ts&&... ts) -> decltype(std::ranges::includes(
                                                   std::forward<Ts>(ts)...)) {
