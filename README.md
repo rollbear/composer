@@ -67,7 +67,7 @@ int main()
 | [**`<functional.hpp>`**](#functional_hpp)                | [`any_of`](#any_of)                                 | [`is_sorted`](#is_sorted)                               |
 | [`mem_fn`](#mem_fn)                                      | [`none_of`](#none_of)                               | [`is_sorted_until`](#is_sorted_until)                   |
 | [`operator\|(T C::*, arity_function)`](#pipe_from_memfn) | [`for_each`](#for_each)                             | [`sort`](#sort)                                         |
-| [`operator\| (V&&, T C::*p)`](#pipe_to_memfn)            | [`for_each_t`](#for_each_n)                         | [`partial_sort`](#partial_sort)                         
+| [`operator\| (V&&, T C::*p)`](#pipe_to_memfn)            | [`for_each_t`](#for_each_n)                         | [`partial_sort`](#partial_sort)                         |                         
 | [`equal_to`](#equal_to)                                  | [`count`](#count)                                   | [`partial_sort_copy`](#partial_sort_copy)               |
 | [`not_equal_to`](#not_equal_to)                          | [`count_if`](#count_if)                             | [`stable_sort`](#stable_sort)                           |
 | [`less_than`](#less_than)                                | [`find`](#find)                                     | [`nth_element`](#nth_element)                           |
