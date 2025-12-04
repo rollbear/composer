@@ -1,5 +1,6 @@
 <a href="https://www.buymeacoffee.com/bjornfahller"> <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" height="50" width="210" alt="Buy me a coffee"/></a>
-
+[![CI](https://github.com/rollbear/composer/actions/workflows/build.yml/badge.svg)](https://github.com/rollbear/composer/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/rollbear/composer/graph/badge.svg?token=VGGH860X9Z)](https://codecov.io/gh/rollbear/composer)
 
 **composer** is an experimental C++23 library for functional composition.
 
