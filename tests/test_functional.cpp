@@ -441,3 +441,124 @@ TEST_CASE("pipe to pointer-to-member")
         STATIC_REQUIRE((s | &S::get_y) == 3);
     }
 }
+
+namespace {
+constexpr auto length = composer::make_arity_function<1>(
+    [](auto v) -> decltype(v.length()) { return v.length(); });
+
+struct numname {
+    unsigned num;
+    std::string_view name;
+};
+
+constexpr numname three = { 3, "three" };
+constexpr numname four = { 4, "four" };
+constexpr numname five = { 5, "five" };
+
+} // namespace
+
+TEST_CASE("arity functions can compose with operator==")
+{
+    static constexpr auto equal_namelen
+        = (composer::mem_fn(&numname::num) == (&numname::name | length));
+    STATIC_REQUIRE(equal_namelen(four));
+    STATIC_REQUIRE_FALSE(equal_namelen(three));
+    REQUIRE(equal_namelen(four));
+    REQUIRE_FALSE(equal_namelen(three));
+}
+
+TEST_CASE("arity functions can compose with operator!=")
+{
+    static constexpr auto different_namelen
+        = (composer::mem_fn(&numname::num) != (&numname::name | length));
+    STATIC_REQUIRE_FALSE(different_namelen(four));
+    STATIC_REQUIRE(different_namelen(three));
+    REQUIRE_FALSE(different_namelen(four));
+    REQUIRE(different_namelen(three));
+}
+
+TEST_CASE("arity functions can compose with operator<")
+{
+    static constexpr auto shorter_namelen
+        = (composer::mem_fn(&numname::num) < (&numname::name | length));
+    STATIC_REQUIRE_FALSE(shorter_namelen(four));
+    STATIC_REQUIRE(shorter_namelen(three));
+    REQUIRE_FALSE(shorter_namelen(four));
+    REQUIRE(shorter_namelen(three));
+}
+
+TEST_CASE("arity functions can compose with operator<=")
+{
+    static constexpr auto shorter_namelen
+        = (composer::mem_fn(&numname::num) <= (&numname::name | length));
+    STATIC_REQUIRE(shorter_namelen(four));
+    STATIC_REQUIRE_FALSE(shorter_namelen(five));
+    REQUIRE(shorter_namelen(four));
+    REQUIRE_FALSE(shorter_namelen(five));
+}
+
+TEST_CASE("arity functions can compose with operator>")
+{
+    static constexpr auto longer_namelen
+        = (composer::mem_fn(&numname::num) > (&numname::name | length));
+    STATIC_REQUIRE(longer_namelen(five));
+    STATIC_REQUIRE_FALSE(longer_namelen(four));
+    REQUIRE(longer_namelen(five));
+    REQUIRE_FALSE(longer_namelen(four));
+}
+
+TEST_CASE("arity functions can compose with operator>=")
+{
+    static constexpr auto longer_namelen
+        = (composer::mem_fn(&numname::num) >= (&numname::name | length));
+    STATIC_REQUIRE(longer_namelen(four));
+    STATIC_REQUIRE_FALSE(longer_namelen(three));
+    REQUIRE(longer_namelen(four));
+    REQUIRE_FALSE(longer_namelen(three));
+}
+
+TEST_CASE("arity functions can compose with operator!")
+{
+    static constexpr auto different_namelen
+        = !(composer::mem_fn(&numname::num) == (&numname::name | length));
+    STATIC_REQUIRE_FALSE(different_namelen(four));
+    STATIC_REQUIRE(different_namelen(three));
+    REQUIRE_FALSE(different_namelen(four));
+    REQUIRE(different_namelen(three));
+}
+
+TEST_CASE("arity functions can compose with operator*")
+{
+    static constexpr auto i = 3;
+    STATIC_REQUIRE((*composer::identity)(&i) == 3);
+    REQUIRE((*composer::identity)(&i) == 3);
+}
+
+TEST_CASE("arity functions can compose with operator&&")
+{
+    static constexpr auto eq4 = composer::make_arity_function<1>(
+        [](auto x) -> decltype(x == 4) { return x == 4; });
+    STATIC_REQUIRE(
+        ((&numname::num | eq4) && (&numname::name | length | eq4))(four));
+    STATIC_REQUIRE_FALSE(
+        ((&numname::num | eq4) && (&numname::name | length | eq4))(five));
+    REQUIRE(((&numname::num | eq4) && (&numname::name | length | eq4))(four));
+    REQUIRE_FALSE(
+        ((&numname::num | eq4) && (&numname::name | length | eq4))(five));
+}
+
+TEST_CASE("arity functions can compose with operator||&")
+{
+    static constexpr auto eq4 = composer::make_arity_function<1>(
+        [](auto x) -> decltype(x == 4) { return x == 4; });
+    STATIC_REQUIRE(
+        ((&numname::num | eq4) || (&numname::name | length | eq4))(five));
+    STATIC_REQUIRE(
+        ((&numname::name | length | eq4) || (&numname::num | eq4))(five));
+    STATIC_REQUIRE_FALSE(
+        ((&numname::num | eq4) || (&numname::name | length | eq4))(three));
+    REQUIRE(((&numname::num | eq4) || (&numname::name | length | eq4))(five));
+    REQUIRE(((&numname::name | length | eq4) || (&numname::num | eq4))(five));
+    REQUIRE_FALSE(
+        ((&numname::num | eq4) || (&numname::name | length | eq4))(three));
+}
