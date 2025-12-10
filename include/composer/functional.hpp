@@ -71,5 +71,63 @@ template <typename IN, typename C, typename R>
     return mem_fn(p)(std::forward<IN>(in));
 }
 
+#define COMPOSER_MAKE_OP(opname, op)                                        \
+    namespace internal {                                                    \
+    template <typename LH, typename RH>                                     \
+    struct op_##opname {                                                    \
+        LH lhf;                                                             \
+        RH rhf;                                                             \
+        template <typename Self, typename... Ts>                            \
+        constexpr auto operator()(this Self&& self, const Ts&... ts)        \
+            -> decltype(std::forward_like<Self>(self.lhf)(ts...)            \
+                            op std::forward_like<Self>(self.rhf)(ts...))    \
+        {                                                                   \
+            return std::forward_like<Self>(self.lhf)(ts...)                 \
+                op std::forward_like<Self>(self.rhf)(ts...);                \
+        }                                                                   \
+    };                                                                      \
+    }                                                                       \
+                                                                            \
+    template <arity_function_type LH, arity_function_type RH>               \
+    constexpr auto operator op(LH&& lh, RH&& rh)                            \
+    {                                                                       \
+        using LT = std::remove_cvref_t<LH>;                                 \
+        using RT = std::remove_cvref_t<RH>;                                 \
+        constexpr auto arity = std::min(LT::arity, RT::arity);              \
+                                                                            \
+        return make_arity_function<arity>(nodiscard{ internal::op_##opname{ \
+            std::forward<LH>(lh), std::forward<RH>(rh) } });                \
+    }
+
+COMPOSER_MAKE_OP(eq, ==)
+COMPOSER_MAKE_OP(lt, <)
+COMPOSER_MAKE_OP(le, <=)
+COMPOSER_MAKE_OP(gt, >)
+COMPOSER_MAKE_OP(ge, >=)
+COMPOSER_MAKE_OP(neq, !=)
+COMPOSER_MAKE_OP(or, ||)
+COMPOSER_MAKE_OP(and, &&)
+COMPOSER_MAKE_OP(plus, +);
+COMPOSER_MAKE_OP(minus, -);
+COMPOSER_MAKE_OP(times, *);
+COMPOSER_MAKE_OP(divides, /);
+COMPOSER_MAKE_OP(remainder, %);
+COMPOSER_MAKE_OP(ls, <<);
+COMPOSER_MAKE_OP(rh, >>);
+
+#undef COMPOSER_MAKE_OP
+
+template <arity_function_type F>
+constexpr auto operator!(F&& f) -> decltype(std::forward<F>(f) | logical_not)
+{
+    return std::forward<F>(f) | logical_not;
+}
+
+template <arity_function_type F>
+constexpr auto operator*(F&& f) -> decltype(std::forward<F>(f) | dereference)
+{
+    return std::forward<F>(f) | dereference;
+}
+
 } // namespace composer
 #endif // COMPOSER_FUNCTIONAL_HPP

@@ -196,7 +196,7 @@ TEST_CASE("front_binding bound arrays are copied")
         = composer::make_arity_function<2, composer::front_binding>(
             [](auto& p, int) -> auto& { return p; });
     static constexpr auto identity = composer::make_arity_function<1>(
-        [](auto x) -> decltype(x) { return x; });
+        []<typename T>(T t) -> T { return t; });
     char array[] = "foo";
     SECTION("non-const function object forwards copy as non-const array")
     {

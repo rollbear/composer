@@ -48,6 +48,11 @@ int main()
     assert(! composer::is_sorted(values, by_name(composer::less_than)));
     assert(composer::is_sorted(values, by_num(composer::less_than)));
     
+    auto self_ref =
+        composer::find_if(values,
+                          composer::mem_fn(&numname::num) == (&numname::name | composer::ssize));
+    assert(self_ref->num == 4);
+    
     constexpr auto it = values | composer::find_if(&numname::name | composer::equal_to("three"));
     return it->num; // returns 3
 }
@@ -55,56 +60,30 @@ int main()
 
 # Table of Contents
 
-|                                                          |                                                     |                                                         |
-|----------------------------------------------------------|-----------------------------------------------------|---------------------------------------------------------|
-| [`arity_function`](#arity_function)                      | [**`<ranges.hpp>`**](#ranges_hpp)                   | [_Partitioning operations_](#partitioning)              |
-| [`front_binding`](#front_binding)                        | [`size`](#size)                                     | [`is_partitioned`](#is_partitioned)                     |
-| [`back_binding`](#back_binding)                          | [`ssize`](#ssize)                                   | [`partition`](#partition)                               |
-| [`nodiscard`](#nodiscard)                                | [`distance`](#ssize)                                | [`partition_copy`](#partition_copy)                     |
-| [`make_arity_function`](#make_arity_function)            | [**`<algorithm.hpp>`**](#algorithm_hpp)             | [`stable_partition`](#stable_partition)                 |
-| [`ref`](#ref)                                            | [_Non-modifying sequence operations_](#non_mod_seq) | [`partition_point`](#partition_point)                   |
-| [`cref`](#cref)                                          | [`all_of`](#all_of)                                 | [_Sorting operations_](#sorting)                        |
-| [**`<functional.hpp>`**](#functional_hpp)                | [`any_of`](#any_of)                                 | [`is_sorted`](#is_sorted)                               |
-| [`mem_fn`](#mem_fn)                                      | [`none_of`](#none_of)                               | [`is_sorted_until`](#is_sorted_until)                   |
-| [`operator\|(T C::*, arity_function)`](#pipe_from_memfn) | [`for_each`](#for_each)                             | [`sort`](#sort)                                         |
-| [`operator\| (V&&, T C::*p)`](#pipe_to_memfn)            | [`for_each_t`](#for_each_n)                         | [`partial_sort`](#partial_sort)                         |                         
-| [`equal_to`](#equal_to)                                  | [`count`](#count)                                   | [`partial_sort_copy`](#partial_sort_copy)               |
-| [`not_equal_to`](#not_equal_to)                          | [`count_if`](#count_if)                             | [`stable_sort`](#stable_sort)                           |
-| [`less_than`](#less_than)                                | [`find`](#find)                                     | [`nth_element`](#nth_element)                           |
-| [`less_or_equal_to`](#less_or_equal_to)                  | [`find_if`](#find_if)                               | [_Binary search operations_](#binsearch)                |
-| [`greater_than`](#greater_than)                          | [`find_if_not`](#find_if_not)                       | [`lower_bound`](#lower_bound)                           |
-| [`greater_or_equal_to`](#greater_or_equal_to)            | [`find_last`](#find_last)                           | [`upper_bound`](#upper_bound)                           |
-| [`compare_three_way`](#compare_three_way)                | [`find_last_if`](#find_last_if)                     | [`binary_search`](#binary_search)                       |
-| [`identity`](#indentity)                                 | [`find_last_if_not`](#find_last_if_not)             | [`equal_range`](#equal_range)                           |
-| [`dereference`](#dereference)                            | [`find_end`](#find_end)                             | [_Set operations_](#setops)                             |
-| [`plus`](#plus)                                          | [`find_first_of`](#find_first_of)                   | [`merge`](#merge)                                       |
-| [`minus`](#minus)                                        | [`adjacent_find`](#adjacent_find)                   | [`inplace_merge`](#inplace_merge)                       |
-| [`multiplies`](#multiplies)                              | [`search`](#search)                                 | [`includes`](#includes)                                 |
-| [`divides`](#divides)                                    | [`search_n`](#search_n)                             | [`set_difference`](#set_difference)                     |
-| [`modulus`](#modulus)                                    | [`contains`](#contains)                             | [`set_intersection`](#set_intersection)                 |
-| [`negate`](#negate)                                      | [`contains_subrange`](#contains_subrange)           | [`set_symmetric_difference`](#set_symmetric_difference) |
-| [`logical_and`](#logical_and)                            | [`starts_with`](#starts_with)                       | [`set_union`](#set_union)                               |
-| [`logical_or`](#logical_or)                              | [`ends_with`](#ends_with)                           | [_Heap operations_](#heap_ops)                          |
-| [`logical_not`](#logical_not)                            | [_Modifying seuence operations_](#mod_seq)          | [`is_heap`](#is_heap)                                   |
-| [`bit_and`](#bit_and)                                    | [`fill`](#fill)                                     | [`is_heap_until`](#is_heap_until)                       |
-| [`bit_or`](#bit_or)                                      | [`fill_n`](#fill_n)                                 | [`make_heap`](#make_heap)                               |
-| [`bit_xor`](#bit_xor)                                    | [`generate`](#generate)                             | [`push_heap`](#push_heap)                               |
-| [`bit_not`](#bin_not)                                    | [`generate_n`](#generate_n)                         | [`pop_heap`](#pop_heap)                                 |
-| [**`<transform_args.hpp>`**](#transform_args_hpp)        | [`remove`](#remove)                                 | [`sort_heap`](#sort_heap)                               |
-| [`transform_args`](#transform_args)                      | [`remove_if`](#remove_if)                           | [_Minimum/maximum operations_](#minmax_ops)             |
-| [**`<tuple.hpp>`**](#tuple_hpp)                          | [`replace`](#replace)                               | [`max`](#max)                                           |
-| [`get<I>`](#get)                                         | [`replace_if`](#replace_if)                         | [`max_element`](#max_element)                           |
-| [`apply_to`](#apply_to)                                  | [`unique`](#unique)                                 | [`min`](#min)                                           |
-| [`apply_using`](#apply_using)                            |                                                     | [`min_element`](#min_element)                           |
-|                                                          |                                                     | [`minmax_element`](#minmax_element)                     |
-|                                                          |                                                     | [`clamp`](#clamp)                                       |
+* [**type templates**](#type_templates)
+  * [**`composer::arity_function<N,F>`**](#arity_function)
+  * [**`composer::front_binding<N,F>`**](#front_binding)
+  * [**`composer::back_binding<N,F>`**](#back_binding)
+  * [**`composer::nodiscard<F>`**](#nodiscard)
+* [**Helper function template objects**](#helper_template_objects)
+  * [**`composer::make_arity_function<>(F)`**](#make_arity_function)
+  * [**`composer::ref`**](#ref)
+  * [**`composer::cref`**](#ref)
+* [**Predefined function objects**](#predefined)
+  * [**`<functional.hpp>`**](#functional_hpp)
+  * [**`<ranges.hpp>`**](#ranges_hpp)
+  * [**`<algorithm.hpp>`**](#algorithm_hpp)
+  * [**`<transform_args.hpp>`**](#transform_args_hpp)
+  * [**`<tuple.hpp>`**](#tuple_hpp)
 
 
 # Building blocks
 
-## type templates
+## <A name="type_templates"></A> type templates
 
 ### <A name="arity_function"></A> `composer::arity_function<N, F>`
+
+In `<composer/arity_function.hpp>`
 
 A composable version of the function type `F`. `N` is the arity of the
 function, i.e. the number of arguments it takes, including defaulted arguments, if there
@@ -119,6 +98,8 @@ Arity functions that accept only one argument can also be called using a *pipe* 
 like `value | function` (which is synonymous with `function(value)`)
 
 ### <A name="front_binding"></A> `composer::front_binding<N, F>`
+
+In `<composer/front_binding.hpp>`
 
 A `front_binding` is an `arity_function`. If called with fewer arguments than
 the arity, a new callable is returned, which binds the arguments to the left.
@@ -146,6 +127,8 @@ call `std::move(funcion_object)(args...)`.
 
 ### <A name="back_binding"></A> `composer::back_binding<N, F>`
 
+In `<composer/back_binding.hpp>`
+
 A `back_binding` is an `arity_function`. If called with fewer arguments than
 needed for the underlying function, it binds the arguments to the right. This
 comes natural for many function, e.g. subtraction, where the order better
@@ -170,7 +153,7 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
-### <A name="nodiscard"></A> `nodiscard<F>`
+### <A name="nodiscard"></A> `composer::nodiscard<F>`
 
 Used when defining a new function, to ensure that the return from it is marked
 [`[[nodiscard]]`](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
@@ -180,7 +163,7 @@ Example:
 auto minus = back_binding<2, nodiscard<std::minus<>>>{};
 ```
 
-## helper function template objects
+## <A name="helper_template_objects"></A> helper function template objects
 
 ### <A name="make_arity_function"></A>`composer::make_arity_function<N, Kind = arity_function>(F&& f)`
 
@@ -201,7 +184,7 @@ bind them by reference.
 Used when binding arguments to partially binding functions, and you want to
 bind them by const reference.
 
-# Predefined function objects
+# <A name="predefined"></A> Predefined function objects
 
 ## <A name="functional_hpp"></A> `<composer/functional.hpp>`
 
@@ -310,6 +293,119 @@ Composable [`nodiscard`](#nodiscard) version of [`std::logical_not<>`](https://e
 
 Composable [`nodiscard`](#nodiscard) version of [`std::bit_not<>](https://en.cppreference.com/w/cpp/utility/functional/bit_not_void.html)
 
+#### <A name="operator_lt"></A> `arity_function < arity_function`
+
+Creates a composed function which calls `operator<` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_eq"></A> `arity_function == arity_function`
+
+Creates a composed function which calls `operator==` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_ne"></A> `arity_function !=' arity_function`
+
+Creates a composed function which calls `operator!=` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_le"></A> `arity_function <= arity_function`
+
+Creates a composed function which calls `operator<=` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_gt"></A> `arity_function > arity_function`
+
+Creates a composed function which calls `operator>` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_ge"></A> `arity_function >= arity_function`
+
+Creates a composed function which calls `operator>=` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_eq"></A> `arity_function == arity_function`
+
+Creates a composed function which calls `operator==` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_ne"></A> `arity_function !=' arity_function`
+
+Creates a composed function which calls `operator!=` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_and"></A> `arity_function &&' arity_function`
+
+Creates a composed function which calls `operator&&` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_or"></A> `arity_function ||' arity_function`
+
+Creates a composed function which calls `operator||` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2plus"></A> `arity_function +' arity_function`
+
+Creates a composed function which calls `operator+` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2minus"></A> `arity_function -' arity_function`
+
+Creates a composed function which calls `operator-` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2times"></A> `arity_function *' arity_function`
+
+Creates a composed function which calls `operator*` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2divides"></A> `arity_function /' arity_function`
+
+Creates a composed function which calls `operator/` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2mod"></A> `arity_function %' arity_function`
+
+Creates a composed function which calls `operator%` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2ls"></A> `arity_function <<' arity_function`
+
+Creates a composed function which calls `operator<<` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_2rs"></A> `arity_function >>' arity_function`
+
+Creates a composed function which calls `operator>>` on the result of the two
+functions. The composition will have the lowest arity of the two functions and
+will not be binding.
+
+#### <A name="operator_deref"></A> `*arity_function`
+
+Creates a composed function which calls `operator*` on the result of the
+function. This is synonymous with [`function | composer::dereference`](#dereference).
+
+#### <A name="operator_not"></A> `!arity_function`
+
+Creates a composed function which calls `operator!` on the result of the
+function. This is synonymous with [`function | composer::logical_not`](#logical_not).
+
+
 ## <A name="transform_args_hpp"></A> `<composer/transform_args.hpp>`
 
 #### <A name="transform_args"></A> `composer::transform_args(transformation, arity_function)`
@@ -367,7 +463,7 @@ Composable [`nodiscard`](#nodiscard) function object for [`std::ranges::distance
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
 
-## <A name="algorithm_hpp></A> `<composer/algo/rithm.hpp>`
+## <A name="algorithm_hpp"></A> `<composer/algo/rithm.hpp>`
 
 ### <A name="non_mod_seq"></A> Non-modifying sequence operations
 
