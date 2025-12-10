@@ -333,7 +333,7 @@ struct Bits {
 
     constexpr friend T operator|(T t, Bits b) { return t | b.value; }
 
-    friend T operator|(const Bits&, T)  = delete;
+    friend T operator|(const Bits&, T) = delete;
 
     constexpr friend T operator^(T t, Bits b) { return t ^ b.value; }
 
@@ -351,8 +351,8 @@ TEST_CASE("bit_and is back binding")
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto mask_low = composer::bit_and(Bits{0x0000ffffU});
-        constexpr auto mask_high = composer::bit_and(Bits{0xffff0000U});
+        constexpr auto mask_low = composer::bit_and(Bits{ 0x0000ffffU });
+        constexpr auto mask_high = composer::bit_and(Bits{ 0xffff0000U });
         STATIC_REQUIRE(mask_low(0x00ff00ffU) == 0x000000ffU);
         STATIC_REQUIRE(mask_high(0x00ff00ffU) == 0x00ff0000U);
         REQUIRE(mask_low(0x00ff00ffU) == 0x000000ffU);
@@ -371,8 +371,8 @@ TEST_CASE("bit_or is back binding")
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto set_low = composer::bit_or(Bits{0x0000ffffU});
-        constexpr auto set_high = composer::bit_or(Bits{0xffff0000U});
+        constexpr auto set_low = composer::bit_or(Bits{ 0x0000ffffU });
+        constexpr auto set_high = composer::bit_or(Bits{ 0xffff0000U });
         STATIC_REQUIRE(set_low(0x00ff00ffU) == 0x00ffffffU);
         STATIC_REQUIRE(set_high(0x00ff00ffU) == 0xffff00ffU);
         REQUIRE(set_low(0x00ff00ffU) == 0x00ffffffU);
@@ -391,8 +391,8 @@ TEST_CASE("bit_xor is back binding")
     }
     SECTION("when called with one arg, it binds to the right")
     {
-        constexpr auto flip_low = composer::bit_xor(Bits{0x0000ffffU});
-        constexpr auto flip_high = composer::bit_xor(Bits{0xffff0000U});
+        constexpr auto flip_low = composer::bit_xor(Bits{ 0x0000ffffU });
+        constexpr auto flip_high = composer::bit_xor(Bits{ 0xffff0000U });
         STATIC_REQUIRE(flip_low(0x00ff00ffU) == 0x00ffff00U);
         STATIC_REQUIRE(flip_high(0x00ff00ffU) == 0xff0000ffU);
         REQUIRE(flip_low(0x00ff00ffU) == 0x00ffff00U);
@@ -550,7 +550,7 @@ TEST_CASE("arity functions can compose with operator&&")
         ((&numname::num | eq4) && (&numname::name | length | eq4))(five));
 }
 
-TEST_CASE("arity functions can compose with operator||&")
+TEST_CASE("arity functions can compose with operator||")
 {
     static constexpr auto eq4 = composer::make_arity_function<1>(
         [](auto x) -> decltype(x == 4) { return x == 4; });
@@ -566,3 +566,93 @@ TEST_CASE("arity functions can compose with operator||&")
         ((&numname::num | eq4) || (&numname::name | length | eq4))(three));
 }
 
+TEST_CASE("arity functions can compose with operator+")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 3, 2 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) + mem_fn(&XY::y))(xy) == 5);
+    REQUIRE((mem_fn(&XY::x) + mem_fn(&XY::y))(xy) == 5);
+}
+
+TEST_CASE("arity functions can compose with operator-")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 3, 2 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) - mem_fn(&XY::y))(xy) == 1);
+    REQUIRE((mem_fn(&XY::x) - mem_fn(&XY::y))(xy) == 1);
+}
+
+TEST_CASE("arity functions can compose with binary operator* ")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 3, 2 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) * mem_fn(&XY::y))(xy) == 6);
+    REQUIRE((mem_fn(&XY::x) * mem_fn(&XY::y))(xy) == 6);
+}
+
+TEST_CASE("arity functions can compose with operator/")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 12, 3 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) / mem_fn(&XY::y))(xy) == 4);
+    REQUIRE((mem_fn(&XY::x) / mem_fn(&XY::y))(xy) == 4);
+}
+
+TEST_CASE("arity functions can compose with operator%")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 12, 5 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) % mem_fn(&XY::y))(xy) == 2);
+    REQUIRE((mem_fn(&XY::x) % mem_fn(&XY::y))(xy) == 2);
+}
+
+TEST_CASE("arity functions can compose with operator<<")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 12, 2 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) << mem_fn(&XY::y))(xy) == 48);
+    REQUIRE((mem_fn(&XY::x) << mem_fn(&XY::y))(xy) == 48);
+}
+
+TEST_CASE("arity functions can compose with operator>>")
+{
+    struct XY {
+        int x;
+        int y;
+    };
+
+    static constexpr XY xy{ 12, 2 };
+    using composer::mem_fn;
+    STATIC_REQUIRE((mem_fn(&XY::x) >> mem_fn(&XY::y))(xy) == 3);
+    REQUIRE((mem_fn(&XY::x) >> mem_fn(&XY::y))(xy) == 3);
+}
