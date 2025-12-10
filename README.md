@@ -305,7 +305,7 @@ Creates a composed function which calls `operator==` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_ne"></A> `arity_function !=' arity_function`
+#### <A name="operator_ne"></A> `arity_function != arity_function`
 
 Creates a composed function which calls `operator!=` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
@@ -329,67 +329,55 @@ Creates a composed function which calls `operator>=` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_eq"></A> `arity_function == arity_function`
-
-Creates a composed function which calls `operator==` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
-
-#### <A name="operator_ne"></A> `arity_function !=' arity_function`
-
-Creates a composed function which calls `operator!=` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
-
-#### <A name="operator_and"></A> `arity_function &&' arity_function`
+#### <A name="operator_and"></A> `arity_function && arity_function`
 
 Creates a composed function which calls `operator&&` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_or"></A> `arity_function ||' arity_function`
+#### <A name="operator_or"></A> `arity_function || arity_function`
 
 Creates a composed function which calls `operator||` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2plus"></A> `arity_function +' arity_function`
+#### <A name="operator_2plus"></A> `arity_function + arity_function`
 
 Creates a composed function which calls `operator+` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2minus"></A> `arity_function -' arity_function`
+#### <A name="operator_2minus"></A> `arity_function - arity_function`
 
 Creates a composed function which calls `operator-` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2times"></A> `arity_function *' arity_function`
+#### <A name="operator_2times"></A> `arity_function * arity_function`
 
 Creates a composed function which calls `operator*` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2divides"></A> `arity_function /' arity_function`
+#### <A name="operator_2divides"></A> `arity_function / arity_function`
 
 Creates a composed function which calls `operator/` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2mod"></A> `arity_function %' arity_function`
+#### <A name="operator_2mod"></A> `arity_function % arity_function`
 
 Creates a composed function which calls `operator%` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2ls"></A> `arity_function <<' arity_function`
+#### <A name="operator_2ls"></A> `arity_function << arity_function`
 
 Creates a composed function which calls `operator<<` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2rs"></A> `arity_function >>' arity_function`
+#### <A name="operator_2rs"></A> `arity_function >> arity_function`
 
 Creates a composed function which calls `operator>>` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
@@ -463,7 +451,7 @@ Composable [`nodiscard`](#nodiscard) function object for [`std::ranges::distance
 
 `composable::distance` is callable either with a range, or with an iterator/sentinel pair.
 
-## <A name="algorithm_hpp"></A> `<composer/algo/rithm.hpp>`
+## <A name="algorithm_hpp"></A> `<composer/algorithm.hpp>`
 
 ### <A name="non_mod_seq"></A> Non-modifying sequence operations
 
