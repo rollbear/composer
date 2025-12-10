@@ -35,11 +35,11 @@ SCENARIO("size")
     SECTION("size can be called on a type with begin/end member functions")
     {
         struct S {
-            int a[4]{};
+            std::array<int, 4> a{};
 
-            [[nodiscard]] constexpr const int* begin() const { return a; }
+            [[nodiscard]] constexpr auto begin() const { return a.begin(); }
 
-            [[nodiscard]] constexpr const int* end() const { return a + 4; }
+            [[nodiscard]] constexpr auto end() const { return a.end(); }
         };
 
         constexpr S obj{};
@@ -72,11 +72,11 @@ SCENARIO("ssize")
     SECTION("ssize can be called on a type with begin/end member functions")
     {
         struct S {
-            int a[4]{};
+            std::array<int, 4> a{};
 
-            [[nodiscard]] constexpr const int* begin() const { return a; }
+            [[nodiscard]] constexpr auto begin() const { return a.begin(); }
 
-            [[nodiscard]] constexpr const int* end() const { return a + 4; }
+            [[nodiscard]] constexpr auto end() const { return a.end(); }
         };
 
         constexpr S obj{};
