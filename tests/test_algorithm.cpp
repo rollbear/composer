@@ -3553,7 +3553,7 @@ SCENARIO("sort")
     {
         STATIC_REQUIRE_FALSE(can_call(composer::sort, std::move(ints)));
     }
-    SECTION("calling sort with a const array returns an arity_function")
+    SECTION("calling sort with a const array returns a composable_function")
     {
         STATIC_REQUIRE(returns_callable(composer::sort, std::as_const(ints)));
     }

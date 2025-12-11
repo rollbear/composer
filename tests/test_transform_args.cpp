@@ -6,7 +6,7 @@
 TEST_CASE("transform_args called wit all args makes the call directly via the "
           "transformation of all args")
 {
-    constexpr auto minus = composer::make_arity_function<2>(
+    constexpr auto minus = composer::make_composable_function<2>(
         [](auto a, auto b) -> decltype(a - b) { return a - b; });
     constexpr auto deref_minus = composer::transform_args(
         [](const auto& p) -> decltype(*p) { return *p; }, minus);
@@ -19,7 +19,7 @@ TEST_CASE("transform_args called wit all args makes the call directly via the "
 TEST_CASE("transform_args of a front bound function is a front bound function")
 {
     constexpr auto f
-        = composer::make_arity_function<2, composer::front_binding>(
+        = composer::make_composable_function<2, composer::front_binding>(
             [](auto a, auto b) { return a - b; });
     constexpr auto deref_f = composer::transform_args(
         [](auto p) -> decltype(*p) { return *p; }, f);
@@ -34,7 +34,7 @@ TEST_CASE("transform_args of a partially bound front binding function is "
           "callable with one arg through the transformation")
 {
     constexpr auto minus
-        = composer::make_arity_function<2, composer::front_binding>(
+        = composer::make_composable_function<2, composer::front_binding>(
             [](auto a, auto b) -> decltype(a - b) { return a - b; });
     constexpr auto sub_from_5 = minus(5);
     constexpr auto dsub = composer::transform_args(

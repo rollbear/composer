@@ -1,7 +1,7 @@
 #ifndef COMPOSER_FRONT_BINDING_HPP
 #define COMPOSER_FRONT_BINDING_HPP
 
-#include "arity_function.hpp"
+#include "composable_function.hpp"
 
 #include <functional>
 
@@ -50,8 +50,8 @@ struct front_binder {
 } // namespace internal
 
 template <std::size_t N, typename F>
-struct [[nodiscard]] front_binding : arity_function<N, F> {
-    using arity_function<N, F>::operator();
+struct [[nodiscard]] front_binding : composable_function<N, F> {
+    using composable_function<N, F>::operator();
 
     template <typename Self, typename... Ts>
     constexpr auto operator()(this Self&& self, Ts&&... ts)

@@ -61,12 +61,12 @@ int main()
 # Table of Contents
 
 * [**type templates**](#type_templates)
-  * [**`composer::arity_function<N,F>`**](#arity_function)
+  * [**`composer::composable_function<N,F>`**](#composable_function)
   * [**`composer::front_binding<N,F>`**](#front_binding)
   * [**`composer::back_binding<N,F>`**](#back_binding)
   * [**`composer::nodiscard<F>`**](#nodiscard)
 * [**Helper function template objects**](#helper_template_objects)
-  * [**`composer::make_arity_function<>(F)`**](#make_arity_function)
+  * [**`composer::make_composable_function<>(F)`**](#make_composable_function)
   * [**`composer::ref`**](#ref)
   * [**`composer::cref`**](#ref)
 * [**Predefined function objects**](#predefined)
@@ -81,27 +81,27 @@ int main()
 
 ## <A name="type_templates"></A> type templates
 
-### <A name="arity_function"></A> `composer::arity_function<N, F>`
+### <A name="composable_function"></A> `composer::composable_function<N, F>`
 
-In `<composer/arity_function.hpp>`
+In `<composer/composable_function.hpp>`
 
 A composable version of the function type `F`. `N` is the arity of the
 function, i.e. the number of arguments it takes, including defaulted arguments, if there
 are any.
 
-Arity functions can be called with whatever arguments that the function `F` is callable
-with. Arity functions aqre composable using *pipes* (`|`, see the teaser example above),
+Composable functions can be called with whatever arguments that the function `F` is callable
+with. Composable functions can be composed using *pipes* (`|`, see the teaser example above),
 where the function on the right hand side is callable with the result of the left hand
 side function.
 
-Arity functions that accept only one argument can also be called using a *pipe* syntax,
+Composable functions that accept only one argument can also be called using a *pipe* syntax,
 like `value | function` (which is synonymous with `function(value)`)
 
 ### <A name="front_binding"></A> `composer::front_binding<N, F>`
 
 In `<composer/front_binding.hpp>`
 
-A `front_binding` is an `arity_function`. If called with fewer arguments than
+A `front_binding` is a `composable_function`. If called with fewer arguments than
 the arity, a new callable is returned, which binds the arguments to the left.
 When that callable is invoked with args, the function is called with the bound
 arguments first, and the remaining arguments in the back.
@@ -129,7 +129,7 @@ call `std::move(funcion_object)(args...)`.
 
 In `<composer/back_binding.hpp>`
 
-A `back_binding` is an `arity_function`. If called with fewer arguments than
+A `back_binding` is an `composable_function`. If called with fewer arguments than
 needed for the underlying function, it binds the arguments to the right. This
 comes natural for many function, e.g. subtraction, where the order better
 mirrors human language.
@@ -165,13 +165,13 @@ auto minus = back_binding<2, nodiscard<std::minus<>>>{};
 
 ## <A name="helper_template_objects"></A> helper function template objects
 
-### <A name="make_arity_function"></A>`composer::make_arity_function<N, Kind = arity_function>(F&& f)`
+### <A name="make_composable_function"></A>`composer::make_composable_function<N, Kind = composable_function>(F&& f)`
 
-Make it easier to create arity functions from lambdas or other callables.
+Make it easier to create composable functions from lambdas or other callables.
 
 Example:
 ```c++
-auto minus = make_arity_function<2, back_binding>([](auto a, auto b)-> decltype(a - b){ return a - b;});
+auto minus = make_composable_function<2, back_binding>([](auto a, auto b)-> decltype(a - b){ return a - b;});
 ```
 
 ### <A name="ref"></A> `composer::ref(T&)`
@@ -194,7 +194,7 @@ Creates a [`nodiscard`](#nodiscard) composable function objects that calls
 [`std::mem_fn`](https://en.cppreference.com/w/cpp/utility/functional/mem_fn.html)
 on its argument.
 
-#### <A name="pipe_from_memfn"></A> `operator|(T C::*p, arity_function)`
+#### <A name="pipe_from_memfn"></A> `operator|(T C::*p, composable_function)`
 
 Synonymous with [`composer::mem_fn`](#mem_fn)`(<pointer_to_member>) | function`,
 i.e. returns a composable function that calls the right hand side with the
@@ -293,102 +293,102 @@ Composable [`nodiscard`](#nodiscard) version of [`std::logical_not<>`](https://e
 
 Composable [`nodiscard`](#nodiscard) version of [`std::bit_not<>](https://en.cppreference.com/w/cpp/utility/functional/bit_not_void.html)
 
-#### <A name="operator_lt"></A> `arity_function < arity_function`
+#### <A name="operator_lt"></A> `composable_function < composable_function`
 
 Creates a composed function which calls `operator<` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_eq"></A> `arity_function == arity_function`
+#### <A name="operator_eq"></A> `composable_function == composable_function`
 
 Creates a composed function which calls `operator==` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_ne"></A> `arity_function != arity_function`
+#### <A name="operator_ne"></A> `composable_function != composable_function`
 
 Creates a composed function which calls `operator!=` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_le"></A> `arity_function <= arity_function`
+#### <A name="operator_le"></A> `composable_function <= composable_function`
 
 Creates a composed function which calls `operator<=` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_gt"></A> `arity_function > arity_function`
+#### <A name="operator_gt"></A> `composable_function > composable_function`
 
 Creates a composed function which calls `operator>` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_ge"></A> `arity_function >= arity_function`
+#### <A name="operator_ge"></A> `composable_function >= composable_function`
 
 Creates a composed function which calls `operator>=` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_and"></A> `arity_function && arity_function`
+#### <A name="operator_and"></A> `composable_function && composable_function`
 
 Creates a composed function which calls `operator&&` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_or"></A> `arity_function || arity_function`
+#### <A name="operator_or"></A> `composable_function || composable_function`
 
 Creates a composed function which calls `operator||` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2plus"></A> `arity_function + arity_function`
+#### <A name="operator_2plus"></A> `composable_function + composable_function`
 
 Creates a composed function which calls `operator+` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2minus"></A> `arity_function - arity_function`
+#### <A name="operator_2minus"></A> `composable_function - composable_function`
 
 Creates a composed function which calls `operator-` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2times"></A> `arity_function * arity_function`
+#### <A name="operator_2times"></A> `composable_function * composable_function`
 
 Creates a composed function which calls `operator*` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2divides"></A> `arity_function / arity_function`
+#### <A name="operator_2divides"></A> `composable_function / composable_function`
 
 Creates a composed function which calls `operator/` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2mod"></A> `arity_function % arity_function`
+#### <A name="operator_2mod"></A> `composable_function % composable_function`
 
 Creates a composed function which calls `operator%` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2ls"></A> `arity_function << arity_function`
+#### <A name="operator_2ls"></A> `composable_function << composable_function`
 
 Creates a composed function which calls `operator<<` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_2rs"></A> `arity_function >> arity_function`
+#### <A name="operator_2rs"></A> `composable_function >> composable_function`
 
 Creates a composed function which calls `operator>>` on the result of the two
 functions. The composition will have the lowest arity of the two functions and
 will not be binding.
 
-#### <A name="operator_deref"></A> `*arity_function`
+#### <A name="operator_deref"></A> `*composable_function`
 
 Creates a composed function which calls `operator*` on the result of the
 function. This is synonymous with [`function | composer::dereference`](#dereference).
 
-#### <A name="operator_not"></A> `!arity_function`
+#### <A name="operator_not"></A> `!composable_function`
 
 Creates a composed function which calls `operator!` on the result of the
 function. This is synonymous with [`function | composer::logical_not`](#logical_not).
@@ -396,12 +396,13 @@ function. This is synonymous with [`function | composer::logical_not`](#logical_
 
 ## <A name="transform_args_hpp"></A> `<composer/transform_args.hpp>`
 
-#### <A name="transform_args"></A> `composer::transform_args(transformation, arity_function)`
+#### <A name="transform_args"></A> `composer::transform_args(transformation, composable_function)`
 
-Creates a new version of the arity function that passes all args via the
+Creates a new version of the composable function that passes all args via the
 transformation function. The returned function is of the same kind as the
-arity function passed in, so e.g. calling `transform_args` on a [Back binding](#back_binding)
-function returns a [Back binding](#back_binding) function.
+composable function passed in, so e.g. calling `transform_args` on a
+[back binding](#back_binding) function returns a
+[back binding](#back_binding) function.
 
 `transform_args` is [front binding](#front_binding)
 

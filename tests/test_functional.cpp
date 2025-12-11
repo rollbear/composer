@@ -446,7 +446,7 @@ TEST_CASE("pipe to pointer-to-member")
 }
 
 namespace {
-constexpr auto length = composer::make_arity_function<1>(
+constexpr auto length = composer::make_composable_function<1>(
     [](auto v) -> decltype(v.length()) { return v.length(); });
 
 struct numname {
@@ -539,7 +539,7 @@ TEST_CASE("arity functions can compose with operator*")
 
 TEST_CASE("arity functions can compose with operator&&")
 {
-    static constexpr auto eq4 = composer::make_arity_function<1>(
+    static constexpr auto eq4 = composer::make_composable_function<1>(
         [](auto x) -> decltype(x == 4) { return x == 4; });
     STATIC_REQUIRE(
         ((&numname::num | eq4) && (&numname::name | length | eq4))(four));
@@ -552,7 +552,7 @@ TEST_CASE("arity functions can compose with operator&&")
 
 TEST_CASE("arity functions can compose with operator||")
 {
-    static constexpr auto eq4 = composer::make_arity_function<1>(
+    static constexpr auto eq4 = composer::make_composable_function<1>(
         [](auto x) -> decltype(x == 4) { return x == 4; });
     STATIC_REQUIRE(
         ((&numname::num | eq4) || (&numname::name | length | eq4))(five));

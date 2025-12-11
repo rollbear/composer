@@ -1,7 +1,7 @@
 #ifndef COMPOSER_TRANSFORM_ARGS_HPP
 #define COMPOSER_TRANSFORM_ARGS_HPP
 
-#include "arity_function.hpp"
+#include "composable_function.hpp"
 #include "front_binding.hpp"
 #include "functional.hpp"
 
@@ -36,17 +36,18 @@ constexpr auto transformation(T&& t)
 
 } // namespace internal
 
-inline constexpr auto transform_args = make_arity_function<2, front_binding>(
-    []<typename T, arity_function_type F> [[nodiscard]] (T&& t, F&& f)
-        -> internal::rebind_function_t<
-            std::remove_cvref_t<F>,
-            std::remove_cvref_t<F>::arity,
-            internal::arg_transformer<decltype(internal::transformation(
-                                          std::forward<T>(t))),
-                                      std::remove_cvref_t<decltype(f.f)>>> {
-        return { internal::transformation(std::forward<T>(t)),
-                 std::forward_like<F>(f.f) };
-    });
+inline constexpr auto transform_args
+    = make_composable_function<2, front_binding>(
+        []<typename T, composable_function_type F> [[nodiscard]] (T&& t, F&& f)
+            -> internal::rebind_function_t<
+                std::remove_cvref_t<F>,
+                std::remove_cvref_t<F>::arity,
+                internal::arg_transformer<decltype(internal::transformation(
+                                              std::forward<T>(t))),
+                                          std::remove_cvref_t<decltype(f.f)>>> {
+            return { internal::transformation(std::forward<T>(t)),
+                     std::forward_like<F>(f.f) };
+        });
 
 } // namespace composer
 
