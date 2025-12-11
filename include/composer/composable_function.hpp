@@ -15,16 +15,6 @@ struct nodiscard : T {
     static constexpr bool is_nodiscard = true;
 };
 
-template <typename>
-inline constexpr bool composable_function_v = false;
-
-template <typename T>
-    requires requires { T::arity * 1; }
-inline constexpr bool composable_function_v<T> = true;
-template <typename T>
-concept composable_function_type
-    = composable_function_v<std::remove_cvref_t<T>>;
-
 template <typename T>
 struct reference_wrapper {
     T& ref;
@@ -137,25 +127,20 @@ struct composition {
     }
 };
 
-template <typename, std::size_t, typename>
+template <typename, typename>
 struct rebind_function;
 
-template <template <std::size_t, typename> class C,
-          std::size_t N,
-          typename F,
-          std::size_t NN,
-          typename FF>
-struct rebind_function<C<N, F>, NN, FF> {
-    using type = C<NN, FF>;
+template <template <typename> class C, typename F, typename FF>
+struct rebind_function<C<F>, FF> {
+    using type = C<FF>;
 };
 
-template <typename C, std::size_t N, typename F>
-using rebind_function_t = typename rebind_function<C, N, F>::type;
+template <typename C, typename F>
+using rebind_function_t = typename rebind_function<C, F>::type;
 } // namespace internal
 
-template <std::size_t N, typename F>
+template <typename F>
 struct [[nodiscard]] composable_function {
-    static constexpr auto arity = N;
     static constexpr bool is_nodiscard = nodiscard_function<F>;
     [[no_unique_address]] F f;
 
@@ -181,26 +166,30 @@ struct [[nodiscard]] composable_function {
     [[nodiscard]] constexpr auto operator|(this Self&& self, RH&& rh)
         -> internal::rebind_function_t<
             std::remove_cvref_t<Self>,
-            N,
             internal::composition<F, std::remove_cvref_t<RH>>>
     {
         return { { std::forward_like<Self>(self.f), std::forward<RH>(rh) } };
     }
 };
 
-template <std::size_t N,
-          template <std::size_t, typename> class AF = composable_function>
-inline constexpr auto make_composable_function
-    = []<typename F> [[nodiscard]] (F&& f) -> AF<N, std::remove_cvref_t<F>> {
-    return { std::forward<F>(f) };
+template <typename T>
+concept composable_function_type = requires(const T& t) {
+    []<typename F>(const composable_function<F>&) {}(t);
 };
+
+template <template <typename> class AF = composable_function, typename F>
+[[nodiscard]] constexpr auto make_composable_function(F&& f)
+    -> AF<std::remove_cvref_t<F>>
+{
+    return { std::forward<F>(f) };
+}
 
 template <typename IN, composable_function_type F>
 [[nodiscard]] constexpr auto operator|(IN&& in, F&& f)
     -> decltype(std::forward<F>(f)(std::forward<IN>(in)))
-    requires(!composable_function_v<std::remove_cvref_t<IN>>
+    requires(!composable_function_type<std::remove_cvref_t<IN>>
              && requires { std::forward<F>(f)(std::as_const(in)); }
-             && !composable_function_v<
+             && !composable_function_type<
                  decltype(std::forward<F>(f)(std::as_const(in)))>)
 {
     return std::forward<F>(f)(std::forward<IN>(in));
@@ -208,9 +197,9 @@ template <typename IN, composable_function_type F>
 
 template <typename IN, composable_function_type F>
 constexpr void operator|(IN&& in, F&& f)
-    requires(!composable_function_v<std::remove_cvref_t<IN>>
+    requires(!composable_function_type<std::remove_cvref_t<IN>>
              && (!requires { std::forward<F>(f)(std::as_const(in)); }
-                 || composable_function_v<
+                 || composable_function_type<
                      decltype(std::forward<F>(f)(std::as_const(in)))>))
 = delete;
 

@@ -48,20 +48,19 @@ struct back_binder {
 };
 } // namespace internal
 
-template <std::size_t N, typename F>
-struct [[nodiscard]] back_binding : composable_function<N, F> {
-    using composable_function<N, F>::operator();
+template <typename F>
+struct [[nodiscard]] back_binding : composable_function<F> {
+    using composable_function<F>::operator();
 
     template <typename Self, typename... Ts>
-    constexpr auto operator()(this Self&& self, Ts&&... ts)
-        -> back_binding<N - sizeof...(Ts),
-                        decltype(internal::back_binder{
-                            std::forward<Self>(self),
-                            std::tuple<internal::arg_binder_t<Ts>...>(
-                                std::forward<Ts>(ts)...) })>
-        requires(sizeof...(Ts) < N) && (!requires {
-                    std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
-                })
+    constexpr auto
+    operator()(this Self&& self,
+               Ts&&... ts) -> back_binding<decltype(internal::back_binder{
+        std::forward<Self>(self),
+        std::tuple<internal::arg_binder_t<Ts>...>(std::forward<Ts>(ts)...) })>
+        requires(!requires {
+            std::forward_like<Self>(self.f)(std::forward<Ts>(ts)...);
+        })
     {
         return { std::forward<Self>(self), { std::forward<Ts>(ts)... } };
     }

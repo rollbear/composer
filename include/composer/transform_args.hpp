@@ -36,18 +36,16 @@ constexpr auto transformation(T&& t)
 
 } // namespace internal
 
-inline constexpr auto transform_args
-    = make_composable_function<2, front_binding>(
-        []<typename T, composable_function_type F> [[nodiscard]] (T&& t, F&& f)
-            -> internal::rebind_function_t<
-                std::remove_cvref_t<F>,
-                std::remove_cvref_t<F>::arity,
-                internal::arg_transformer<decltype(internal::transformation(
-                                              std::forward<T>(t))),
-                                          std::remove_cvref_t<decltype(f.f)>>> {
-            return { internal::transformation(std::forward<T>(t)),
-                     std::forward_like<F>(f.f) };
-        });
+inline constexpr auto transform_args = make_composable_function<front_binding>(
+    []<typename T, composable_function_type F> [[nodiscard]] (T&& t, F&& f)
+        -> internal::rebind_function_t<
+            std::remove_cvref_t<F>,
+            internal::arg_transformer<decltype(internal::transformation(
+                                          std::forward<T>(t))),
+                                      std::remove_cvref_t<decltype(f.f)>>> {
+        return { internal::transformation(std::forward<T>(t)),
+                 std::forward_like<F>(f.f) };
+    });
 
 } // namespace composer
 

@@ -222,8 +222,9 @@ TEST_CASE("mem_fn selects member variable or member function")
     }
 }
 
-TEST_CASE("a piped expression from a pointer to member to an arity function "
-          "yields a mem_ln composition")
+TEST_CASE(
+    "a piped expression from a pointer to member to a composable function "
+    "yields a mem_fn composition")
 {
     struct S {
         int a;
@@ -446,7 +447,7 @@ TEST_CASE("pipe to pointer-to-member")
 }
 
 namespace {
-constexpr auto length = composer::make_composable_function<1>(
+constexpr auto length = composer::make_composable_function(
     [](auto v) -> decltype(v.length()) { return v.length(); });
 
 struct numname {
@@ -460,7 +461,7 @@ constexpr numname five = { 5, "five" };
 
 } // namespace
 
-TEST_CASE("arity functions can compose with operator==")
+TEST_CASE("composable functions can compose with operator==")
 {
     static constexpr auto equal_namelen
         = (composer::mem_fn(&numname::num) == (&numname::name | length));
@@ -470,7 +471,7 @@ TEST_CASE("arity functions can compose with operator==")
     REQUIRE_FALSE(equal_namelen(three));
 }
 
-TEST_CASE("arity functions can compose with operator!=")
+TEST_CASE("composable functions can compose with operator!=")
 {
     static constexpr auto different_namelen
         = (composer::mem_fn(&numname::num) != (&numname::name | length));
@@ -480,7 +481,7 @@ TEST_CASE("arity functions can compose with operator!=")
     REQUIRE(different_namelen(three));
 }
 
-TEST_CASE("arity functions can compose with operator<")
+TEST_CASE("composable functions can compose with operator<")
 {
     static constexpr auto shorter_namelen
         = (composer::mem_fn(&numname::num) < (&numname::name | length));
@@ -490,7 +491,7 @@ TEST_CASE("arity functions can compose with operator<")
     REQUIRE(shorter_namelen(three));
 }
 
-TEST_CASE("arity functions can compose with operator<=")
+TEST_CASE("composable functions can compose with operator<=")
 {
     static constexpr auto shorter_namelen
         = (composer::mem_fn(&numname::num) <= (&numname::name | length));
@@ -500,7 +501,7 @@ TEST_CASE("arity functions can compose with operator<=")
     REQUIRE_FALSE(shorter_namelen(five));
 }
 
-TEST_CASE("arity functions can compose with operator>")
+TEST_CASE("composable functions can compose with operator>")
 {
     static constexpr auto longer_namelen
         = (composer::mem_fn(&numname::num) > (&numname::name | length));
@@ -510,7 +511,7 @@ TEST_CASE("arity functions can compose with operator>")
     REQUIRE_FALSE(longer_namelen(four));
 }
 
-TEST_CASE("arity functions can compose with operator>=")
+TEST_CASE("composable functions can compose with operator>=")
 {
     static constexpr auto longer_namelen
         = (composer::mem_fn(&numname::num) >= (&numname::name | length));
@@ -520,7 +521,7 @@ TEST_CASE("arity functions can compose with operator>=")
     REQUIRE_FALSE(longer_namelen(three));
 }
 
-TEST_CASE("arity functions can compose with operator!")
+TEST_CASE("composable functions can compose with operator!")
 {
     static constexpr auto different_namelen
         = !(composer::mem_fn(&numname::num) == (&numname::name | length));
@@ -530,16 +531,16 @@ TEST_CASE("arity functions can compose with operator!")
     REQUIRE(different_namelen(three));
 }
 
-TEST_CASE("arity functions can compose with operator*")
+TEST_CASE("composable functions can compose with unary operator*")
 {
     static constexpr auto i = 3;
     STATIC_REQUIRE((*composer::identity)(&i) == 3);
     REQUIRE((*composer::identity)(&i) == 3);
 }
 
-TEST_CASE("arity functions can compose with operator&&")
+TEST_CASE("composable functions can compose with operator&&")
 {
-    static constexpr auto eq4 = composer::make_composable_function<1>(
+    static constexpr auto eq4 = composer::make_composable_function(
         [](auto x) -> decltype(x == 4) { return x == 4; });
     STATIC_REQUIRE(
         ((&numname::num | eq4) && (&numname::name | length | eq4))(four));
@@ -550,9 +551,9 @@ TEST_CASE("arity functions can compose with operator&&")
         ((&numname::num | eq4) && (&numname::name | length | eq4))(five));
 }
 
-TEST_CASE("arity functions can compose with operator||")
+TEST_CASE("composable functions can compose with operator||")
 {
-    static constexpr auto eq4 = composer::make_composable_function<1>(
+    static constexpr auto eq4 = composer::make_composable_function(
         [](auto x) -> decltype(x == 4) { return x == 4; });
     STATIC_REQUIRE(
         ((&numname::num | eq4) || (&numname::name | length | eq4))(five));
@@ -566,7 +567,7 @@ TEST_CASE("arity functions can compose with operator||")
         ((&numname::num | eq4) || (&numname::name | length | eq4))(three));
 }
 
-TEST_CASE("arity functions can compose with operator+")
+TEST_CASE("composable functions can compose with operator+")
 {
     struct XY {
         int x;
@@ -579,7 +580,7 @@ TEST_CASE("arity functions can compose with operator+")
     REQUIRE((mem_fn(&XY::x) + mem_fn(&XY::y))(xy) == 5);
 }
 
-TEST_CASE("arity functions can compose with operator-")
+TEST_CASE("composable functions can compose with operator-")
 {
     struct XY {
         int x;
@@ -592,7 +593,7 @@ TEST_CASE("arity functions can compose with operator-")
     REQUIRE((mem_fn(&XY::x) - mem_fn(&XY::y))(xy) == 1);
 }
 
-TEST_CASE("arity functions can compose with binary operator* ")
+TEST_CASE("composable functions can compose with binary operator* ")
 {
     struct XY {
         int x;
@@ -605,7 +606,7 @@ TEST_CASE("arity functions can compose with binary operator* ")
     REQUIRE((mem_fn(&XY::x) * mem_fn(&XY::y))(xy) == 6);
 }
 
-TEST_CASE("arity functions can compose with operator/")
+TEST_CASE("composable functions can compose with operator/")
 {
     struct XY {
         int x;
@@ -618,7 +619,7 @@ TEST_CASE("arity functions can compose with operator/")
     REQUIRE((mem_fn(&XY::x) / mem_fn(&XY::y))(xy) == 4);
 }
 
-TEST_CASE("arity functions can compose with operator%")
+TEST_CASE("composable functions can compose with operator%")
 {
     struct XY {
         int x;
@@ -631,7 +632,7 @@ TEST_CASE("arity functions can compose with operator%")
     REQUIRE((mem_fn(&XY::x) % mem_fn(&XY::y))(xy) == 2);
 }
 
-TEST_CASE("arity functions can compose with operator<<")
+TEST_CASE("composable functions can compose with operator<<")
 {
     struct XY {
         int x;
@@ -644,7 +645,7 @@ TEST_CASE("arity functions can compose with operator<<")
     REQUIRE((mem_fn(&XY::x) << mem_fn(&XY::y))(xy) == 48);
 }
 
-TEST_CASE("arity functions can compose with operator>>")
+TEST_CASE("composable functions can compose with operator>>")
 {
     struct XY {
         int x;

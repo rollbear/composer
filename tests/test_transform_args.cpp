@@ -6,7 +6,7 @@
 TEST_CASE("transform_args called wit all args makes the call directly via the "
           "transformation of all args")
 {
-    constexpr auto minus = composer::make_composable_function<2>(
+    constexpr auto minus = composer::make_composable_function(
         [](auto a, auto b) -> decltype(a - b) { return a - b; });
     constexpr auto deref_minus = composer::transform_args(
         [](const auto& p) -> decltype(*p) { return *p; }, minus);
@@ -19,7 +19,7 @@ TEST_CASE("transform_args called wit all args makes the call directly via the "
 TEST_CASE("transform_args of a front bound function is a front bound function")
 {
     constexpr auto f
-        = composer::make_composable_function<2, composer::front_binding>(
+        = composer::make_composable_function<composer::front_binding>(
             [](auto a, auto b) { return a - b; });
     constexpr auto deref_f = composer::transform_args(
         [](auto p) -> decltype(*p) { return *p; }, f);
@@ -34,7 +34,7 @@ TEST_CASE("transform_args of a partially bound front binding function is "
           "callable with one arg through the transformation")
 {
     constexpr auto minus
-        = composer::make_composable_function<2, composer::front_binding>(
+        = composer::make_composable_function<composer::front_binding>(
             [](auto a, auto b) -> decltype(a - b) { return a - b; });
     constexpr auto sub_from_5 = minus(5);
     constexpr auto dsub = composer::transform_args(
@@ -54,8 +54,7 @@ TEST_CASE("transform_args can transform via a pointer to member")
     };
 
     constexpr S s{ 5, 2 };
-    constexpr auto equal_to
-        = composer::back_binding<2, std::ranges::equal_to>{};
+    constexpr auto equal_to = composer::back_binding<std::ranges::equal_to>{};
     STATIC_REQUIRE(composer::transform_args(&S::a, equal_to(5))(s));
     REQUIRE(composer::transform_args(&S::a, equal_to(5))(s));
     STATIC_REQUIRE(composer::transform_args(&S::get_b, equal_to(2))(s));
@@ -67,8 +66,7 @@ TEST_CASE("transform_args is front binding")
     constexpr auto dereference
         = [](const auto& p) -> decltype(*p) { return *p; };
     constexpr auto dereferenced_args = composer::transform_args(dereference);
-    constexpr auto equal_to
-        = composer::back_binding<2, std::ranges::equal_to>{};
+    constexpr auto equal_to = composer::back_binding<std::ranges::equal_to>{};
     constexpr int a = 2;
     STATIC_REQUIRE(dereferenced_args(equal_to(2))(&a));
     STATIC_REQUIRE_FALSE(dereferenced_args(equal_to(3))(&a));

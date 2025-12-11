@@ -61,12 +61,12 @@ int main()
 # Table of Contents
 
 * [**type templates**](#type_templates)
-  * [**`composer::composable_function<N,F>`**](#composable_function)
-  * [**`composer::front_binding<N,F>`**](#front_binding)
-  * [**`composer::back_binding<N,F>`**](#back_binding)
+  * [**`composer::composable_function<F>`**](#composable_function)
+  * [**`composer::front_binding<F>`**](#front_binding)
+  * [**`composer::back_binding<F>`**](#back_binding)
   * [**`composer::nodiscard<F>`**](#nodiscard)
 * [**Helper function template objects**](#helper_template_objects)
-  * [**`composer::make_composable_function<>(F)`**](#make_composable_function)
+  * [**`composer::make_composable_function(F)`**](#make_composable_function)
   * [**`composer::ref`**](#ref)
   * [**`composer::cref`**](#ref)
 * [**Predefined function objects**](#predefined)
@@ -81,13 +81,11 @@ int main()
 
 ## <A name="type_templates"></A> type templates
 
-### <A name="composable_function"></A> `composer::composable_function<N, F>`
+### <A name="composable_function"></A> `composer::composable_function<F>`
 
 In `<composer/composable_function.hpp>`
 
-A composable version of the function type `F`. `N` is the arity of the
-function, i.e. the number of arguments it takes, including defaulted arguments, if there
-are any.
+A composable version of the function type `F`.
 
 Composable functions can be called with whatever arguments that the function `F` is callable
 with. Composable functions can be composed using *pipes* (`|`, see the teaser example above),
@@ -97,7 +95,7 @@ side function.
 Composable functions that accept only one argument can also be called using a *pipe* syntax,
 like `value | function` (which is synonymous with `function(value)`)
 
-### <A name="front_binding"></A> `composer::front_binding<N, F>`
+### <A name="front_binding"></A> `composer::front_binding<F>`
 
 In `<composer/front_binding.hpp>`
 
@@ -109,7 +107,7 @@ arguments first, and the remaining arguments in the back.
 Example:
 ```c++
 auto add = [](auto a, auto b) -> decltype(a + b){ return a + b; };
-auto plus = composer::front_binding<decltype(subtract), 2>{};
+auto plus = composer::front_binding<decltype(subtract)>{};
 auto plus2 = plus(2); // binds 2 as a for add()
 auto x = plus2(5); // calls add(2, 5)
 ```
@@ -125,7 +123,7 @@ as the function object. If you have bound a move-only type like
 and want to forward it to a function that accepts its argument by value, you
 call `std::move(funcion_object)(args...)`.
 
-### <A name="back_binding"></A> `composer::back_binding<N, F>`
+### <A name="back_binding"></A> `composer::back_binding<F>`
 
 In `<composer/back_binding.hpp>`
 
@@ -137,7 +135,7 @@ mirrors human language.
 Example:
 ```c++
 constexpr auto sub = [](auto a, auto b) -> decltype(a - b) { return a - b;};
-auto minus = composer::back_binding<decltype(sub), 2>{};
+auto minus = composer::back_binding<decltype(sub)>{};
 auto minus2 = minus(2); / binds 2 as b for sub()
 auto x = minus2(5); // calls sub(5,2)
 ```
@@ -160,10 +158,10 @@ Used when defining a new function, to ensure that the return from it is marked
 
 Example:
 ```
-auto minus = back_binding<2, nodiscard<std::minus<>>>{};
+auto minus = back_binding<nodiscard<std::minus<>>>{};
 ```
 
-## <A name="helper_template_objects"></A> helper function template objects
+## <A name="helper_template_objects"></A> helper function templates and template objects
 
 ### <A name="make_composable_function"></A>`composer::make_composable_function<N, Kind = composable_function>(F&& f)`
 
@@ -171,7 +169,7 @@ Make it easier to create composable functions from lambdas or other callables.
 
 Example:
 ```c++
-auto minus = make_composable_function<2, back_binding>([](auto a, auto b)-> decltype(a - b){ return a - b;});
+auto minus = make_composable_function<back_binding>([](auto a, auto b)-> decltype(a - b){ return a - b;});
 ```
 
 ### <A name="ref"></A> `composer::ref(T&)`
@@ -296,92 +294,77 @@ Composable [`nodiscard`](#nodiscard) version of [`std::bit_not<>](https://en.cpp
 #### <A name="operator_lt"></A> `composable_function < composable_function`
 
 Creates a composed function which calls `operator<` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_eq"></A> `composable_function == composable_function`
 
 Creates a composed function which calls `operator==` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_ne"></A> `composable_function != composable_function`
 
 Creates a composed function which calls `operator!=` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_le"></A> `composable_function <= composable_function`
 
 Creates a composed function which calls `operator<=` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_gt"></A> `composable_function > composable_function`
 
 Creates a composed function which calls `operator>` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_ge"></A> `composable_function >= composable_function`
 
 Creates a composed function which calls `operator>=` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_and"></A> `composable_function && composable_function`
 
 Creates a composed function which calls `operator&&` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_or"></A> `composable_function || composable_function`
 
 Creates a composed function which calls `operator||` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2plus"></A> `composable_function + composable_function`
 
 Creates a composed function which calls `operator+` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2minus"></A> `composable_function - composable_function`
 
 Creates a composed function which calls `operator-` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2times"></A> `composable_function * composable_function`
 
 Creates a composed function which calls `operator*` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2divides"></A> `composable_function / composable_function`
 
 Creates a composed function which calls `operator/` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2mod"></A> `composable_function % composable_function`
 
 Creates a composed function which calls `operator%` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2ls"></A> `composable_function << composable_function`
 
 Creates a composed function which calls `operator<<` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_2rs"></A> `composable_function >> composable_function`
 
 Creates a composed function which calls `operator>>` on the result of the two
-functions. The composition will have the lowest arity of the two functions and
-will not be binding.
+functions.
 
 #### <A name="operator_deref"></A> `*composable_function`
 
