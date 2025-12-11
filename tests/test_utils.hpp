@@ -1,7 +1,7 @@
 #ifndef COMPOSER_TEST_UTILS_HPP
 #define COMPOSER_TEST_UTILS_HPP
 
-#include <composer/arity_function.hpp>
+#include <composer/composable_function.hpp>
 
 #include <type_traits>
 
@@ -20,7 +20,7 @@ constexpr bool can_call(F&& f, As&&... as)
 template <typename F, typename... As>
 constexpr bool returns_callable(F&& f, As&&... as)
 {
-    constexpr auto test = [](composer::arity_function_type auto) {};
+    constexpr auto test = [](composer::composable_function_type auto) {};
     return requires { test(std::forward<F>(f)(std::forward<As>(as)...)); };
 }
 
