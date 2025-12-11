@@ -6,21 +6,21 @@
 
 TEST_CASE("a front bound function is called with all provided arguments")
 {
-    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
+    constexpr auto minus = composer::front_binding<std::minus<>>{};
     STATIC_REQUIRE(minus(5, 2) == 3);
     REQUIRE(minus(5, 2) == 3);
 }
 
 TEST_CASE("a front bound function is not callable with too many arguments")
 {
-    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
-    STATIC_REQUIRE_FALSE(can_call(minus, 1, 2, 3));
+    constexpr auto minus = composer::front_binding<std::minus<>>{};
+    STATIC_REQUIRE(returns_callable(minus, 1, 2, 3));
 }
 
 TEST_CASE("a front bound function called with fewer arguments that required, "
           "returns a callable that binds themthe beginning")
 {
-    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
+    constexpr auto minus = composer::front_binding<std::minus<>>{};
     constexpr auto f5minus = minus(5);
     STATIC_REQUIRE(f5minus(2) == 3);
     REQUIRE(f5minus(2) == 3);
@@ -30,7 +30,7 @@ TEST_CASE("a front bound function can be called with fewer than arity "
           "arguments if the underlying function allows it")
 {
     constexpr auto dec
-        = composer::make_composable_function<2, composer::front_binding>(
+        = composer::make_composable_function<composer::front_binding>(
             [](int a, int b = 1) { return a - b; });
     STATIC_REQUIRE(dec(3) == 2);
     REQUIRE(dec(3) == 2);
@@ -69,7 +69,7 @@ TEST_CASE("a front bound function and its bound args are called with the same "
     SECTION("coll on const l-value reference is called as and with const "
             "l-value reference")
     {
-        auto f = composer::make_composable_function<2, composer::front_binding>(
+        auto f = composer::make_composable_function<composer::front_binding>(
             check<const int&>{});
         auto fb = f(3);
         std::as_const(fb)(0);
@@ -77,7 +77,7 @@ TEST_CASE("a front bound function and its bound args are called with the same "
     SECTION("coll on non-const l-value reference is called as and with "
             "non-l-value reference")
     {
-        auto f = composer::make_composable_function<2, composer::front_binding>(
+        auto f = composer::make_composable_function<composer::front_binding>(
             check<int&>{});
         auto fb = f(3);
         fb(0);
@@ -85,7 +85,7 @@ TEST_CASE("a front bound function and its bound args are called with the same "
     SECTION("coll on const r-value reference is called as and with const "
             "r-value reference")
     {
-        auto f = composer::make_composable_function<2, composer::front_binding>(
+        auto f = composer::make_composable_function<composer::front_binding>(
             check<const int&&>{});
         auto fb = f(3);
         std::move(std::as_const(fb))(0);
@@ -93,7 +93,7 @@ TEST_CASE("a front bound function and its bound args are called with the same "
     SECTION("coll on non-const r-value reference is called as and with "
             "non-const r-value reference")
     {
-        auto f = composer::make_composable_function<2, composer::front_binding>(
+        auto f = composer::make_composable_function<composer::front_binding>(
             check<int&&>{});
         auto fb = f(3);
         std::move(fb)(0);
@@ -103,11 +103,11 @@ TEST_CASE("a front bound function and its bound args are called with the same "
 TEST_CASE("a piped expression is a front bound function that calls the right "
           "hand function with the result of the left hand function")
 {
-    auto to_string = composer::make_composable_function<1>(
+    auto to_string = composer::make_composable_function(
         [](auto t) -> decltype(std::to_string(t)) {
             return std::to_string(t);
         });
-    constexpr auto minus = composer::front_binding<2, std::minus<>>{};
+    constexpr auto minus = composer::front_binding<std::minus<>>{};
     auto sub_to_str = minus | to_string;
     auto sub_from_2_to_str = sub_to_str(2);
     REQUIRE(sub_from_2_to_str(5) == "-3");
@@ -117,7 +117,7 @@ TEST_CASE("a captured value is copied into the front_binding function object",
           "[front_binding]")
 {
     auto p = std::make_shared<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](auto x, auto y) { return *x + *y; });
     {
         auto captured_one = func(p);
@@ -132,7 +132,7 @@ TEST_CASE(
     "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](const auto& x, const auto& y) { return *x + *y; });
 
     auto captured_one = func(std::move(p));
@@ -146,7 +146,7 @@ TEST_CASE(
     "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](auto x, auto y) { return *x + *y; });
 
     auto captured_one = func(std::move(p));
@@ -159,7 +159,7 @@ TEST_CASE("a move only type can be reference wrapped in the capture of a "
           "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
@@ -171,7 +171,7 @@ TEST_CASE("a reference wrapped capture is passed as lvalue reference even on "
           "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
@@ -183,7 +183,7 @@ TEST_CASE("a non-const reference wrapped capture is passed as non-const lvalue "
           "[front_binding]")
 {
     auto p = std::make_unique<int>(3);
-    auto func = composer::make_composable_function<2, composer::front_binding>(
+    auto func = composer::make_composable_function<composer::front_binding>(
         [](std::unique_ptr<int>& x, auto y) { return *x + *y; });
     auto captured_one = func(composer::ref(p));
     REQUIRE(p);
@@ -193,9 +193,9 @@ TEST_CASE("a non-const reference wrapped capture is passed as non-const lvalue "
 TEST_CASE("front_binding bound arrays are copied")
 {
     static constexpr auto f
-        = composer::make_composable_function<2, composer::front_binding>(
+        = composer::make_composable_function<composer::front_binding>(
             [](auto& p, int) -> auto& { return p; });
-    static constexpr auto identity = composer::make_composable_function<1>(
+    static constexpr auto identity = composer::make_composable_function(
         []<typename T>(T t) -> T { return t; });
     char array[] = "foo";
     SECTION("non-const function object forwards copy as non-const array")
@@ -223,8 +223,9 @@ TEST_CASE("front_binding bound arrays are copied")
         // people depend on it.
 
         auto bound_func = f(array);
-        STATIC_REQUIRE_FALSE(can_call(std::move(bound_func), 1));
-        STATIC_REQUIRE_FALSE(can_call(std::move(std::as_const(bound_func)), 1));
+        STATIC_REQUIRE(returns_callable(std::move(bound_func), 1));
+        STATIC_REQUIRE(
+            returns_callable(std::move(std::as_const(bound_func)), 1));
     }
     SECTION("bound objects are constexpr")
     {
