@@ -62,7 +62,7 @@ template <typename R, typename C, composable_function_type F>
 constexpr auto operator|(R(C::* p), F&& f)
     -> decltype(mem_fn(p) | std::forward<F>(f))
     requires(!requires { std::forward<F>(f)(p); }
-             || composable_function_v<decltype(std::forward<F>(f)(p))>)
+             || composable_function_type<decltype(std::forward<F>(f)(p))>)
 {
     return mem_fn(p) | std::forward<F>(f);
 }

@@ -15,16 +15,6 @@ struct nodiscard : T {
     static constexpr bool is_nodiscard = true;
 };
 
-template <typename>
-inline constexpr bool composable_function_v = false;
-
-template <typename T>
-    requires requires { T::arity * 1; }
-inline constexpr bool composable_function_v<T> = true;
-template <typename T>
-concept composable_function_type
-    = composable_function_v<std::remove_cvref_t<T>>;
-
 template <typename T>
 struct reference_wrapper {
     T& ref;
@@ -188,6 +178,11 @@ struct [[nodiscard]] composable_function {
     }
 };
 
+template <typename T>
+concept composable_function_type = requires(const T& t) {
+    []<size_t N, typename F>(const composable_function<N, F>&) {}(t);
+};
+
 template <std::size_t N,
           template <std::size_t, typename> class AF = composable_function>
 inline constexpr auto make_composable_function
@@ -198,9 +193,9 @@ inline constexpr auto make_composable_function
 template <typename IN, composable_function_type F>
 [[nodiscard]] constexpr auto operator|(IN&& in, F&& f)
     -> decltype(std::forward<F>(f)(std::forward<IN>(in)))
-    requires(!composable_function_v<std::remove_cvref_t<IN>>
+    requires(!composable_function_type<std::remove_cvref_t<IN>>
              && requires { std::forward<F>(f)(std::as_const(in)); }
-             && !composable_function_v<
+             && !composable_function_type<
                  decltype(std::forward<F>(f)(std::as_const(in)))>)
 {
     return std::forward<F>(f)(std::forward<IN>(in));
@@ -208,9 +203,9 @@ template <typename IN, composable_function_type F>
 
 template <typename IN, composable_function_type F>
 constexpr void operator|(IN&& in, F&& f)
-    requires(!composable_function_v<std::remove_cvref_t<IN>>
+    requires(!composable_function_type<std::remove_cvref_t<IN>>
              && (!requires { std::forward<F>(f)(std::as_const(in)); }
-                 || composable_function_v<
+                 || composable_function_type<
                      decltype(std::forward<F>(f)(std::as_const(in)))>))
 = delete;
 
